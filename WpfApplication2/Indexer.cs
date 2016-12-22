@@ -23,7 +23,7 @@ namespace IR_Engine
         public static int wordNum = 0;
         public static bool ifStemming;
 
-        public static List<string> UniqueList = new List<string>();
+      //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
         {
@@ -227,7 +227,7 @@ namespace IR_Engine
             //amount of Unique in corpus on doc
             //111111111111111111111111111
             ///1111111111111111111111111111
-            foreach (var term in UniqueList)
+            foreach (var term in uniqueTerms)
             {
                 //list docs for every term
                 List<string> docList = new List<string>();
@@ -273,7 +273,7 @@ namespace IR_Engine
 
                 int number = Int32.Parse(post.Key);
 
-                file3.WriteLine(post.Key + ":" + post.Value + " amount of Unique in corpus on doc:" + UniqueWordsDictionaryCounterForQuery[number]);
+                file3.WriteLine(post.Key + ":" + post.Value + " #Unique in corpus:" + UniqueWordsDictionaryCounterForQuery[number]);
             }
 
             file3.Close();
