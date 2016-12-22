@@ -1,0 +1,25 @@
+﻿<Window x:Class="WpfApplication2.DictionaryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Inverted Index - DictionaryWindow" Height="643.284" Width="341.791">
+
+
+    <Grid Margin="0,10,0,-2" HorizontalAlignment="Left" Width="332">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
+
+        <ListBox x:Name="listInverted" HorizontalAlignment="Left" Height="595" Margin="2,8,0,0" VerticalAlignment="Top" Width="327" RenderTransformOrigin="0.5,0.5" >
+            <ListBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleY="-0.43" AngleX="-0.138"/>
+                    <RotateTransform/>
+                    <TranslateTransform Y="-1.48" X="-0.733"/>
+                </TransformGroup>
+            </ListBox.RenderTransform>
+        </ListBox>
+
+    </Grid>
+</Window>
