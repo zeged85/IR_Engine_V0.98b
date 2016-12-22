@@ -32,7 +32,7 @@ namespace IR_Engine
     /// </summary>
     class Parse
     {
-        public static Dictionary<string, string> stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);
+        
         public static List<string> languagesList = new List<string>();
         public static int countAmountOfUniqueInDoc = 0;
         public static Dictionary<string, string> parseString(string str)
@@ -103,11 +103,17 @@ namespace IR_Engine
 
                     //  limiter--;
                     char[] delimiterChars = { ' ', ',', '.', ':', '\t', '(', ')', '"', '/', '-', '\'', '?', '[', ']', '$', '%', ';', '*', '+', '=', '&', '\'', '`', '#', '|', '\"', '{', '}', '!', '<', '>', '_' };
-                    string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
+
+                    List<char> signs = new List<char>();
+                    foreach (char c in delimiterChars)
+                        signs.Add(c);
+
+                    // string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
                     //   System.Console.WriteLine("{0} words in text:", words.Length);
+                    List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
 
                     lineIdx++;
-                    foreach (string s in words)
+                    foreach (string s in splitWords)
                     {
                         //    System.Console.WriteLine(s);
 
@@ -117,7 +123,8 @@ namespace IR_Engine
 
                         //Term (connection words) Term  (connection words) Term
 
-
+                        if (signs.Contains(s[0]))
+                            continue;
                         //CW: and, of, the, of-the?, in the?, 
 
                         string term = s.ToLower();
@@ -200,7 +207,7 @@ namespace IR_Engine
                         //TERM'S TERMS' T3RMS TERM3 TERM.TERM TERM.TERM.TERM 
 
                         //STOP WORDS
-                        if (stopWords.ContainsKey(term))
+                        if (Indexer. stopWords.ContainsKey(term))
                             continue;
 
                         //debug
@@ -314,5 +321,40 @@ namespace IR_Engine
                 return myMiniPostingListDict;
             }
         }
+
+        /// http://stackoverflow.com/questions/4680128/c-split-a-string-with-delimiters-but-keep-the-delimiters-in-the-result
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="delimiters"></param>
+        /// <returns></returns>
+        public static List<string> SplitAndKeepDelimiters(string s, params char[] delimiters)
+        {
+            var parts = new List<string>();
+            if (!string.IsNullOrEmpty(s))
+            {
+                int iFirst = 0;
+                do
+                {
+                    int iLast = s.IndexOfAny(delimiters, iFirst);
+                    if (iLast >= 0)
+                    {
+                        if (iLast > iFirst)
+                            parts.Add(s.Substring(iFirst, iLast - iFirst)); //part before the delimiter
+                        parts.Add(new string(s[iLast], 1));//the delimiter
+                        iFirst = iLast + 1;
+                        continue;
+                    }
+
+                    //No delimiters were found, but at least one character remains. Add the rest and stop.
+                    parts.Add(s.Substring(iFirst, s.Length - iFirst));
+                    break;
+
+                } while (iFirst < s.Length);
+            }
+
+            return parts;
+        }
+
+
     }
 }

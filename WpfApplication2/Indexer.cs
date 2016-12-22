@@ -23,7 +23,10 @@ namespace IR_Engine
         public static int wordNum = 0;
         public static bool ifStemming;
 
-      //  public static List<string> UniqueList = new List<string>();
+        public static Dictionary<string, string> stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);
+
+
+        //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
         {
@@ -409,5 +412,8 @@ namespace IR_Engine
             Console.WriteLine("Processing file '{0}'.", path);
             myMethodName(path);
         }
+
+
+
     }
 }
