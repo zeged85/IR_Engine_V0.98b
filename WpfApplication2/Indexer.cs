@@ -27,6 +27,8 @@ namespace IR_Engine
 
         public static List<string> uniqueTerms = new List<string>();
 
+        public static Dictionary<string, int> freqInAllCorpusList = new Dictionary<string, int>();
+
         //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
@@ -205,6 +207,9 @@ namespace IR_Engine
                 string term = t;
                 char[] delimiterChars = { '@', ',' };
                 int freqInAllCorpus = myPostings[term].Split(delimiterChars).Length - 1;
+                freqInAllCorpusList.Add(term, freqInAllCorpus);
+
+                
 
                 //Unique terms' list
 
@@ -326,6 +331,22 @@ namespace IR_Engine
 
         }
 
+        public void PrintfreqInAllCorpusList() {
+            //  using System.Linq;
+            //http://stackoverflow.com/questions/21411384/sort-dictionary-string-int-by-value
+
+            var top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10);
+            var bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10);
+
+             top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10)
+                   .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10)
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+
+
+        }
 
         public void mmm()
         {

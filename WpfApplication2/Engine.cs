@@ -35,7 +35,7 @@ namespace WpfApplication2
 
             idx.UniqueWordsQuery();
 
-
+            idx.PrintfreqInAllCorpusList(); //
 
             idx.mmm();
 
