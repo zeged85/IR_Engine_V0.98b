@@ -14,7 +14,34 @@ namespace WpfApplication2
         public Engine()
         {
             idx = new Indexer();
+
+            idx.initiate(); //
+
+            idx.freeMemory(); // create last folder
+
+            idx.MergeAllToSingleUnSorted();
+
+            idx.sort();
+
+            idx.deleteGarbage();
+
+            idx.dumpDocumentMetadata();
+
+            idx.loadPostingFiles();
+
+            idx.loadMetadata();
+
+            idx.createDictionary();
+
+            idx.UniqueWordsQuery();
+
+
+
             idx.mmm();
+
+
+
+
         }
     }
 }

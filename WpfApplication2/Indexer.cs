@@ -25,6 +25,7 @@ namespace IR_Engine
 
         public static Dictionary<string, string> stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);
 
+        public static List<string> uniqueTerms = new List<string>();
 
         //  public static List<string> UniqueList = new List<string>();
 
@@ -33,26 +34,9 @@ namespace IR_Engine
             myPostings = new Dictionary<string, string>();
         }
 
-        public void mmm()
+        public void initiate()
         {
-
-            System.Console.WriteLine();
-
-            if (File.Exists(documentsPath))
-            {
-                // This path is a file
-
-                ProcessFile(documentsPath, SavePostingToStaticDictionary);
-
-                Console.WriteLine("Refreshing Memory... ");
-                postingFolderCounter++;
-
-                ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
-
-                myPostings.Clear();
-
-            }
-            else if (Directory.Exists(documentsPath))
+            if (Directory.Exists(documentsPath))
             {
                 // This path is a directory
                 ProcessDirectory(documentsPath, SavePostingToStaticDictionary);
@@ -61,7 +45,10 @@ namespace IR_Engine
             {
                 Console.WriteLine("{0} is not a valid file or directory.", documentsPath);
             }
+        }
 
+        public void freeMemory()
+        {
             Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
             ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
             Console.WriteLine("Proccess done.");
@@ -73,6 +60,12 @@ namespace IR_Engine
             Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
             ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
 
+            myPostings.Clear();
+
+        }
+
+        public void MergeAllToSingleUnSorted()
+        {
             //creating the master directory
             //merging to single files un sorted.
             Console.WriteLine("merging to single files to un sorted.");
@@ -81,7 +74,10 @@ namespace IR_Engine
                 // This path is a directory
                 ProcessDirectory(postingFilesPath, CreateMasterPostingFiles);
             }
+        }
 
+        public void sort()
+        {
             Console.WriteLine("sorting");
             //sorting
             myPostings.Clear();
@@ -91,6 +87,11 @@ namespace IR_Engine
                 ReadFile.saveDic(ReadFile.fileToDictionary(fileName), postingFilesPath + @"PostingFiles\");
             }
             myPostings.Clear();
+        }
+
+
+        public void deleteGarbage()
+        {
             //delete garbage
             //http://stackoverflow.com/questions/7296956/how-to-list-all-sub-directories-in-a-directory
             var directories = Directory.GetDirectories(postingFilesPath);
@@ -107,10 +108,15 @@ namespace IR_Engine
             }
             //delete all files
             Console.WriteLine("deleteing all files...");
-            fileEntries = Directory.GetFiles(postingFilesPath);
+            string[] fileEntries = Directory.GetFiles(postingFilesPath);
             foreach (string fileName in fileEntries)
                 ProcessFile(fileName, DeletePostingFiles);
 
+        }
+
+
+        public void dumpDocumentMetadata()
+        {
             // compute DocumentFileToID file
             //most common term
 
@@ -126,7 +132,10 @@ namespace IR_Engine
             file6.Close();
 
             DocumentMetadata.Clear();
+        }
 
+        public void loadPostingFiles()
+        {
             System.Console.WriteLine("Creating Dictionary... ");
             System.Console.WriteLine("Loading PostingFiles...");
             //0 create dictionary. use static
@@ -136,7 +145,10 @@ namespace IR_Engine
             string[] fileEntries2 = Directory.GetFiles(postingFilesPath + "PostingFiles");
             foreach (string fileName in fileEntries2)
                 ProcessFile(fileName, LoadPostingFiles);
+        }
 
+        public void loadMetadata()
+        {
             //load DocumentMetadata
 
 
@@ -151,6 +163,13 @@ namespace IR_Engine
 
             }
 
+        }
+
+        public void createDictionary() // count unique
+        {
+
+
+
             // var list = myPostings.Keys.ToList();
             PostingFileTermList = myPostings.Keys.ToList();
             PostingFileTermList.Sort();
@@ -160,7 +179,7 @@ namespace IR_Engine
             //create 1 dic file
             StreamWriter file2 = new StreamWriter(postingFilesPath + @"\Dictionary.txt", true);
 
-            List<string> uniqueTerms = new List<string>();
+          
             List<Tuple<string, int>> shortDocAndFreq = new List<Tuple<string, int>>();
             int amountOfDocs = 0;
             foreach (var t in PostingFileTermList)
@@ -209,6 +228,11 @@ namespace IR_Engine
             }
             file2.Close();
 
+        }
+
+        public void UniqueWordsQuery() //update metadata.txt
+        {
+
             //Add list of unique terms to Documents string
 
             //loop all documents
@@ -225,7 +249,7 @@ namespace IR_Engine
 
             //METADATA
 
-            System.Console.WriteLine("O(N * M) == O(N ^ 2)");
+            System.Console.WriteLine("O(N * M)");
 
             //amount of Unique in corpus on doc
             //111111111111111111111111111
@@ -281,6 +305,16 @@ namespace IR_Engine
 
             file3.Close();
 
+
+        }
+
+
+        public void mmm()
+        {
+            
+
+         
+           
             //http://stackoverflow.com/questions/10391481/number-of-occurrences-of-a-character-in-a-string
 
             //1 go over every letter in DB Folder
@@ -289,6 +323,8 @@ namespace IR_Engine
             /// count number of occurrences in document
             /// get document number
             System.Console.WriteLine("Job Done.");
+
+
         }
 
         //https://msdn.microsoft.com/en-us/library/07wt70x2(v=vs.110).aspx
