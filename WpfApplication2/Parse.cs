@@ -104,140 +104,156 @@ namespace IR_Engine
                     //  limiter--;
                     char[] delimiterChars = { ' ', ',', '.', ':', '\t', '(', ')', '"', '/', '-', '\'', '?', '[', ']', '$', '%', ';', '*', '+', '=', '&', '\'', '`', '#', '|', '\"', '{', '}', '!', '<', '>', '_' };
 
-                    List<char> signs = new List<char>();
-                    foreach (char c in delimiterChars)
-                        signs.Add(c);
+          //          List<char> signs = new List<char>();
+          //          foreach (char c in delimiterChars)
+          //              signs.Add(c);
 
-                    // string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
+                     string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
+
                     //   System.Console.WriteLine("{0} words in text:", words.Length);
-                    List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
+               //     List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
 
                     lineIdx++;
-                    foreach (string s in splitWords)
-                    {
-                        //    System.Console.WriteLine(s);
+               //     foreach (string withspaces in splitWords)
+               //     {
+               //         string[] noSpecs = withspaces.Split();
 
-                        //Term
-
-                        //Term Term
-
-                        //Term (connection words) Term  (connection words) Term
-
-                        if (signs.Contains(s[0]))
-                            continue;
-                        //CW: and, of, the, of-the?, in the?, 
-
-                        string term = s.ToLower();
-
-                        //delete spaces in start
-                        term.TrimStart();
-
-                        //NUMBERS
-
-                        //NUMBER-NUMBER
-
-                        //CURRENCY
-
-
-                        //NUMBER%  
-
-                        //NUMBER percent/percentage -> NUMBER %
-
-                        //30.5% percent
-
-                        //1,023$
-
-
-
-                        //(WORD) (WORD) (WORD)
-                        //this is it
-
-                        //(WORD) (WORD) (NUMBER)
-
-                        //(WORD) (WORD) (SIGN)
-
-
-
-                        //(WORD) (NUMBER) (WORD)
-
-                        //(WORD) (NUMBER) (NUMBER)
-
-                        //(WORD) (NUMBER) (SIGN)
-
-
-                        //(WORD) (SIGN) (WORD)
-
-                        //(WORD) (SIGN) (NUMBER)
-
-                        //(WORD) (SIGN) (SIGN)
-
-
-                        //(NUMBER) (WORD) (WORD)
-
-                        //(NUMBER (WORD) (NUMBER)
-                        //(NUMBER) (WORD) (SIGN)
-
-                        //(NUMBER) (NUMBER) (WORD)
-                        //(NUMBER) (NUMBER) (NUMBER)
-                        //(NUMBER) (NUMBER) (SIGN) 
-
-                        //(WORD) (NUMBER) (SIGN)
-
-                        //(NUMBER) (WORD) (SIGN)
-
-                        //
-
-                        //3.05 M Dollars
-
-                        //CHANGE MILLION+
-                        //SPARE 1,024 OR 3.14 OR 5 5/6
-
-                        //NUMBER,NUMBER
-
-                        //NUMBER,NUMBER,NUMBER -> 3 M
-
-                        //NUMBER,NUMBER,NUMBER,NUMBER -> 9 B
-
-                        //TERM,TERM -> TERM, TERM
-
-                        //TERMS
-
-                        //TERM-TERM
-
-                        //TERM'S TERMS' T3RMS TERM3 TERM.TERM TERM.TERM.TERM 
-
-                        //STOP WORDS
-                        if (Indexer. stopWords.ContainsKey(term))
-                            continue;
-
-                        //debug
-
-                        //CONNECTION WORDS
-
-                        string newterm = string.Empty;
-                        //STEMMER
-                        if (Indexer.ifStemming == true)
+                        foreach (string s in words)
                         {
-                            Stemmer stem = new Stemmer();
-                            stem.stemTerm(term);
-                            newterm = stem.ToString();
+                            string term = s.TrimStart().TrimEnd();
+
+                            //    System.Console.WriteLine(s);
+
+                            //Term
+
+                            //Term Term
+
+                            //Term (connection words) Term  (connection words) Term
+
+                          /*  if (signs.Contains(s[0]))
+                            {
+                                if (s[0] == '!') { }
+                                if (s[0] == '-') { }
+                                continue;
+                            }*/
+
+
+
+
+                            //CW: and, of, the, of-the?, in the?, 
+
+                            term = term.ToLower();
+
+                            //delete spaces in start
+                            term.TrimStart();
+
+                            //NUMBERS
+
+                            //NUMBER-NUMBER
+
+                            //CURRENCY
+
+
+                            //NUMBER%  
+
+                            //NUMBER percent/percentage -> NUMBER %
+
+                            //30.5% percent
+
+                            //1,023$
+
+
+
+                            //(WORD) (WORD) (WORD)
+                            //this is it
+
+                            //(WORD) (WORD) (NUMBER)
+
+                            //(WORD) (WORD) (SIGN)
+
+
+
+                            //(WORD) (NUMBER) (WORD)
+
+                            //(WORD) (NUMBER) (NUMBER)
+
+                            //(WORD) (NUMBER) (SIGN)
+
+
+                            //(WORD) (SIGN) (WORD)
+
+                            //(WORD) (SIGN) (NUMBER)
+
+                            //(WORD) (SIGN) (SIGN)
+
+
+                            //(NUMBER) (WORD) (WORD)
+
+                            //(NUMBER (WORD) (NUMBER)
+                            //(NUMBER) (WORD) (SIGN)
+
+                            //(NUMBER) (NUMBER) (WORD)
+                            //(NUMBER) (NUMBER) (NUMBER)
+                            //(NUMBER) (NUMBER) (SIGN) 
+
+                            //(WORD) (NUMBER) (SIGN)
+
+                            //(NUMBER) (WORD) (SIGN)
+
+                            //
+
+                            //3.05 M Dollars
+
+                            //CHANGE MILLION+
+                            //SPARE 1,024 OR 3.14 OR 5 5/6
+
+                            //NUMBER,NUMBER
+
+                            //NUMBER,NUMBER,NUMBER -> 3 M
+
+                            //NUMBER,NUMBER,NUMBER,NUMBER -> 9 B
+
+                            //TERM,TERM -> TERM, TERM
+
+                            //TERMS
+
+                            //TERM-TERM
+
+                            //TERM'S TERMS' T3RMS TERM3 TERM.TERM TERM.TERM.TERM 
+
+                            //STOP WORDS
+                            if (Indexer.stopWords.ContainsKey(term))
+                                continue;
+
+                            //debug
+
+                            //CONNECTION WORDS
+
+                            string newterm = string.Empty;
+                            //STEMMER
+                            if (Indexer.ifStemming == true)
+                            {
+                                Stemmer stem = new Stemmer();
+                                stem.stemTerm(term);
+                                newterm = stem.ToString();
+                            }
+
+                            else
+                            {
+                                newterm = term;
+                            }
+                            ReadFile.wordPosition++;
+
+                            if (myMiniPostingListDict.ContainsKey(newterm))
+                                myMiniPostingListDict[newterm] += "," + ReadFile.wordPosition;
+                            else
+                                myMiniPostingListDict.Add(newterm, "{" + ReadFile.wordPosition);
                         }
 
-                        else
-                        {
-                            newterm = term;
-                        }
-                        ReadFile.wordPosition++;
+                        // Keep the console window open in debug mode.
+                    
 
-                        if (myMiniPostingListDict.ContainsKey(newterm))
-                            myMiniPostingListDict[newterm] += "," + ReadFile.wordPosition;
-                        else
-                            myMiniPostingListDict.Add(newterm, "{" + ReadFile.wordPosition);
-                    }
-
-                    // Keep the console window open in debug mode.
                 }
-
                 //   System.Console.WriteLine("");
 
                 //https://www.dotnetperls.com/sort-dictionary
@@ -333,20 +349,41 @@ namespace IR_Engine
             if (!string.IsNullOrEmpty(s))
             {
                 int iFirst = 0;
+          
                 do
                 {
+                    int space = s.IndexOf(' ', iFirst);
+                    if (space == iFirst) {
+                        iFirst++;
+                        continue;
+                    }
+
+
                     int iLast = s.IndexOfAny(delimiters, iFirst);
+
+                    if ((space != -1 && (iLast == -1 || space < iLast)))
+                    {
+                        parts.Add(s.Substring(space, space - iFirst));
+                        iFirst = space + 1;
+
+                        continue;
+                    }
+
                     if (iLast >= 0)
                     {
                         if (iLast > iFirst)
                             parts.Add(s.Substring(iFirst, iLast - iFirst)); //part before the delimiter
                         parts.Add(new string(s[iLast], 1));//the delimiter
                         iFirst = iLast + 1;
+                     
                         continue;
                     }
 
-                    //No delimiters were found, but at least one character remains. Add the rest and stop.
-                    parts.Add(s.Substring(iFirst, s.Length - iFirst));
+          
+
+
+                        //No delimiters were found, but at least one character remains. Add the rest and stop.
+                        parts.Add(s.Substring(iFirst, s.Length - iFirst));
                     break;
 
                 } while (iFirst < s.Length);

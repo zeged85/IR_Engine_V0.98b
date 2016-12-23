@@ -106,7 +106,7 @@ namespace IR_Engine
                     else
                     {
                         linesInDoc++;
-                        bufferDocument.Append(s + System.Environment.NewLine);
+                        bufferDocument.Append(s.Trim() + System.Environment.NewLine);
                     }
                     //save the new document, line by line
                     // newDocument += s + System.Environment.NewLine;
