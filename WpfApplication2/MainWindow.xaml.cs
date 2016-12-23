@@ -147,11 +147,28 @@ namespace WpfApplication2
             if (Stemming.IsChecked == true)
             {
                 Indexer.ifStemming = true;
-                System.Windows.MessageBox.Show("Please enter path for process with Stemming");
+                Reset(this,new RoutedEventArgs());
+            //    System.Windows.MessageBox.Show("Please enter path for process with Stemming");
             }
             else
             {
                 Indexer.ifStemming = false;
+                Reset(this, new RoutedEventArgs());
+            }
+        }
+
+        private void isNotStemming(object sender, RoutedEventArgs e)
+        {
+            if (Stemming.IsChecked == true)
+            {
+                Indexer.ifStemming = true;
+                Reset(this, new RoutedEventArgs());
+                //    System.Windows.MessageBox.Show("Please enter path for process with Stemming");
+            }
+            else
+            {
+                Indexer.ifStemming = false;
+                Reset(this, new RoutedEventArgs());
             }
         }
 
@@ -179,9 +196,18 @@ namespace WpfApplication2
                 }
 
                 Indexer.postingFilesPath = tmpAddress;
-                m_postingFilesPath = tmpAddress;
-                Directory.Delete(m_postingFilesPath + "\\Stemming");
+                //m_postingFilesPath = tmpAddress;
 
+                DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
+
+
+                if (stem.Exists)
+                {
+                    foreach (FileInfo f in stem.GetFiles())
+                        f.Delete();
+
+                    Directory.Delete(m_postingFilesPath + "\\Stemming");
+                }
 
             }
 

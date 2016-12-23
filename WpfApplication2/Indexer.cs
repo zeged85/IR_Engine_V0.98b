@@ -76,15 +76,20 @@ namespace IR_Engine
             }
         }
 
-        public void sort()
+        public void sort()//and put in folder
         {
             Console.WriteLine("sorting");
             //sorting
             myPostings.Clear();
+
+            string dbpath = "PostingFiles";
+            if (Indexer.ifStemming == true)
+                dbpath = "Stemming";
+
             string[] fileEntries = Directory.GetFiles(postingFilesPath);
             foreach (string fileName in fileEntries)
             {
-                ReadFile.saveDic(ReadFile.fileToDictionary(fileName), postingFilesPath + @"PostingFiles\");
+                ReadFile.saveDic(ReadFile.fileToDictionary(fileName), postingFilesPath + dbpath + @"\");
             }
             myPostings.Clear();
         }
@@ -95,11 +100,18 @@ namespace IR_Engine
             //delete garbage
             //http://stackoverflow.com/questions/7296956/how-to-list-all-sub-directories-in-a-directory
             var directories = Directory.GetDirectories(postingFilesPath);
-            Console.WriteLine("deleteing all folders...");
+
+            string dbpath = "PostingFiles";
+            if (Indexer.ifStemming == true)
+                dbpath = "Stemming";
+                
+
+
+                Console.WriteLine("deleteing all folders...");
             foreach (string dirToBeDELETED in directories)
             {
                 //delete all folders
-                if (dirToBeDELETED != postingFilesPath + "PostingFiles" && dirToBeDELETED != postingFilesPath + "Stemming")
+                if (dirToBeDELETED != postingFilesPath + dbpath && dirToBeDELETED != postingFilesPath + "Stemming")
                 {
                     ProcessDirectory(dirToBeDELETED, DeletePostingFiles);
                     //delete directories
@@ -141,8 +153,14 @@ namespace IR_Engine
             //0 create dictionary. use static
             myPostings.Clear();
 
+            string dbpath = "PostingFiles";
+            if (Indexer.ifStemming == true)
+                dbpath = "Stemming";
+
+
+
             //upload postingfiles to main memomry Library<String,String>
-            string[] fileEntries2 = Directory.GetFiles(postingFilesPath + "PostingFiles");
+            string[] fileEntries2 = Directory.GetFiles(postingFilesPath + dbpath);
             foreach (string fileName in fileEntries2)
                 ProcessFile(fileName, LoadPostingFiles);
         }
