@@ -456,7 +456,13 @@ namespace IR_Engine
 
         int SavePostingToStaticDictionary(string path)
         {
+
+
             Dictionary<string, string> newDict = ReadFile.OpenFileForParsing(path);
+
+            //threading
+
+
 
             Console.WriteLine("File '{0}' Proccessesed.", path);
             Console.WriteLine("Merging in Program...");

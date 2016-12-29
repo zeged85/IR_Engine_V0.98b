@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IR_Engine
@@ -64,14 +65,9 @@ namespace IR_Engine
                             Console.WriteLine("Processed file '{0}'.", path);
                             System.Console.WriteLine("Lines in document:" + linesInDoc);
 
-                            //  System.Console.WriteLine("Most common term and its freq in the document:");
 
-                            //update doc list
+                            
 
-                            //   TempClass.DocumentIDToFile.Add(TempClass.docNumber, "Path:["+ path + "]");
-
-                            //call Parse
-                            //Dictionary<string, string> newDict = Parse.parseString(newDocument);
                             Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString());
                             //dictionary resault
 
