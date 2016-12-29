@@ -23,7 +23,7 @@ namespace IR_Engine
         public static int wordNum = 0;
         public static bool ifStemming;
 
-        public static Dictionary<string, string> stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);
+        public static Dictionary<string, string> stopWords;
 
         public static List<string> uniqueTerms = new List<string>();
 
@@ -41,6 +41,7 @@ namespace IR_Engine
             if (Directory.Exists(documentsPath))
             {
                 // This path is a directory
+                stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
                 ProcessDirectory(documentsPath, SavePostingToStaticDictionary);
             }
             else
