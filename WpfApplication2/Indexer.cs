@@ -442,7 +442,7 @@ namespace IR_Engine
                     string lineRead = String.Empty;
                     while ((lineRead = fileToRead.ReadLine()) != null)
                     {
-                        string[] termAndValue = lineRead.Split(':');
+                        string[] termAndValue = lineRead.Split('^');
 
                         if (myDict.ContainsKey(termAndValue[0]))
                             myDict[termAndValue[0]] += " " + termAndValue[1];
@@ -475,16 +475,16 @@ namespace IR_Engine
 
             Console.WriteLine("Merging done.");
 
-            //Save some data to a new directory
-            if (myPostings.Count > 30000)
-            {
+            //Save the data to a new directory
+          //  if (myPostings.Count > 30000)
+         //   {
                 Console.WriteLine("Refreshing Memory...");
                 postingFolderCounter++;
 
                 ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
 
                 myPostings.Clear();
-            }
+            
             return 0;
         }
 

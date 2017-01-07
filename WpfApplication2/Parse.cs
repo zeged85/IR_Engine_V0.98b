@@ -34,9 +34,45 @@ namespace IR_Engine
     {
         
         public static List<string> languagesList = new List<string>();
+        public static List<string> Months = new List<string>();
         public static int countAmountOfUniqueInDoc = 0;
+        static int wordPositionWithSW = 0;
+        static int wordPositionWithoutSW = 0;
         public static Dictionary<string, string> parseString(string str)
         {
+
+            Months.Add("january");
+            Months.Add("february");
+            Months.Add("march");
+            Months.Add("april");
+            Months.Add("may");
+            Months.Add("june");
+            Months.Add("july");
+            Months.Add("august");
+            Months.Add("september");
+            Months.Add("october");
+            Months.Add("november");
+            Months.Add("december");
+
+            Months.Add("jan");
+            Months.Add("feb");
+
+            Months.Add("apr");
+
+            Months.Add("jun");
+            Months.Add("jul");
+            Months.Add("aug");
+            Months.Add("sep");
+            Months.Add("oct");
+            Months.Add("nov");
+            Months.Add("dec");
+
+
+
+
+
+
+
             // Console.WriteLine("Parsing");
             string DOCNO = "";
             string languageDocument = "";
@@ -70,7 +106,13 @@ namespace IR_Engine
 
                 //text parsing - main work
                 int lineIdx = 0; // lines in document
-                // int limiter = 10;
+                                 // int limiter = 10;
+
+                string longTerm = string.Empty;
+                int longTermSize = 0;
+                bool addTermToLongTerm = false;
+                bool resetLongTerm = false;
+
                 while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
@@ -120,14 +162,15 @@ namespace IR_Engine
                     //     {
                     //         string[] noSpecs = withspaces.Split();
 
-                    string longTerm = string.Empty;
+                   
+
                         foreach (string s in words) /// MAIN PARSE LOOP
                         {
                         //      string term = s.TrimStart().TrimEnd();
 
                         //    System.Console.WriteLine(s);
-
-
+                        addTermToLongTerm = false;
+                        resetLongTerm = false;
 
                         //discard single letters
                         if (s.Length == 1)
@@ -137,49 +180,74 @@ namespace IR_Engine
                         //discard signs in the beginning
                         string term = s;
 
-                        while (!char.IsLetterOrDigit( term[0]))
+                        while (term.Length > 1 && !char.IsLetterOrDigit( term[0]))
                         {
                             term = term.Split(term[0])[1];
                         }
 
+                        // int length = term.Length;
+                        // char lastChar = term[length - 1];
+                        //discard signs in the ending
+                        while (term.Length > 1 && !char.IsLetterOrDigit(term[term.Length - 1]))
+                        {
+                            string[] split = term.Split(term[term.Length - 1]);
+                            char sign = term[term.Length - 1];
+                            term = split[0];
+
+                         
+                            if (sign == '.')
+                            {
+                                resetLongTerm = true;
+                            }
+                            //   longTerm = string.Empty;//restart long term
+
+                        }
+                        term = term.TrimEnd();
 
                         //discard single letters
-                       if (term.Length == 1)
+                        if (term.Length < 2)
                           continue;
 
-                        //end of line or sentence or comma
 
 
-
-                        int length = term.Length;
-                        char lastChar = term[length - 1];
-                        if (!char.IsLetterOrDigit(lastChar))
-                        {
-                            term = term.Split(lastChar)[0];
-                            longTerm = string.Empty;//restart long term
-
-                        }
-                        else
-                        {
-                        //    term = s;
-                        }
-
+                        string termToLower = term.ToLower();
 
 
 
                         if ( char.IsUpper(term[0])  && !char.IsUpper(term[1]) ) // is capital letter Term
                         {
-                            longTerm += term + " ";
-                        }
-                        else
-                        
-{
-                     //       longTerm = string.Empty;//restart long term
+                            if (Indexer.stopWords.ContainsKey(termToLower))
+                            {
+                                wordPositionWithSW++;
+                                continue;
+                            }
+                            else
+                            if (Months.Contains(termToLower))
+                            {
+                                addTermToLongTerm = false;
+                            }
+                            else
+                            {
+                                addTermToLongTerm = true;
+                                longTermSize++;
+                            }
+                         //   longTerm += term + " ";
                         }
 
+
+
+                        //end of line or sentence or comma
+
+
+
+
+
                         //STOP WORDS
-                        if (Indexer.stopWords.ContainsKey(term))
+                        if (Indexer.stopWords.ContainsKey(termToLower))
+                        {
+                            wordPositionWithSW++;
                             continue;
+                        }
 
                         //Term
 
@@ -199,7 +267,7 @@ namespace IR_Engine
 
                         //CW: and, of, the, of-the?, in the?, 
 
-                        string termToLower = s.ToLower();
+                        
 
                             //delete spaces in start
                           //  termToLower.TrimStart();
@@ -296,16 +364,46 @@ namespace IR_Engine
                             {
                                 stemTerm = termToLower;
                             }
-                            ReadFile.wordPosition++;
+                        
 
-                            if (myMiniPostingListDict.ContainsKey(stemTerm))
-                                myMiniPostingListDict[stemTerm] += "," + ReadFile.wordPosition;
+                        //term is part of a long term. need to save for next iteration
+                        if (addTermToLongTerm == true)
+                        {
+                            longTerm += stemTerm + "+";
+                        }
+
+                        wordPositionWithoutSW++;
+                        wordPositionWithSW++;
+
+                        //end of long term
+                        if (resetLongTerm)
+                        {
+                            if (longTermSize > 1)
+                            {
+                                if (myMiniPostingListDict.ContainsKey(longTerm))
+                                    myMiniPostingListDict[longTerm] += "," + wordPositionWithSW;
+                                else
+                                    myMiniPostingListDict.Add(longTerm, "{" + wordPositionWithSW);
+                            }
+
+                        longTerm = string.Empty;
+                            longTermSize = 0;
+
+                        }
+
+
+                        //add to dictionary
+                   
+
+                        if (myMiniPostingListDict.ContainsKey(stemTerm))
+                                myMiniPostingListDict[stemTerm] += "," + wordPositionWithSW;
                             else
-                                myMiniPostingListDict.Add(stemTerm, "{" + ReadFile.wordPosition);
+                                myMiniPostingListDict.Add(stemTerm, "{" + wordPositionWithSW);
                         }
 
                         // Keep the console window open in debug mode.
-                    
+                    //NEW DEBUG
+                  
 
                 }
                 //   System.Console.WriteLine("");
@@ -381,11 +479,12 @@ namespace IR_Engine
 
                 //  myDocumentData.                
                 string METADATA_SECURE = /*"DOCNO:" + */DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
-                    /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc;
+                    /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc + ", totalInDocIncludingSW : " + wordPositionWithSW + ", totalInDocwithoutSW : " + wordPositionWithoutSW;
 
                 // myMiniPostingListDict.Add("METADATA_SECURE", METADATA_SECURE);
                 Indexer.DocumentMetadata.Add(Indexer.docNumber.ToString(), METADATA_SECURE);
-
+                wordPositionWithSW = 0;
+                wordPositionWithoutSW = 0;
                 //http://www.csharpstar.com/return-multiple-values-from-function-csharp/
 
                 return myMiniPostingListDict;

@@ -21,7 +21,7 @@ namespace IR_Engine
     /// </summary>
     public class ReadFile
     {
-        public static int wordPosition = 0;
+      //  public static int wordPosition = 0;
         //UTF!!!
         public string filesPathToDelete;
         public static int totalDocs = 0;
@@ -53,7 +53,7 @@ namespace IR_Engine
                     {
                         if (linesInDoc != 0) //end of document before
                         {
-                            ReadFile.wordPosition = 0;
+                     //       ReadFile.wordPosition = 0;
                             //      System.Console.WriteLine(newDocument);
                             Indexer.docNumber++;
                             docNumber++;
@@ -167,7 +167,7 @@ namespace IR_Engine
 
                 string line = dic[key];
                 //deadlock
-                file2.WriteLine(key + ": " + line);
+                file2.WriteLine(key + "^" + line);
                 if (Char.IsLetter(key[0]))
                 {
                     last = key[0];
@@ -189,7 +189,7 @@ namespace IR_Engine
                     if (s == "")
                         continue;
 
-                    string[] words = s.Split(':');
+                    string[] words = s.Split('^');
                     string value = string.Empty;
                     string key = words[0];
                     if (words.Length == 2)
@@ -197,7 +197,9 @@ namespace IR_Engine
                     if (!newDic.ContainsKey(key))
                         newDic.Add(key, value);
                     else
+                    {
                         newDic[key] += value;
+                    }
 
                 }
             }
