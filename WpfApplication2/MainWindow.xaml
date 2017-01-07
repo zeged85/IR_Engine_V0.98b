@@ -1,18 +1,17 @@
 ﻿<Window x:Class="WpfApplication2.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="550" Width="809">
+        Title="MainWindow" Height="546" Width="809">
 
-    <Grid Margin="0,0,0,0">
+    <Grid Margin="10,0,2,-21">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="571*"/>
-            <ColumnDefinition Width="62*"/>
-            <ColumnDefinition Width="288*"/>
+            <ColumnDefinition Width="503*"/>
+            <ColumnDefinition Width="47*"/>
+            <ColumnDefinition Width="252*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-
-            <RowDefinition Height="165*"/>
-
+            <RowDefinition Height="0*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -21,101 +20,108 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-
-
         <TextBlock Text="Zeged - Maman" 
-                   Margin="17,10,79,0" 
+                   Margin="74,10,23,0" 
                    TextWrapping="Wrap" 
                    VerticalAlignment="Top" 
                    FontSize="50" 
                    FontFamily="Segoe UI Black" 
                    RenderTransformOrigin="0.527,0.728" 
-                   Height="66"/>
+                   Height="66" 
+                   Grid.RowSpan="2">
+        </TextBlock>
 
 
         <Button x:Name="start_Button"
     		Content="Start"
     		VerticalAlignment="Center"
     		Click="Start"
-    		
+    		Margin="326,428,91,56" 
                 FontFamily="Segoe WP Black" 
                 FontSize="25" 
                 Height="52" 
                 Background="#FFF3F2F1" 
                 Foreground="Black" 
-                BorderBrush="White" RenderTransformOrigin="-0.864,-1.904" Margin="0,405,0.5,65.5"/>
+                BorderBrush="White" 
+                Grid.RowSpan="2"/>
 
 
         <TextBlock Text="Documents Folder:" 
                    VerticalAlignment="Top" 
-                   Margin="15,154,339,0" 
+                   Margin="74,138,281,0" 
                    FontSize="14" 
                    FontWeight="Bold" 
-                   Height="32" 
-                   RenderTransformOrigin="0.36,-0.139"/>
+                   Height="21" 
+                   RenderTransformOrigin="0.36,-0.139" 
+                   Grid.RowSpan="2"/>
 
 
         <TextBox x:Name="documentsFolder_Text"  
                  VerticalAlignment="Center" 
-                 Margin="167,156,157,301.5" 
+                 Margin="219,138,104,372" 
                  RenderTransformOrigin="0.458,0.611" 
-                 Height="30"/>
+                 Height="26" 
+                 Grid.RowSpan="2"/>
 
 
         <Button  Content="OK" 
-                 Width="36" 
-                 Margin="437,172,0,330.5" 
-                 VerticalAlignment="center"
+                 Width="52" 
+                 Margin="267,174,0,332" 
                  Click="documentsFolderSelected" 
                  Background="White" 
                  FontWeight="Bold" 
-                 HorizontalAlignment="Left" RenderTransformOrigin="-1.269,0.338"/>
+                 HorizontalAlignment="Left" 
+                 Grid.RowSpan="2" RenderTransformOrigin="-1.269,0.338"/>
 
 
         <Button x:Name="documents_Button"
     		Content="Browse"
     		VerticalAlignment="Center"
     		Click="documents_Browser" 
-                Margin="350,154,79,307.5" 
+                Margin="396,138,41,372" 
                 FontWeight="Bold" 
                 Background="White" 
                 Height="26" 
-                RenderTransformOrigin="0.621,2.231"/>
+                RenderTransformOrigin="0.621,2.231" 
+                Grid.RowSpan="2"/>
 
         <TextBlock Text="Posting Files Folder:" 
                    VerticalAlignment="Center" 
-                   Margin="15,206,287,255.5" 
+                   Margin="74,228,228,282" 
                    RenderTransformOrigin="-1.059,0.479" 
                    FontWeight="Bold" 
                    FontSize="14" 
-                   Height="26"/>
+                   Height="26" 
+                   Grid.RowSpan="2"/>
 
 
         <TextBox x:Name="postingFilesFolder_Text"  
                  VerticalAlignment="Center" 
-                 Margin="165,206,157,255.5" 
+                 Margin="217,225,104,285" 
                  RenderTransformOrigin="0.458,0.611" 
-                 Height="26"/>
+                 Height="26" 
+                 Grid.RowSpan="2"/>
 
         <Button Content="OK" 
-                Margin="437,226,23.5,276.5" 
-                VerticalAlignment="center"
+                Margin="267,256,176,250" 
                 FontWeight="Bold" 
                 Background="White" 
-                Click="postingFilesFolderSelected" RenderTransformOrigin="0.447,-0.746"/>
+                Click="postingFilesFolderSelected" 
+                Grid.RowSpan="2"/>
 
         <Button x:Name="postingFiles_Button"
     		Content="Browse"
     		VerticalAlignment="Center"
     		Click="postingFiles_Browser" 
                 RenderTransformOrigin="3.459,0.5" 
-                Margin="350,206,79,255.5" 
+                Margin="396,225,41,285" 
                 FontWeight="Bold" 
                 Height="26" 
-                Background="White"/>
+                Background="White" 
+                Grid.RowSpan="2"/>
 
 
-        <CheckBox x:Name="Stemming" Content="Stemming"  RenderTransformOrigin="2.112,-6.75" Unchecked="isNotStemming" Checked="isStemming" FontWeight="Bold" Margin="19,291,382,177.5">
+        <CheckBox x:Name="Stemming" Content="Stemming" Margin="78,282,323,226" RenderTransformOrigin="2.112,-6.75" Unchecked="isNotStemming" Checked="isStemming" FontWeight="Bold" Grid.RowSpan="2">
             <CheckBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -131,48 +137,43 @@
     		Content="Reset All"
     		VerticalAlignment="Center"
     		Click="Reset"
-    		Margin="377,316,25.5,160.5" 
+    		Margin="41,433,109,56" 
             FontSize="14" 
 
                  RenderTransformOrigin="2.283,0.511" 
                  Background="White" 
                  FontWeight="Bold" 
-                 Height="46"/>
+                 Height="47" 
+                 Grid.RowSpan="2" 
+                 Grid.Column="2"/>
 
         <Button Content="Show Dictionary" 
-        	
+        	Margin="97,357,281,143" 
         	FontWeight="Bold" 
-                VerticalAlignment="Bottom"
         	Background="White" 
-        	Click="showDictionaryPressed" Margin="17,0,378,122.5" Height="31"/>
+        	Click="showDictionaryPressed" 
+        	Grid.RowSpan="2"/>
 
         <Button
     		Content="Load Dictionary"
     		Click="loadDictionaryPressed"
     		VerticalAlignment="center"
-    	
-                RenderTransformOrigin="0.566,-3.92" 
+    		Margin="246,357,125,143" 
+                RenderTransformOrigin="0.5,0.5" 
                 FontWeight="Bold" 
                 Background="White" 
-                Height="44" Margin="138,321,224,122.5"/>
+                Height="36" 
+                Grid.Row="1"/>
 
         <Button Content="Choose Language" 
-        
+        	Margin="415,357,10,143" 
         	FontWeight="Bold" 
-                VerticalAlignment="center"
         	Background="White" 
-        	Click="languageChoose_Pressed" RenderTransformOrigin="0.004,0.569" Margin="303,350,79,117.5"/>
+        	Click="languageChoose_Pressed" 
+        	Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
-        <StatusBar DockPanel.Dock="Bottom" Margin="0,472,0.5,0.5">
-            Loading...
-            <Separator />
-            <ProgressBar Width="100" Height="15" Name="pbStatus" />
-            <Separator />
-            67%
-        </StatusBar>
 
     </Grid>
-
 
 
 
