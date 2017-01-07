@@ -9,6 +9,7 @@ namespace IR_Engine
 {
     public class Indexer
     {
+        public static int statusBarValue = 0;
         public static Dictionary<string, string> myPostings;
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
@@ -34,6 +35,7 @@ namespace IR_Engine
         public Indexer()
         {
             myPostings = new Dictionary<string, string>();
+            
         }
 
         public void initiate()

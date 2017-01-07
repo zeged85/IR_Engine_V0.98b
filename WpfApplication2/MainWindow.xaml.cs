@@ -23,10 +23,11 @@ namespace WpfApplication2
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    
     public partial class MainWindow : Window
     {
         //essential fields
-
+        
         Indexer tc = new Indexer();
         Engine s_Engine;
         bool isValid = true;
@@ -41,14 +42,16 @@ namespace WpfApplication2
 
         public MainWindow()
         {
+            pbStatus.Value = 0;
             InitializeComponent();
+           
 
         }
 
         private void Start(object sender, RoutedEventArgs e)
         {
             DateTime m_start = DateTime.Now;
-
+            
             string error = "";
             Indexer.postingFilesPath = m_postingFilesPath + "\\";
             Indexer.documentsPath = m_documentsPath + "\\";
