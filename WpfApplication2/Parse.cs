@@ -102,7 +102,9 @@ namespace IR_Engine
                     //    System.Console.ReadKey();
 
                     //  limiter--;
-                    char[] delimiterChars = { ' ', ',', '.', ':', '\t', '(', ')', '"', '/', '-', '\'', '?', '[', ']', '$', '%', ';', '*', '+', '=', '&', '\'', '`', '#', '|', '\"', '{', '}', '!', '<', '>', '_', '\\', '@' };
+                    //    char[] delimiterChars = { ' ', ',', '.', ':', '\t', '(', ')', '"', '/', '-', '\'', '?', '[', ']', '$', '%', ';', '*', '+', '=', '&', '\'', '`', '#', '|', '\"', '{', '}', '!', '<', '>', '_', '\\', '@' };
+                    char[] delimiterChars = { ' ' };
+
 
           //          List<char> signs = new List<char>();
           //          foreach (char c in delimiterChars)
@@ -114,38 +116,93 @@ namespace IR_Engine
                //     List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
 
                     lineIdx++;
-               //     foreach (string withspaces in splitWords)
-               //     {
-               //         string[] noSpecs = withspaces.Split();
+                    //     foreach (string withspaces in splitWords)
+                    //     {
+                    //         string[] noSpecs = withspaces.Split();
 
-                        foreach (string s in words)
+                    string longTerm = string.Empty;
+                        foreach (string s in words) /// MAIN PARSE LOOP
                         {
-                            string term = s.TrimStart().TrimEnd();
+                        //      string term = s.TrimStart().TrimEnd();
 
-                            //    System.Console.WriteLine(s);
-
-                            //Term
-
-                            //Term Term
-
-                            //Term (connection words) Term  (connection words) Term
-
-                          /*  if (signs.Contains(s[0]))
-                            {
-                                if (s[0] == '!') { }
-                                if (s[0] == '-') { }
-                                continue;
-                            }*/
+                        //    System.Console.WriteLine(s);
 
 
 
+                        //discard single letters
+                        if (s.Length == 1)
+                            continue;
 
-                            //CW: and, of, the, of-the?, in the?, 
 
-                            term = term.ToLower();
+                        //discard signs in the beginning
+                        string term = s;
+
+                        while (!char.IsLetterOrDigit( term[0]))
+                        {
+                            term = term.Split(term[0])[1];
+                        }
+
+
+                        //discard single letters
+                       if (term.Length == 1)
+                          continue;
+
+                        //end of line or sentence or comma
+
+
+
+                        int length = term.Length;
+                        char lastChar = term[length - 1];
+                        if (!char.IsLetterOrDigit(lastChar))
+                        {
+                            term = term.Split(lastChar)[0];
+                            longTerm = string.Empty;//restart long term
+
+                        }
+                        else
+                        {
+                        //    term = s;
+                        }
+
+
+
+
+                        if ( char.IsUpper(term[0])  && !char.IsUpper(term[1]) ) // is capital letter Term
+                        {
+                            longTerm += term + " ";
+                        }
+                        else
+                        
+{
+                     //       longTerm = string.Empty;//restart long term
+                        }
+
+                        //STOP WORDS
+                        if (Indexer.stopWords.ContainsKey(term))
+                            continue;
+
+                        //Term
+
+                        //Term Term
+
+                        //Term (connection words) Term  (connection words) Term
+
+                        /*  if (signs.Contains(s[0]))
+                          {
+                              if (s[0] == '!') { }
+                              if (s[0] == '-') { }
+                              continue;
+                          }*/
+
+
+
+
+                        //CW: and, of, the, of-the?, in the?, 
+
+                        string termToLower = s.ToLower();
 
                             //delete spaces in start
-                            term.TrimStart();
+                          //  termToLower.TrimStart();
 
                             //NUMBERS
 
@@ -221,33 +278,30 @@ namespace IR_Engine
 
                             //TERM'S TERMS' T3RMS TERM3 TERM.TERM TERM.TERM.TERM 
 
-                            //STOP WORDS
-                            if (Indexer.stopWords.ContainsKey(term))
-                                continue;
 
                             //debug
 
                             //CONNECTION WORDS
 
-                            string newterm = string.Empty;
+                            string stemTerm = string.Empty;
                             //STEMMER
                             if (Indexer.ifStemming == true)
                             {
                                 Stemmer stem = new Stemmer();
-                                stem.stemTerm(term);
-                                newterm = stem.ToString();
+                                stem.stemTerm(termToLower);
+                                stemTerm = stem.ToString();
                             }
 
                             else
                             {
-                                newterm = term;
+                                stemTerm = termToLower;
                             }
                             ReadFile.wordPosition++;
 
-                            if (myMiniPostingListDict.ContainsKey(newterm))
-                                myMiniPostingListDict[newterm] += "," + ReadFile.wordPosition;
+                            if (myMiniPostingListDict.ContainsKey(stemTerm))
+                                myMiniPostingListDict[stemTerm] += "," + ReadFile.wordPosition;
                             else
-                                myMiniPostingListDict.Add(newterm, "{" + ReadFile.wordPosition);
+                                myMiniPostingListDict.Add(stemTerm, "{" + ReadFile.wordPosition);
                         }
 
                         // Keep the console window open in debug mode.
