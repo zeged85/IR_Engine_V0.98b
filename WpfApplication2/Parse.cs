@@ -86,6 +86,10 @@ namespace IR_Engine
                 int longTermSize = 0;
                 bool addTermToLongTerm = false;
                 bool resetLongTerm = false;
+                bool partialDate = false;
+                bool possibleDay = false;
+                bool possibleYear = false;
+                bool possibleMonth = false;
 
                 while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
@@ -172,6 +176,10 @@ namespace IR_Engine
                             if (sign == '.')
                             {
                                 resetLongTerm = true;
+                                possibleDay = false;
+                                possibleMonth = false;
+                                possibleYear = false;
+                                partialDate = false;
                             }
                             //   longTerm = string.Empty;//restart long term
 
@@ -186,27 +194,84 @@ namespace IR_Engine
 
                         string termToLower = term.ToLower();
 
-
-
-                        if ( char.IsUpper(term[0])  && !char.IsUpper(term[1]) ) // is capital letter Term
+                        //STOP WORDS
+                        if (Indexer.stopWords.ContainsKey(termToLower))
                         {
-                            if (Indexer.stopWords.ContainsKey(termToLower))
-                            {
-                                wordPositionWithSW++;
-                                continue;
-                            }
-                            else
-                            if (Indexer.Months.Contains(termToLower))
-                            {
-                                addTermToLongTerm = false;
-                            }
-                            else
-                            {
-                                addTermToLongTerm = true;
-                                longTermSize++;
-                            }
-                         //   longTerm += term + " ";
+                            wordPositionWithSW++;
+                            continue;
                         }
+
+
+                        int month;
+                        int day;
+                        int year;
+
+                        //check number 
+                        //https://msdn.microsoft.com/en-us/library/bb384043.aspx
+                        //try parse
+                        if (char.IsNumber(termToLower[0]))
+                        {
+                            int i = 0;
+                            string stringTerm = termToLower; // "108";
+                            bool isValidNumber = int.TryParse(stringTerm, out i); //i now = 108  
+
+                            if (isValidNumber && i > 0 && i < 31)
+                            {
+                                possibleDay = true;
+                                partialDate = true;
+                                day = i;
+                            }
+
+                            if (isValidNumber)
+                            {
+                                if (i > 31)
+                                {
+                                    year = i;
+                                    possibleYear = true;
+                                }
+                                //possible year
+                                /*
+                                "the \"Laser 2000\" program to promote the development of semiconductor"
+                                "lasers.  A total of 270 million marks ($159 million) is to be made"
+                                "Semiconductor lasers.  For example, one can already buy 100 watt"
+                                "Center,  distributed 1.4 billion markkas ($254 million) in 1993 to"
+                                "of about 1 billion marks ($580 million).  Initial projects will"
+                                "INTERNATIONAL 22/28 Nov 93) AM"
+                                "Media Note from  Cathy Grant at (703) 482-4182."
+                                "*Aerospatiale 1992 annual report, 90 pages, in English."
+                                "*Carl Zeiss 1991/92 annual report, 87 pages, in English."
+                                "Using unusually candid language during more than 12 hours of"
+                                "position in talks on 12 and 14 March and bluntly told Secretary"
+                                "law permits\" (Xinhua, 12, 14 March).  Qian went on to declare"
+                                "Like Qian, Li, in his meeting on 12 March, told Secretary"
+                                "and Li, telling Secretary Christopher, in their meeting on 13"
+
+                                */
+
+                                //Term Number
+                            }
+
+                            if (!isValidNumber)
+                            {
+
+                            }
+                        }
+
+                        if (Indexer.Months.ContainsKey(termToLower))
+                        {
+                            partialDate = true;
+                            possibleMonth = true;
+                            month = Indexer.Months[termToLower];
+                            addTermToLongTerm = false;
+                        }
+
+                        if (!partialDate && addTermToLongTerm && char.IsUpper(term[0]) && !char.IsUpper(term[1])) // is capital letter Term
+                        {
+                            addTermToLongTerm = true;
+                            longTermSize++;
+                        }
+                         //   longTerm += term + " ";
+                        
 
 
 
@@ -216,12 +281,8 @@ namespace IR_Engine
 
 
 
-                        //STOP WORDS
-                        if (Indexer.stopWords.ContainsKey(termToLower))
-                        {
-                            wordPositionWithSW++;
-                            continue;
-                        }
+                       
+                   
 
                         //Term
 
@@ -367,7 +428,18 @@ namespace IR_Engine
 
 
                         //add to dictionary
-                   
+
+                        //not if partial date
+
+                        if (partialDate)
+                        {
+
+                            if (!possibleMonth)
+                            {
+
+                            }
+                        }
+                            
 
                         if (myMiniPostingListDict.ContainsKey(stemTerm))
                                 myMiniPostingListDict[stemTerm] += "," + wordPositionWithSW;

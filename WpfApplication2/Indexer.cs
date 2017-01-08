@@ -29,7 +29,7 @@ namespace IR_Engine
 
         public static Dictionary<string, int> freqInAllCorpusList = new Dictionary<string, int>();
 
-        public static List<string> Months = new List<string>();
+        public static Dictionary<string, int> Months = new Dictionary<string, int>();
         //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
@@ -39,31 +39,31 @@ namespace IR_Engine
 
         public void loadMonths()
         {
-            Months.Add("january");
-            Months.Add("february");
-            Months.Add("march");
-            Months.Add("april");
-            Months.Add("may");
-            Months.Add("june");
-            Months.Add("july");
-            Months.Add("august");
-            Months.Add("september");
-            Months.Add("october");
-            Months.Add("november");
-            Months.Add("december");
+            Months.Add("january", 1);
+            Months.Add("february", 2);
+            Months.Add("march", 3);
+            Months.Add("april", 4);
+            Months.Add("may", 5);
+            Months.Add("june", 6);
+            Months.Add("july", 7);
+            Months.Add("august", 8);
+            Months.Add("september", 9);
+            Months.Add("october", 10);
+            Months.Add("november", 11);
+            Months.Add("december", 12);
 
-            Months.Add("jan");
-            Months.Add("feb");
+            Months.Add("jan", 1);
+            Months.Add("feb", 2);
 
-            Months.Add("apr");
+            Months.Add("apr", 4);
 
-            Months.Add("jun");
-            Months.Add("jul");
-            Months.Add("aug");
-            Months.Add("sep");
-            Months.Add("oct");
-            Months.Add("nov");
-            Months.Add("dec");
+            Months.Add("jun", 6);
+            Months.Add("jul", 7);
+            Months.Add("aug", 8);
+            Months.Add("sep", 9);
+            Months.Add("oct", 10);
+            Months.Add("nov", 11);
+            Months.Add("dec", 12);
 
 
         }
@@ -126,7 +126,10 @@ namespace IR_Engine
             string[] fileEntries = Directory.GetFiles(postingFilesPath);
             foreach (string fileName in fileEntries)
             {
-                ReadFile.saveDic(ReadFile.fileToDictionary(fileName), postingFilesPath + dbpath + @"\");
+                Console.WriteLine("loading file " + fileName);
+                Dictionary<string,string> fileDic = ReadFile.fileToDictionary(fileName);
+                Console.WriteLine("saving file to " + postingFilesPath + dbpath);
+                ReadFile.saveDic(fileDic, postingFilesPath + dbpath + @"\");
             }
             myPostings.Clear();
         }
@@ -229,7 +232,7 @@ namespace IR_Engine
             PostingFileTermList = myPostings.Keys.ToList();
             PostingFileTermList.Sort();
 
-            System.Console.WriteLine(" computing stats.");
+            System.Console.WriteLine("Computing stats.");
             // Loop through keys.
             //create 1 dic file
             StreamWriter file2 = new StreamWriter(postingFilesPath + @"\Dictionary.txt", true);
@@ -307,7 +310,7 @@ namespace IR_Engine
 
             //METADATA
 
-            System.Console.WriteLine("O(N * M)");
+            System.Console.WriteLine("query:amount of Unique in corpus on doc");
 
             //amount of Unique in corpus on doc
             //111111111111111111111111111
@@ -525,7 +528,7 @@ namespace IR_Engine
         // Insert logic for processing found files here.
         public static void ProcessFile(string path, Func<string, int> myMethodName)
         {
-            Console.WriteLine("Processing file '{0}'.", path);
+            Console.WriteLine(myMethodName.ToString() +  ":Processing file '{0}'.", path);
             myMethodName(path);
         }
 
