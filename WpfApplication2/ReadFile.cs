@@ -198,7 +198,7 @@ namespace IR_Engine
                         newDic.Add(key, value);
                     else
                     {
-                        newDic[key] += value;
+                        newDic[key] += " " + value;
                     }
 
                 }

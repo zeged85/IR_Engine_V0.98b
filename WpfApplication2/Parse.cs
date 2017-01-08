@@ -34,40 +34,14 @@ namespace IR_Engine
     {
         
         public static List<string> languagesList = new List<string>();
-        public static List<string> Months = new List<string>();
+       
         public static int countAmountOfUniqueInDoc = 0;
         static int wordPositionWithSW = 0;
         static int wordPositionWithoutSW = 0;
         public static Dictionary<string, string> parseString(string str)
         {
 
-            Months.Add("january");
-            Months.Add("february");
-            Months.Add("march");
-            Months.Add("april");
-            Months.Add("may");
-            Months.Add("june");
-            Months.Add("july");
-            Months.Add("august");
-            Months.Add("september");
-            Months.Add("october");
-            Months.Add("november");
-            Months.Add("december");
-
-            Months.Add("jan");
-            Months.Add("feb");
-
-            Months.Add("apr");
-
-            Months.Add("jun");
-            Months.Add("jul");
-            Months.Add("aug");
-            Months.Add("sep");
-            Months.Add("oct");
-            Months.Add("nov");
-            Months.Add("dec");
-
-
+           
 
 
 
@@ -222,7 +196,7 @@ namespace IR_Engine
                                 continue;
                             }
                             else
-                            if (Months.Contains(termToLower))
+                            if (Indexer.Months.Contains(termToLower))
                             {
                                 addTermToLongTerm = false;
                             }

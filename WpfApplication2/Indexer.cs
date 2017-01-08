@@ -29,6 +29,7 @@ namespace IR_Engine
 
         public static Dictionary<string, int> freqInAllCorpusList = new Dictionary<string, int>();
 
+        public static List<string> Months = new List<string>();
         //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
@@ -36,8 +37,41 @@ namespace IR_Engine
             myPostings = new Dictionary<string, string>();
         }
 
+        public void loadMonths()
+        {
+            Months.Add("january");
+            Months.Add("february");
+            Months.Add("march");
+            Months.Add("april");
+            Months.Add("may");
+            Months.Add("june");
+            Months.Add("july");
+            Months.Add("august");
+            Months.Add("september");
+            Months.Add("october");
+            Months.Add("november");
+            Months.Add("december");
+
+            Months.Add("jan");
+            Months.Add("feb");
+
+            Months.Add("apr");
+
+            Months.Add("jun");
+            Months.Add("jul");
+            Months.Add("aug");
+            Months.Add("sep");
+            Months.Add("oct");
+            Months.Add("nov");
+            Months.Add("dec");
+
+
+        }
+
         public void initiate()
         {
+
+
             if (Directory.Exists(documentsPath))
             {
                 // This path is a directory

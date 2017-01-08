@@ -15,6 +15,9 @@ namespace WpfApplication2
         {
             idx = new Indexer();
 
+            idx.loadMonths();
+
+
             idx.initiate(); //
 
             idx.freeMemory(); // create last folder
