@@ -90,6 +90,10 @@ namespace IR_Engine
                 bool possibleDay = false;
                 bool possibleYear = false;
                 bool possibleMonth = false;
+                int month;
+                int day;
+                int year;
+
 
                 while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
@@ -139,10 +143,10 @@ namespace IR_Engine
                     //     foreach (string withspaces in splitWords)
                     //     {
                     //         string[] noSpecs = withspaces.Split();
+                
 
-                   
 
-                        foreach (string s in words) /// MAIN PARSE LOOP
+                    foreach (string s in words) /// MAIN PARSE LOOP
                         {
                         //      string term = s.TrimStart().TrimEnd();
 
@@ -177,11 +181,29 @@ namespace IR_Engine
                             {
                                 resetLongTerm = true;
                                 possibleDay = false;
+                                day = 0;
                                 possibleMonth = false;
+                                month = 0;
                                 possibleYear = false;
+                                year = 0;
                                 partialDate = false;
                             }
                             //   longTerm = string.Empty;//restart long term
+
+                        if (sign == ',')
+                            {
+
+                            }
+
+                        if (sign == '(')
+                            {
+
+                            }
+
+                        if (sign == ')')
+                            {
+
+                            }
 
                         }
                         term = term.TrimEnd();
@@ -194,6 +216,15 @@ namespace IR_Engine
 
                         string termToLower = term.ToLower();
 
+                        //months before SW because SW contains "may"
+                        if (Indexer.Months.ContainsKey(termToLower))
+                        {
+                            partialDate = true;
+                            possibleMonth = true;
+                            month = Indexer.Months[termToLower];
+                            addTermToLongTerm = false;
+                        }
+
                         //STOP WORDS
                         if (Indexer.stopWords.ContainsKey(termToLower))
                         {
@@ -202,10 +233,7 @@ namespace IR_Engine
                         }
 
 
-                        int month;
-                        int day;
-                        int year;
-
+                      
                         //check number 
                         //https://msdn.microsoft.com/en-us/library/bb384043.aspx
                         //try parse
@@ -215,7 +243,7 @@ namespace IR_Engine
                             string stringTerm = termToLower; // "108";
                             bool isValidNumber = int.TryParse(stringTerm, out i); //i now = 108  
 
-                            if (isValidNumber && i > 0 && i < 31)
+                            if (isValidNumber && i > 0 && i < 31) //possible partial day
                             {
                                 possibleDay = true;
                                 partialDate = true;
@@ -226,8 +254,15 @@ namespace IR_Engine
                             {
                                 if (i > 31)
                                 {
-                                    year = i;
-                                    possibleYear = true;
+                                    if (possibleYear)//there is only a year in reg
+                                    {
+                                        //add last year or discard
+                                    }
+                                   
+                                        year = i;
+                                        possibleYear = true;
+                                        partialDate = true;
+                                   
                                 }
                                 //possible year
                                 /*
@@ -270,121 +305,7 @@ namespace IR_Engine
                             addTermToLongTerm = true;
                             longTermSize++;
                         }
-                         //   longTerm += term + " ";
-                        
-
-
-
-                        //end of line or sentence or comma
-
-
-
-
-
-                       
-                   
-
-                        //Term
-
-                        //Term Term
-
-                        //Term (connection words) Term  (connection words) Term
-
-                        /*  if (signs.Contains(s[0]))
-                          {
-                              if (s[0] == '!') { }
-                              if (s[0] == '-') { }
-                              continue;
-                          }*/
-
-
-
-
-                        //CW: and, of, the, of-the?, in the?, 
-
-                        
-
-                            //delete spaces in start
-                          //  termToLower.TrimStart();
-
-                            //NUMBERS
-
-                            //NUMBER-NUMBER
-
-                            //CURRENCY
-
-
-                            //NUMBER%  
-
-                            //NUMBER percent/percentage -> NUMBER %
-
-                            //30.5% percent
-
-                            //1,023$
-
-
-
-                            //(WORD) (WORD) (WORD)
-                            //this is it
-
-                            //(WORD) (WORD) (NUMBER)
-
-                            //(WORD) (WORD) (SIGN)
-
-
-
-                            //(WORD) (NUMBER) (WORD)
-
-                            //(WORD) (NUMBER) (NUMBER)
-
-                            //(WORD) (NUMBER) (SIGN)
-
-
-                            //(WORD) (SIGN) (WORD)
-
-                            //(WORD) (SIGN) (NUMBER)
-
-                            //(WORD) (SIGN) (SIGN)
-
-
-                            //(NUMBER) (WORD) (WORD)
-
-                            //(NUMBER (WORD) (NUMBER)
-                            //(NUMBER) (WORD) (SIGN)
-
-                            //(NUMBER) (NUMBER) (WORD)
-                            //(NUMBER) (NUMBER) (NUMBER)
-                            //(NUMBER) (NUMBER) (SIGN) 
-
-                            //(WORD) (NUMBER) (SIGN)
-
-                            //(NUMBER) (WORD) (SIGN)
-
-                            //
-
-                            //3.05 M Dollars
-
-                            //CHANGE MILLION+
-                            //SPARE 1,024 OR 3.14 OR 5 5/6
-
-                            //NUMBER,NUMBER
-
-                            //NUMBER,NUMBER,NUMBER -> 3 M
-
-                            //NUMBER,NUMBER,NUMBER,NUMBER -> 9 B
-
-                            //TERM,TERM -> TERM, TERM
-
-                            //TERMS
-
-                            //TERM-TERM
-
-                            //TERM'S TERMS' T3RMS TERM3 TERM.TERM TERM.TERM.TERM 
-
-
-                            //debug
-
-                            //CONNECTION WORDS
+                         
 
                             string stemTerm = string.Empty;
                             //STEMMER
@@ -433,7 +354,27 @@ namespace IR_Engine
 
                         if (partialDate)
                         {
+                            //day month year
+                            //  YYYY-MM-DD
+                            //"KANKEI KOEKI HOJIN BENAAN 1993 May 93), JADI seeks to \"work towards"
+                            if (possibleDay && possibleMonth && possibleYear)
+                            {
 
+                            }
+                            //day month
+                            //  MM-DD
+                            if (possibleDay && possibleMonth && !possibleYear)
+                            {
+
+                            }
+                            //month year
+                            //  YYYY-MM
+                            if (!possibleDay && possibleMonth && possibleYear)
+                            {
+
+                            }
+
+                          
                             if (!possibleMonth)
                             {
 
