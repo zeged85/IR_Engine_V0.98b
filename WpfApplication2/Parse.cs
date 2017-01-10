@@ -205,6 +205,8 @@ namespace IR_Engine
 
                             }
 
+
+
                         }
                         term = term.TrimEnd();
 
@@ -237,6 +239,7 @@ namespace IR_Engine
                         //check number 
                         //https://msdn.microsoft.com/en-us/library/bb384043.aspx
                         //try parse
+                        //NUMBERS
                         if (char.IsNumber(termToLower[0]))
                         {
                             int i = 0;
@@ -267,7 +270,9 @@ namespace IR_Engine
                                 //possible year
                                 /*
                                 "the \"Laser 2000\" program to promote the development of semiconductor"
-                                "lasers.  A total of 270 million marks ($159 million) is to be made"
+                                //    
+                            
+                            "lasers.  A total of 270 million marks ($159 million) is to be made"
                                 "Semiconductor lasers.  For example, one can already buy 100 watt"
                                 "Center,  distributed 1.4 billion markkas ($254 million) in 1993 to"
                                 "of about 1 billion marks ($580 million).  Initial projects will"
@@ -286,6 +291,12 @@ namespace IR_Engine
                                 //Term Number
                             }
 
+                            if (isValidNumber && i > 1000000)
+                            {
+                                bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
+                                //35 3/4
+                            }
+
                             if (!isValidNumber)
                             {
 
@@ -300,10 +311,19 @@ namespace IR_Engine
                             addTermToLongTerm = false;
                         }
 
-                        if (!partialDate && addTermToLongTerm && char.IsUpper(term[0]) && !char.IsUpper(term[1])) // is capital letter Term
+                        //UPPERCASE 1ST CHAR
+                       
+                        if (addTermToLongTerm && char.IsUpper(term[0]) && !char.IsUpper(term[1])) // is capital letter Term
                         {
-                            addTermToLongTerm = true;
-                            longTermSize++;
+                           if ( !partialDate)
+                            {  //ADD TO LONG TERM
+                                addTermToLongTerm = true;
+                                longTermSize++;
+                            }
+                            else
+                            {
+
+                            }
                         }
                          
 
@@ -320,9 +340,10 @@ namespace IR_Engine
                             {
                                 stemTerm = termToLower;
                             }
-                        
+
 
                         //term is part of a long term. need to save for next iteration
+                        //LONG TERMS
                         if (addTermToLongTerm == true)
                         {
                             longTerm += stemTerm + "+";
