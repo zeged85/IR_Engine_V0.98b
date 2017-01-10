@@ -293,7 +293,7 @@ namespace IR_Engine
 
                             if (isValidNumber && i > 1000000)
                             {
-                                bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
+                          //      bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
                                 //35 3/4
                             }
 
