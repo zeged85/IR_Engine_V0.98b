@@ -84,11 +84,8 @@ namespace WpfApplication2
                 s_Engine = new Engine();
                 DateTime m_end = DateTime.Now;
                 string m_time = (m_end - m_start).ToString();
-
-
                 MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
             }
-
         }
 
         private void documents_Browser(object sender, RoutedEventArgs e)
@@ -107,8 +104,6 @@ namespace WpfApplication2
             m_documentsPath = documentsFolder_Text.Text;
             System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
         }
-
-
 
 
         private void postingFiles_Browser(object sender, RoutedEventArgs e)
@@ -281,6 +276,9 @@ namespace WpfApplication2
 
         private void loadDictionaryPressed(object sender, RoutedEventArgs e)
         {
+            Indexer.postingFilesPath = m_postingFilesPath + "\\";
+            tc.loadPostingFiles();
+            tc.createDictionary();
 
         }
 
