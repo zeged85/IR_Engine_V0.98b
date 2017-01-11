@@ -3,38 +3,46 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IR_Engine
 {
     public class Indexer
     {
-        public static Dictionary<string, string> myPostings;
+        public static SortedDictionary<string, string> myPostings;
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
-        public static Dictionary<string, string> DocumentMetadata = new Dictionary<string, string>();
+        public static volatile SortedDictionary<string, string> DocumentMetadata = new SortedDictionary<string, string>();
+        public static Mutex _DocumentMetadata;
+        public static Mutex _mainMemory;
+        private static Semaphore _pool;
+        public static Mutex _DocNumber;
+        private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
         public static string postingFilesPath/* = @"c:\IR_Engine\"*/;
-        public static int docNumber = 0;
-        public static int postingFolderCounter = 0;
+        public static volatile int docNumber = 0;
+        public static volatile int postingFolderCounter = 0;
+        private static bool stopMemoryHandler = false;
+
         //public static string postingFilesPath = @"c:\IR_Engine\";
         List<string> PostingFileTermList = new List<string>();
         public static int amountOfUnique = 0;
         public static int wordNum = 0;
         public static bool ifStemming;
 
-        public static Dictionary<string, string> stopWords;
+        public static SortedDictionary<string, string> stopWords;
 
         public static List<string> uniqueTerms = new List<string>();
 
-        public static Dictionary<string, int> freqInAllCorpusList = new Dictionary<string, int>();
+        public static SortedDictionary<string, int> freqInAllCorpusList = new SortedDictionary<string, int>();
 
-        public static Dictionary<string, int> Months = new Dictionary<string, int>();
+        public static SortedDictionary<string, int> Months = new SortedDictionary<string, int>();
         //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
         {
-            myPostings = new Dictionary<string, string>();
+            myPostings = new SortedDictionary<string, string>();
         }
 
         public void loadMonths()
@@ -70,26 +78,53 @@ namespace IR_Engine
 
         public void initiate()
         {
-
+            _DocumentMetadata = new Mutex();
+            _DocNumber = new Mutex();
+            _pool = new Semaphore(3, 3);
+            _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
             {
                 // This path is a directory
                 stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
-                ProcessDirectory(documentsPath, SavePostingToStaticDictionary);
+                ProcessDirectory(documentsPath, FileToParse);
             }
             else
             {
                 Console.WriteLine("{0} is not a valid file or directory.", documentsPath);
             }
+
+        
+
+            foreach (Thread thread in threads)
+            {
+                thread.Start();
+            }
+
+              // _pool.Release(5);
+
+            Thread memoryHanlder = new Thread(SavePostingToStaticDictionary);
+            memoryHanlder.Priority = ThreadPriority.Highest;
+            memoryHanlder.Start();
+
+
+            foreach (Thread thread in threads)
+            {
+                thread.Join();
+            }
+            Console.WriteLine("Main thread exits.");
+
+            stopMemoryHandler = true;
+            Thread lastRefresh = new Thread(freeMemory);
+            lastRefresh.Start();
+            memoryHanlder.Join();
+            lastRefresh.Join();
+            
         }
 
         public void freeMemory()
         {
-            Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
-            ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
-            Console.WriteLine("Proccess done.");
-            Console.WriteLine("Press any key to exit.");
+        
 
             Console.WriteLine("Refreshing Memory...Last time");
             //create last foldet
@@ -127,7 +162,7 @@ namespace IR_Engine
             foreach (string fileName in fileEntries)
             {
                 Console.WriteLine("loading file " + fileName);
-                Dictionary<string,string> fileDic = ReadFile.fileToDictionary(fileName);
+                SortedDictionary<string,string> fileDic = ReadFile.fileToDictionary(fileName);
                 Console.WriteLine("saving file to " + postingFilesPath + dbpath);
                 ReadFile.saveDic(fileDic, postingFilesPath + dbpath + @"\");
             }
@@ -435,7 +470,7 @@ namespace IR_Engine
         {
             //  myPostings.Add
 
-            Dictionary<String, String> newDict = ReadFile.fileToDictionary(path);
+            SortedDictionary<String, String> newDict = ReadFile.fileToDictionary(path);
             Console.WriteLine("Loading File '{0}'.", path);
             foreach (KeyValuePair<string, string> entry in newDict)
 
@@ -473,7 +508,7 @@ namespace IR_Engine
                 File.Copy(path, postingFilesPath + filename);
             else
             {
-                Dictionary<string, string> myDict = new Dictionary<string, string>();
+                SortedDictionary<string, string> myDict = new SortedDictionary<string, string>();
                 using (StreamReader fileToRead = File.OpenText(path))
                 {
                     string lineRead = String.Empty;
@@ -491,44 +526,76 @@ namespace IR_Engine
             }
             return 0;
         }
-
-        int SavePostingToStaticDictionary(string path)
+        //http://stackoverflow.com/questions/3360555/how-to-pass-parameters-to-threadstart-method-in-thread
+        private static void DoWork(object path)
         {
+            string str = path.ToString();
+            _pool.WaitOne(); //limit threads
+            SortedDictionary<string, string> newDict = ReadFile.OpenFileForParsing(str);
 
+            //add to main memory first
 
-            Dictionary<string, string> newDict = ReadFile.OpenFileForParsing(path);
-
-            //threading
-
-
-
-            Console.WriteLine("File '{0}' Proccessesed.", path);
-            Console.WriteLine("Merging in Program...");
+            _mainMemory.WaitOne();
+            Console.WriteLine("Saving postings on RAM");
             foreach (KeyValuePair<string, string> entry in newDict)
                 if (myPostings.ContainsKey(entry.Key))
                     myPostings[entry.Key] += " " + entry.Value;
                 else
                     myPostings.Add(entry.Key.ToString(), entry.Value);
 
-            Console.WriteLine("Merging done.");
+            Console.WriteLine("postings saved");
+            _mainMemory.ReleaseMutex();
 
-            //Save the data to a new directory
-          //  if (myPostings.Count > 30000)
-         //   {
-                Console.WriteLine("Refreshing Memory...");
-                postingFolderCounter++;
+        //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
+            _pool.Release();
+        }
 
-                ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
+        void SavePostingToStaticDictionary()
+        {
+            while (!stopMemoryHandler)
+            {
+                if (myPostings.Count > 10000)
+                {
+                    _mainMemory.WaitOne();
+                    SortedDictionary<string, string> freeDic = new SortedDictionary<string, string>(myPostings);
+                    myPostings.Clear();
+                    _mainMemory.ReleaseMutex();
+                    Console.WriteLine("Refreshing Memory...");
+     
 
-                myPostings.Clear();
-            
+                    postingFolderCounter++;
+                    Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
+                    ReadFile.saveDic(freeDic, postingFilesPath + postingFolderCounter);
+
+                    
+                }
+                //https://social.msdn.microsoft.com/Forums/vstudio/en-US/660a1f75-b287-4565-bfdd-75105e0a5527/c-wait-for-x-seconds?forum=netfxbcl
+                System.Threading.Thread.Sleep(3000);
+            }
+        }
+
+        int FileToParse(string path)
+        {
+            //THREADING
+            //https://msdn.microsoft.com/en-us/library/system.threading.semaphore(v=vs.110).aspx
+
+           // Thread t = new Thread(new ParameterizedThreadStart(DoWork));
+            Thread thread = new Thread(() => DoWork(path));
+            // Start the thread, passing the number.
+     
+            threads.Add(thread);
+  
+            //threading
+            //http://stackoverflow.com/questions/13181740/c-sharp-thread-safe-fastest-counter
+ 
             return 0;
         }
 
         // Insert logic for processing found files here.
         public static void ProcessFile(string path, Func<string, int> myMethodName)
         {
-            Console.WriteLine(myMethodName.ToString() +  ":Processing file '{0}'.", path);
+           
+            Console.WriteLine(myMethodName.Method.ToString() +  ":Processing file '{0}'.", path);
             myMethodName(path);
         }
 

@@ -32,17 +32,18 @@ namespace IR_Engine
     /// </summary>
     class Parse
     {
-
+        
         public static List<string> languagesList = new List<string>();
-
-        public static int countAmountOfUniqueInDoc = 0;
-        static int wordPositionWithSW = 0;
-        static int wordPositionWithoutSW = 0;
-        public static Dictionary<string, string> parseString(string str)
+       
+    
+      //  private static int thisDocNumber;
+        public static SortedDictionary<string, string> parseString(string str, int docNumber)
         {
 
-
-
+        int  thisDocNumber = docNumber;
+            int countAmountOfUniqueInDoc = 0;
+            int wordPositionWithSW = 0;
+            int wordPositionWithoutSW = 0;
 
 
 
@@ -76,11 +77,11 @@ namespace IR_Engine
 
                 //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
 
-                Dictionary<string, string> myMiniPostingListDict = new Dictionary<string, string>();
+                SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>();
 
                 //text parsing - main work
                 int lineIdx = 0; // lines in document
-                // int limiter = 10;
+                                 // int limiter = 10;
 
                 string longTerm = string.Empty;
                 int longTermSize = 0;
@@ -94,8 +95,8 @@ namespace IR_Engine
                 int day;
                 int year;
 
-
-                while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
+                int limiter = 100;
+                while (limiter-- > 0 && ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
 
@@ -130,24 +131,24 @@ namespace IR_Engine
                     char[] delimiterChars = { ' ' };
 
 
-                    //          List<char> signs = new List<char>();
-                    //          foreach (char c in delimiterChars)
-                    //              signs.Add(c);
+          //          List<char> signs = new List<char>();
+          //          foreach (char c in delimiterChars)
+          //              signs.Add(c);
 
-                    string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
+                     string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
 
                     //   System.Console.WriteLine("{0} words in text:", words.Length);
-                    //     List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
+               //     List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
 
                     lineIdx++;
                     //     foreach (string withspaces in splitWords)
                     //     {
                     //         string[] noSpecs = withspaces.Split();
-
+                
 
 
                     foreach (string s in words) /// MAIN PARSE LOOP
-                    {
+                        {
                         //      string term = s.TrimStart().TrimEnd();
 
                         //    System.Console.WriteLine(s);
@@ -162,7 +163,7 @@ namespace IR_Engine
                         //discard signs in the beginning
                         string term = s;
 
-                        while (term.Length > 1 && !char.IsLetterOrDigit(term[0]))
+                        while (term.Length > 1 && !char.IsLetterOrDigit( term[0]))
                         {
                             term = term.Split(term[0])[1];
                         }
@@ -176,7 +177,7 @@ namespace IR_Engine
                             char sign = term[term.Length - 1];
                             term = split[0];
 
-
+                         
                             if (sign == '.')
                             {
                                 resetLongTerm = true;
@@ -190,17 +191,17 @@ namespace IR_Engine
                             }
                             //   longTerm = string.Empty;//restart long term
 
-                            if (sign == ',')
+                        if (sign == ',')
                             {
 
                             }
 
-                            if (sign == '(')
+                        if (sign == '(')
                             {
 
                             }
 
-                            if (sign == ')')
+                        if (sign == ')')
                             {
 
                             }
@@ -212,7 +213,7 @@ namespace IR_Engine
 
                         //discard single letters
                         if (term.Length < 2)
-                            continue;
+                          continue;
 
 
 
@@ -235,7 +236,7 @@ namespace IR_Engine
                         }
 
 
-
+                      
                         //check number 
                         //https://msdn.microsoft.com/en-us/library/bb384043.aspx
                         //try parse
@@ -261,11 +262,11 @@ namespace IR_Engine
                                     {
                                         //add last year or discard
                                     }
-
-                                    year = i;
-                                    possibleYear = true;
-                                    partialDate = true;
-
+                                   
+                                        year = i;
+                                        possibleYear = true;
+                                        partialDate = true;
+                                   
                                 }
                                 //possible year
                                 /*
@@ -293,7 +294,7 @@ namespace IR_Engine
 
                             if (isValidNumber && i > 1000000)
                             {
-                                //                            bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
+                              //  bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
                                 //35 3/4
                             }
 
@@ -312,10 +313,10 @@ namespace IR_Engine
                         }
 
                         //UPPERCASE 1ST CHAR
-
+                       
                         if (addTermToLongTerm && char.IsUpper(term[0]) && !char.IsUpper(term[1])) // is capital letter Term
                         {
-                            if (!partialDate)
+                           if ( !partialDate)
                             {  //ADD TO LONG TERM
                                 addTermToLongTerm = true;
                                 longTermSize++;
@@ -325,21 +326,21 @@ namespace IR_Engine
 
                             }
                         }
+                         
 
+                            string stemTerm = string.Empty;
+                            //STEMMER
+                            if (Indexer.ifStemming == true)
+                            {
+                                Stemmer stem = new Stemmer();
+                                stem.stemTerm(termToLower);
+                                stemTerm = stem.ToString();
+                            }
 
-                        string stemTerm = string.Empty;
-                        //STEMMER
-                        if (Indexer.ifStemming == true)
-                        {
-                            Stemmer stem = new Stemmer();
-                            stem.stemTerm(termToLower);
-                            stemTerm = stem.ToString();
-                        }
-
-                        else
-                        {
-                            stemTerm = termToLower;
-                        }
+                            else
+                            {
+                                stemTerm = termToLower;
+                            }
 
 
                         //term is part of a long term. need to save for next iteration
@@ -363,7 +364,7 @@ namespace IR_Engine
                                     myMiniPostingListDict.Add(longTerm, "{" + wordPositionWithSW);
                             }
 
-                            longTerm = string.Empty;
+                        longTerm = string.Empty;
                             longTermSize = 0;
 
                         }
@@ -395,24 +396,23 @@ namespace IR_Engine
 
                             }
 
-
+                          
                             if (!possibleMonth)
                             {
 
                             }
                         }
+                            
 
-                        //ADD TO POSTING LIST
-                        //DFO
                         if (myMiniPostingListDict.ContainsKey(stemTerm))
-                            myMiniPostingListDict[stemTerm] += "," + wordPositionWithSW;
-                        else
-                            myMiniPostingListDict.Add(stemTerm, "{" + wordPositionWithSW);
-                    }
+                                myMiniPostingListDict[stemTerm] += "," + wordPositionWithSW;
+                            else
+                                myMiniPostingListDict.Add(stemTerm, "{" + wordPositionWithSW);
+                        }
 
-                    // Keep the console window open in debug mode.
+                        // Keep the console window open in debug mode.
                     //NEW DEBUG
-
+                  
 
                 }
                 //   System.Console.WriteLine("");
@@ -487,15 +487,30 @@ namespace IR_Engine
                 }
 
                 //  myDocumentData.                
-                string METADATA_SECURE = /*"DOCNO:" + */DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
+                string METADATA_SECURE = thisDocNumber + "^" + DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
                     /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc + ", totalInDocIncludingSW : " + wordPositionWithSW + ", totalInDocwithoutSW : " + wordPositionWithoutSW;
 
-                // myMiniPostingListDict.Add("METADATA_SECURE", METADATA_SECURE);
-                Indexer.DocumentMetadata.Add(Indexer.docNumber.ToString(), METADATA_SECURE);
+                 myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber, METADATA_SECURE);
+
+                
+                //MUTEX
+                //http://www.c-sharpcorner.com/UploadFile/1d42da/threading-with-mutex/
+              //  Indexer._DocumentMetadata.WaitOne();
+              //  Console.WriteLine()
+              //  Indexer.DocumentMetadata.Add(thisDocNumber.ToString(), METADATA_SECURE);
+              //  Indexer._DocumentMetadata.ReleaseMutex();
+
                 wordPositionWithSW = 0;
                 wordPositionWithoutSW = 0;
                 //http://www.csharpstar.com/return-multiple-values-from-function-csharp/
 
+            
+                foreach (var key in myMiniPostingListDict.Keys.ToList())
+                {
+                    myMiniPostingListDict[key] += "}@" + thisDocNumber;
+                }
+
+                Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
                 return myMiniPostingListDict;
             }
         }
@@ -511,12 +526,11 @@ namespace IR_Engine
             if (!string.IsNullOrEmpty(s))
             {
                 int iFirst = 0;
-
+          
                 do
                 {
                     int space = s.IndexOf(' ', iFirst);
-                    if (space == iFirst)
-                    {
+                    if (space == iFirst) {
                         iFirst++;
                         continue;
                     }
@@ -538,15 +552,15 @@ namespace IR_Engine
                             parts.Add(s.Substring(iFirst, iLast - iFirst)); //part before the delimiter
                         parts.Add(new string(s[iLast], 1));//the delimiter
                         iFirst = iLast + 1;
-
+                     
                         continue;
                     }
 
+          
 
 
-
-                    //No delimiters were found, but at least one character remains. Add the rest and stop.
-                    parts.Add(s.Substring(iFirst, s.Length - iFirst));
+                        //No delimiters were found, but at least one character remains. Add the rest and stop.
+                        parts.Add(s.Substring(iFirst, s.Length - iFirst));
                     break;
 
                 } while (iFirst < s.Length);
