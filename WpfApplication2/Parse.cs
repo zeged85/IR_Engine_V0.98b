@@ -95,8 +95,8 @@ namespace IR_Engine
                 int day;
                 int year;
 
-                int limiter = 100;
-                while (limiter-- > 0 && ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
+                int limiter = 10;
+                while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
 
@@ -415,23 +415,11 @@ namespace IR_Engine
                   
 
                 }
-                //   System.Console.WriteLine("");
+            
 
                 //https://www.dotnetperls.com/sort-dictionary
 
-                /*
-                var list = myDict.Keys.ToList();
-                list.Sort();
-
-                // Loop through keys.
-                foreach (var key in list)
-                {
-                    Console.WriteLine("{0}: {1}", key, myDict[key]);
-                }
-             
-                System.Console.WriteLine("Press any key to exit.");
-                System.Console.ReadKey();
-                */
+               
 
                 //compute
                 //1.most common term in document
@@ -466,31 +454,20 @@ namespace IR_Engine
                     //create array int siveof BIG
 
                     //countAmountOfUniqueInDoc
-                    if (post.Value.Split(',').Length == 1)
+                    if (count == 1)
                     {
                         // TempClass.
                         //   UniqueList.Add(post.Key);
                         countAmountOfUniqueInDoc++;
                     }
-                    //unique term found
-                    /*
-                    int sumOfUniqueTerms = 0;
-                    if (count == 0)
-                    {
-                        //add term to list
-                        //count the temr
-
-                        sumOfUniqueTerms++;
-
-                    }
-                    */
+          
                 }
 
                 //  myDocumentData.                
                 string METADATA_SECURE = thisDocNumber + "^" + DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
                     /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc + ", totalInDocIncludingSW : " + wordPositionWithSW + ", totalInDocwithoutSW : " + wordPositionWithoutSW;
 
-                 myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber, METADATA_SECURE);
+                 myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber + '|', METADATA_SECURE);
 
                 
                 //MUTEX

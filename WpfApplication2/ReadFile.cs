@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(5, 5) ;
+            Semaphore _ReadFileSemaphore = new Semaphore(2, 2) ;
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -224,20 +224,29 @@ namespace IR_Engine
             ///method: dictionary2file and file2dictionary
             Console.WriteLine("saving " + dic.Count + " terms to HDD payh: " + directoryPath);
 
-            StreamWriter file2 = new StreamWriter(directoryPath + @"\misc.txt", true);
+
+            //new StreamWriter(Path, true, Encoding.UTF8, 65536))
+            //http://www.jeremyshanks.com/fastest-way-to-write-text-files-to-disk-in-c/
+            StreamWriter file2 = new StreamWriter(directoryPath + @"\misc.txt", true, Encoding.UTF8, 65536);
             // Loop through keys.
             foreach (var key in dic)
             {
                 string term = key.Key.ToString();
+
+                ///Writing Large Strings
+                ///http://www.jeremyshanks.com/fastest-way-to-write-text-files-to-disk-in-c/
+                ///
+
                 char c = term[0];
-                if (c=='<' && term == "<DOCDATA>")
+                if (c=='<')
                 {
+                    string docnumber = term.Split(new char[] { '>', '|' })[1];
                     Indexer._DocumentMetadata.WaitOne();
                     //  Console.WriteLine()
                     // char[] delimiterCharsLang = { '<', '>' };
-                    Indexer.DocumentMetadata.Add(term.Split(new char[]{ '>','^'})[1] , key.Value);
+                    Indexer.DocumentMetadata.Add(docnumber , key.Value);
                    Indexer._DocumentMetadata.ReleaseMutex();
-
+                    continue;
 
                 }
                 else
@@ -252,11 +261,13 @@ namespace IR_Engine
                     {
                         file2.Close();
                         filePath = directoryPath + @"\" + key.Key.ToString()[0] + ".txt";
-                        file2 = new StreamWriter(filePath, true);
+                        file2 = new StreamWriter(filePath, true, Encoding.UTF8, 65536);
                     }
                 }
 
                 string line = key.Value;
+
+
                 //deadlock
                 file2.WriteLine(key.Key.ToString() + "^" + line);
                 if (Char.IsLetter(key.ToString()[0]))
