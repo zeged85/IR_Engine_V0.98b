@@ -31,7 +31,7 @@ namespace IR_Engine
         static int counter;
 
 
-
+        int gil = 0;
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
