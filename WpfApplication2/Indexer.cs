@@ -80,7 +80,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _pool = new Semaphore(1, 1);
+            _pool = new Semaphore(2, 2);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -106,7 +106,7 @@ namespace IR_Engine
             Thread memoryHanlder = new Thread(SavePostingToStaticDictionary);
             memoryHanlder.Priority = ThreadPriority.Highest;
             memoryHanlder.Start();
-
+            
 
             foreach (Thread thread in threads)
             {

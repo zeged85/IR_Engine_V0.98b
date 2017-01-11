@@ -257,10 +257,10 @@ namespace IR_Engine
                 }
                 else
                 {
-                    if (last != key.Key.ToString()[0])
+                    if (last != term[0])
                     {
                         file2.Close();
-                        filePath = directoryPath + @"\" + key.Key.ToString()[0] + ".txt";
+                        filePath = directoryPath + @"\" + term[0] + ".txt";
                         file2 = new StreamWriter(filePath, true, Encoding.UTF8, 65536);
                     }
                 }
@@ -269,10 +269,10 @@ namespace IR_Engine
 
 
                 //deadlock
-                file2.WriteLine(key.Key.ToString() + "^" + line);
-                if (Char.IsLetter(key.ToString()[0]))
+                file2.WriteLine(term + "^" + line);
+                if (Char.IsLetter(term[0]))
                 {
-                    last = key.ToString()[0];
+                    last = term[0];
                 }
             }
 

@@ -7,7 +7,7 @@
     <ProjectGuid>{DAB55AC3-BF62-4D64-B8AF-CED60EE30BBB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WpfApplication2</RootNamespace>
+    <RootNamespace>IR_Engine_TRD</RootNamespace>
     <AssemblyName>IR_ENGINE_301819702_301819702</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication2", "WpfApplication2\WpfApplication2.csproj", "{DAB55AC3-BF62-4D64-B8AF-CED60EE30BBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IR_Engine_v2", "WpfApplication2\IR_Engine_v2.csproj", "{DAB55AC3-BF62-4D64-B8AF-CED60EE30BBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
