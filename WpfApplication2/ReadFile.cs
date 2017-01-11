@@ -28,7 +28,7 @@ namespace IR_Engine
 
         public static Dictionary<string, string> OpenFileForParsing(string path)
         {
-            Dictionary<string, string> myPostings = new Dictionary<string, string>();
+            Dictionary<string, string> myFilePostings = new Dictionary<string, string>();
             // Reference 1:
             //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
 
@@ -55,20 +55,22 @@ namespace IR_Engine
                         {
                      //       ReadFile.wordPosition = 0;
                             //      System.Console.WriteLine(newDocument);
-                            Indexer.docNumber++;
+                            
                             docNumber++;
                             totalDocs++;
-                            Parse.countAmountOfUniqueInDoc = 0;
+                            //countAmountOfUniqueInDoc = 0;
 
-                            Console.WriteLine("Document #: " + Indexer.docNumber);
-                            Console.WriteLine("Document #: " + docNumber);
+                            Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
+                            Console.WriteLine("File Document #: " + docNumber);
                             Console.WriteLine("Processed file '{0}'.", path);
                             System.Console.WriteLine("Lines in document:" + linesInDoc);
 
-
+                            //Indexer.docNumber++;
+                            Indexer._DocNumber.WaitOne();
+                            int freshNum = Interlocked.Increment(ref Indexer.docNumber);
+                            Indexer._DocNumber.ReleaseMutex();
                             
-
-                            Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString());
+                            Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString(), freshNum);
                             //dictionary resault
 
                             //remove metadata
@@ -78,11 +80,12 @@ namespace IR_Engine
 
                             System.Console.WriteLine("terms in document:" + newDict.Count);
                             System.Console.WriteLine("Merging in ReadFile...");
+
                             foreach (KeyValuePair<string, string> entry in newDict)
-                                if (myPostings.ContainsKey(entry.Key))
-                                    myPostings[entry.Key] += " " + entry.Value + "}@" + Indexer.docNumber;
+                                if (myFilePostings.ContainsKey(entry.Key))
+                                    myFilePostings[entry.Key] += " " + entry.Value;// + "}@" + Indexer.docNumber;
                                 else
-                                    myPostings.Add(entry.Key.ToString(), entry.Value + "}@" + Indexer.docNumber);
+                                    myFilePostings.Add(entry.Key.ToString(), entry.Value);// + "}@" + Indexer.docNumber);
                             System.Console.WriteLine("Merging in ReadFile... Done.");
 
                             System.Console.WriteLine("Deleteing string...");
@@ -126,7 +129,7 @@ namespace IR_Engine
 
             //DocumentFileToID
 
-            return myPostings;
+            return myFilePostings;
             //    System.Console.Clear();
         }
         /// <summary>

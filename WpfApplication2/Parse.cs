@@ -35,14 +35,15 @@ namespace IR_Engine
         
         public static List<string> languagesList = new List<string>();
        
-        public static int countAmountOfUniqueInDoc = 0;
-        static int wordPositionWithSW = 0;
-        static int wordPositionWithoutSW = 0;
-        public static Dictionary<string, string> parseString(string str)
+    
+      //  private static int thisDocNumber;
+        public static Dictionary<string, string> parseString(string str, int docNumber)
         {
 
-           
-
+        int  thisDocNumber = docNumber;
+            int countAmountOfUniqueInDoc = 0;
+            int wordPositionWithSW = 0;
+            int wordPositionWithoutSW = 0;
 
 
 
@@ -293,7 +294,7 @@ namespace IR_Engine
 
                             if (isValidNumber && i > 1000000)
                             {
-                                bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
+                              //  bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
                                 //35 3/4
                             }
 
@@ -486,14 +487,28 @@ namespace IR_Engine
                 }
 
                 //  myDocumentData.                
-                string METADATA_SECURE = /*"DOCNO:" + */DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
+                string METADATA_SECURE = thisDocNumber + "," + DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
                     /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc + ", totalInDocIncludingSW : " + wordPositionWithSW + ", totalInDocwithoutSW : " + wordPositionWithoutSW;
 
                 // myMiniPostingListDict.Add("METADATA_SECURE", METADATA_SECURE);
-                Indexer.DocumentMetadata.Add(Indexer.docNumber.ToString(), METADATA_SECURE);
+
+                //MUTEX
+                //http://www.c-sharpcorner.com/UploadFile/1d42da/threading-with-mutex/
+                Indexer._DocumentMetadata.WaitOne();
+              //  Console.WriteLine()
+                Indexer.DocumentMetadata.Add(thisDocNumber.ToString(), METADATA_SECURE);
+                Indexer._DocumentMetadata.ReleaseMutex();
+
                 wordPositionWithSW = 0;
                 wordPositionWithoutSW = 0;
                 //http://www.csharpstar.com/return-multiple-values-from-function-csharp/
+
+            
+                foreach (var key in myMiniPostingListDict.Keys.ToList())
+                {
+                    myMiniPostingListDict[key] += "}@" + Indexer.docNumber;
+                }
+
 
                 return myMiniPostingListDict;
             }

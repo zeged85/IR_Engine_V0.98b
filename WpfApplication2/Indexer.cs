@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IR_Engine
@@ -12,11 +13,18 @@ namespace IR_Engine
         public static Dictionary<string, string> myPostings;
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
-        public static Dictionary<string, string> DocumentMetadata = new Dictionary<string, string>();
+        public static volatile Dictionary<string, string> DocumentMetadata = new Dictionary<string, string>();
+        public static Mutex _DocumentMetadata;
+        public static Mutex _mainMemory;
+        private static Semaphore _pool;
+        public static Mutex _DocNumber;
+        public static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
         public static string postingFilesPath/* = @"c:\IR_Engine\"*/;
-        public static int docNumber = 0;
-        public static int postingFolderCounter = 0;
+        public static volatile int docNumber = 0;
+        public static volatile int postingFolderCounter = 0;
+        private static bool stopMemoryHandler = false;
+
         //public static string postingFilesPath = @"c:\IR_Engine\";
         List<string> PostingFileTermList = new List<string>();
         public static int amountOfUnique = 0;
@@ -70,18 +78,44 @@ namespace IR_Engine
 
         public void initiate()
         {
-
+            _DocumentMetadata = new Mutex();
+            _DocNumber = new Mutex();
+            _pool = new Semaphore(0, 5);
+            _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
             {
                 // This path is a directory
                 stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
-                ProcessDirectory(documentsPath, SavePostingToStaticDictionary);
+                ProcessDirectory(documentsPath, FileToParse);
             }
             else
             {
                 Console.WriteLine("{0} is not a valid file or directory.", documentsPath);
             }
+
+        
+
+            foreach (Thread thread in threads)
+            {
+                thread.Start();
+            }
+
+               _pool.Release(4);
+
+            Thread memoryHanlder = new Thread(SavePostingToStaticDictionary);
+            memoryHanlder.Start();
+
+
+            foreach (Thread thread in threads)
+            {
+                thread.Join();
+            }
+            Console.WriteLine("Main thread exits.");
+
+            stopMemoryHandler = true;
+            memoryHanlder.Join();
+            
         }
 
         public void freeMemory()
@@ -491,16 +525,68 @@ namespace IR_Engine
             }
             return 0;
         }
-
-        int SavePostingToStaticDictionary(string path)
+        //http://stackoverflow.com/questions/3360555/how-to-pass-parameters-to-threadstart-method-in-thread
+        private static void DoWork(object path)
         {
+            string str = path.ToString();
+            _pool.WaitOne(); //limit threads
+            Dictionary<string, string> newDict = ReadFile.OpenFileForParsing(str);
 
+            //add to main memory first
 
-            Dictionary<string, string> newDict = ReadFile.OpenFileForParsing(path);
+            _mainMemory.WaitOne();
+            Console.WriteLine("Saving postings on RAM");
+            foreach (KeyValuePair<string, string> entry in newDict)
+                if (myPostings.ContainsKey(entry.Key))
+                    myPostings[entry.Key] += " " + entry.Value;
+                else
+                    myPostings.Add(entry.Key.ToString(), entry.Value);
+
+            Console.WriteLine("postings saved");
+            _mainMemory.ReleaseMutex();
+
+        //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
+            _pool.Release();
+        }
+
+        void SavePostingToStaticDictionary()
+        {
+            while (!stopMemoryHandler)
+            {
+                if (myPostings.Count > 25000)
+                {
+                    Console.WriteLine("Refreshing Memory...");
+                    postingFolderCounter++;
+
+                    ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
+
+                    myPostings.Clear();
+                }
+                //https://social.msdn.microsoft.com/Forums/vstudio/en-US/660a1f75-b287-4565-bfdd-75105e0a5527/c-wait-for-x-seconds?forum=netfxbcl
+                System.Threading.Thread.Sleep(3000);
+            }
+        }
+
+        int FileToParse(string path)
+        {
+            //THREADING
+            //https://msdn.microsoft.com/en-us/library/system.threading.semaphore(v=vs.110).aspx
+
+           // Thread t = new Thread(new ParameterizedThreadStart(DoWork));
+            Thread thread = new Thread(() => DoWork(path));
+            // Start the thread, passing the number.
+            //
+            threads.Add(thread);
+          //  t.Start(path);
+           // DoWork(path);
+
+        
 
             //threading
+            //http://stackoverflow.com/questions/13181740/c-sharp-thread-safe-fastest-counter
+           
 
-
+/*
 
             Console.WriteLine("File '{0}' Proccessesed.", path);
             Console.WriteLine("Merging in Program...");
@@ -521,14 +607,15 @@ namespace IR_Engine
                 ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
 
                 myPostings.Clear();
-            
+         */   
             return 0;
         }
 
         // Insert logic for processing found files here.
         public static void ProcessFile(string path, Func<string, int> myMethodName)
         {
-            Console.WriteLine(myMethodName.ToString() +  ":Processing file '{0}'.", path);
+           
+            Console.WriteLine(myMethodName.Method.ToString() +  ":Processing file '{0}'.", path);
             myMethodName(path);
         }
 

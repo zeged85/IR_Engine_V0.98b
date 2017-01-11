@@ -20,7 +20,7 @@ namespace WpfApplication2
 
             idx.initiate(); //
 
-            idx.freeMemory(); // create last folder
+      //      idx.freeMemory(); // create last folder
 
             idx.MergeAllToSingleUnSorted();
 
