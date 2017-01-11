@@ -35,6 +35,7 @@ namespace IR_Engine
         
         public static List<string> languagesList = new List<string>();
        
+        //test for commit
     
       //  private static int thisDocNumber;
         public static SortedDictionary<string, string> parseString(string str, int docNumber)
