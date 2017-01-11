@@ -37,7 +37,7 @@ namespace IR_Engine
        
     
       //  private static int thisDocNumber;
-        public static Dictionary<string, string> parseString(string str, int docNumber)
+        public static SortedDictionary<string, string> parseString(string str, int docNumber)
         {
 
         int  thisDocNumber = docNumber;
@@ -77,7 +77,7 @@ namespace IR_Engine
 
                 //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
 
-                Dictionary<string, string> myMiniPostingListDict = new Dictionary<string, string>();
+                SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>();
 
                 //text parsing - main work
                 int lineIdx = 0; // lines in document
@@ -95,8 +95,8 @@ namespace IR_Engine
                 int day;
                 int year;
 
-
-                while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
+                int limiter = 100;
+                while (limiter-- > 0 && ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
 
@@ -487,17 +487,18 @@ namespace IR_Engine
                 }
 
                 //  myDocumentData.                
-                string METADATA_SECURE = thisDocNumber + "," + DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
+                string METADATA_SECURE = thisDocNumber + "^" + DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
                     /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc + ", totalInDocIncludingSW : " + wordPositionWithSW + ", totalInDocwithoutSW : " + wordPositionWithoutSW;
 
-                // myMiniPostingListDict.Add("METADATA_SECURE", METADATA_SECURE);
+                 myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber, METADATA_SECURE);
 
+                
                 //MUTEX
                 //http://www.c-sharpcorner.com/UploadFile/1d42da/threading-with-mutex/
-                Indexer._DocumentMetadata.WaitOne();
+              //  Indexer._DocumentMetadata.WaitOne();
               //  Console.WriteLine()
-                Indexer.DocumentMetadata.Add(thisDocNumber.ToString(), METADATA_SECURE);
-                Indexer._DocumentMetadata.ReleaseMutex();
+              //  Indexer.DocumentMetadata.Add(thisDocNumber.ToString(), METADATA_SECURE);
+              //  Indexer._DocumentMetadata.ReleaseMutex();
 
                 wordPositionWithSW = 0;
                 wordPositionWithoutSW = 0;
@@ -506,10 +507,10 @@ namespace IR_Engine
             
                 foreach (var key in myMiniPostingListDict.Keys.ToList())
                 {
-                    myMiniPostingListDict[key] += "}@" + Indexer.docNumber;
+                    myMiniPostingListDict[key] += "}@" + thisDocNumber;
                 }
 
-
+                Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
                 return myMiniPostingListDict;
             }
         }

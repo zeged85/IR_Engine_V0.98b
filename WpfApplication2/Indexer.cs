@@ -10,15 +10,15 @@ namespace IR_Engine
 {
     public class Indexer
     {
-        public static Dictionary<string, string> myPostings;
+        public static SortedDictionary<string, string> myPostings;
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
-        public static volatile Dictionary<string, string> DocumentMetadata = new Dictionary<string, string>();
+        public static volatile SortedDictionary<string, string> DocumentMetadata = new SortedDictionary<string, string>();
         public static Mutex _DocumentMetadata;
         public static Mutex _mainMemory;
         private static Semaphore _pool;
         public static Mutex _DocNumber;
-        public static List<Thread> threads = new List<Thread>();
+        private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
         public static string postingFilesPath/* = @"c:\IR_Engine\"*/;
         public static volatile int docNumber = 0;
@@ -31,18 +31,18 @@ namespace IR_Engine
         public static int wordNum = 0;
         public static bool ifStemming;
 
-        public static Dictionary<string, string> stopWords;
+        public static SortedDictionary<string, string> stopWords;
 
         public static List<string> uniqueTerms = new List<string>();
 
-        public static Dictionary<string, int> freqInAllCorpusList = new Dictionary<string, int>();
+        public static SortedDictionary<string, int> freqInAllCorpusList = new SortedDictionary<string, int>();
 
-        public static Dictionary<string, int> Months = new Dictionary<string, int>();
+        public static SortedDictionary<string, int> Months = new SortedDictionary<string, int>();
         //  public static List<string> UniqueList = new List<string>();
 
         public Indexer()
         {
-            myPostings = new Dictionary<string, string>();
+            myPostings = new SortedDictionary<string, string>();
         }
 
         public void loadMonths()
@@ -80,7 +80,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _pool = new Semaphore(0, 5);
+            _pool = new Semaphore(3, 3);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -101,9 +101,10 @@ namespace IR_Engine
                 thread.Start();
             }
 
-               _pool.Release(4);
+              // _pool.Release(5);
 
             Thread memoryHanlder = new Thread(SavePostingToStaticDictionary);
+            memoryHanlder.Priority = ThreadPriority.Highest;
             memoryHanlder.Start();
 
 
@@ -114,16 +115,16 @@ namespace IR_Engine
             Console.WriteLine("Main thread exits.");
 
             stopMemoryHandler = true;
+            Thread lastRefresh = new Thread(freeMemory);
+            lastRefresh.Start();
             memoryHanlder.Join();
+            lastRefresh.Join();
             
         }
 
         public void freeMemory()
         {
-            Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
-            ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
-            Console.WriteLine("Proccess done.");
-            Console.WriteLine("Press any key to exit.");
+        
 
             Console.WriteLine("Refreshing Memory...Last time");
             //create last foldet
@@ -161,7 +162,7 @@ namespace IR_Engine
             foreach (string fileName in fileEntries)
             {
                 Console.WriteLine("loading file " + fileName);
-                Dictionary<string,string> fileDic = ReadFile.fileToDictionary(fileName);
+                SortedDictionary<string,string> fileDic = ReadFile.fileToDictionary(fileName);
                 Console.WriteLine("saving file to " + postingFilesPath + dbpath);
                 ReadFile.saveDic(fileDic, postingFilesPath + dbpath + @"\");
             }
@@ -469,7 +470,7 @@ namespace IR_Engine
         {
             //  myPostings.Add
 
-            Dictionary<String, String> newDict = ReadFile.fileToDictionary(path);
+            SortedDictionary<String, String> newDict = ReadFile.fileToDictionary(path);
             Console.WriteLine("Loading File '{0}'.", path);
             foreach (KeyValuePair<string, string> entry in newDict)
 
@@ -507,7 +508,7 @@ namespace IR_Engine
                 File.Copy(path, postingFilesPath + filename);
             else
             {
-                Dictionary<string, string> myDict = new Dictionary<string, string>();
+                SortedDictionary<string, string> myDict = new SortedDictionary<string, string>();
                 using (StreamReader fileToRead = File.OpenText(path))
                 {
                     string lineRead = String.Empty;
@@ -530,7 +531,7 @@ namespace IR_Engine
         {
             string str = path.ToString();
             _pool.WaitOne(); //limit threads
-            Dictionary<string, string> newDict = ReadFile.OpenFileForParsing(str);
+            SortedDictionary<string, string> newDict = ReadFile.OpenFileForParsing(str);
 
             //add to main memory first
 
@@ -553,14 +554,20 @@ namespace IR_Engine
         {
             while (!stopMemoryHandler)
             {
-                if (myPostings.Count > 25000)
+                if (myPostings.Count > 10000)
                 {
-                    Console.WriteLine("Refreshing Memory...");
-                    postingFolderCounter++;
-
-                    ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
-
+                    _mainMemory.WaitOne();
+                    SortedDictionary<string, string> freeDic = new SortedDictionary<string, string>(myPostings);
                     myPostings.Clear();
+                    _mainMemory.ReleaseMutex();
+                    Console.WriteLine("Refreshing Memory...");
+     
+
+                    postingFolderCounter++;
+                    Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
+                    ReadFile.saveDic(freeDic, postingFilesPath + postingFolderCounter);
+
+                    
                 }
                 //https://social.msdn.microsoft.com/Forums/vstudio/en-US/660a1f75-b287-4565-bfdd-75105e0a5527/c-wait-for-x-seconds?forum=netfxbcl
                 System.Threading.Thread.Sleep(3000);
@@ -575,39 +582,12 @@ namespace IR_Engine
            // Thread t = new Thread(new ParameterizedThreadStart(DoWork));
             Thread thread = new Thread(() => DoWork(path));
             // Start the thread, passing the number.
-            //
+     
             threads.Add(thread);
-          //  t.Start(path);
-           // DoWork(path);
-
-        
-
+  
             //threading
             //http://stackoverflow.com/questions/13181740/c-sharp-thread-safe-fastest-counter
-           
-
-/*
-
-            Console.WriteLine("File '{0}' Proccessesed.", path);
-            Console.WriteLine("Merging in Program...");
-            foreach (KeyValuePair<string, string> entry in newDict)
-                if (myPostings.ContainsKey(entry.Key))
-                    myPostings[entry.Key] += " " + entry.Value;
-                else
-                    myPostings.Add(entry.Key.ToString(), entry.Value);
-
-            Console.WriteLine("Merging done.");
-
-            //Save the data to a new directory
-          //  if (myPostings.Count > 30000)
-         //   {
-                Console.WriteLine("Refreshing Memory...");
-                postingFolderCounter++;
-
-                ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
-
-                myPostings.Clear();
-         */   
+ 
             return 0;
         }
 

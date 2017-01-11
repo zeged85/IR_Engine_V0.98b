@@ -25,10 +25,22 @@ namespace IR_Engine
         //UTF!!!
         public string filesPathToDelete;
         public static int totalDocs = 0;
+       // private static List<Thread> ReadFileThreads;
+        
+       // private static Semaphore _ReadFileSemaphore;
+        static int counter;
 
-        public static Dictionary<string, string> OpenFileForParsing(string path)
+
+
+
+        public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Dictionary<string, string> myFilePostings = new Dictionary<string, string>();
+            Semaphore _ReadFileSemaphore = new Semaphore(5, 5) ;
+            counter = 10;
+            Mutex _myFilePostings = new Mutex();
+            List<Thread> ReadFileThreads = new List<Thread>();
+            List<SortedDictionary<string, string>> DicList = new List<SortedDictionary<string, string>>();
+            SortedDictionary<string, string> myFilePostings = new SortedDictionary<string, string>();
             // Reference 1:
             //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
 
@@ -60,24 +72,33 @@ namespace IR_Engine
                             totalDocs++;
                             //countAmountOfUniqueInDoc = 0;
 
-                            Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
-                            Console.WriteLine("File Document #: " + docNumber);
-                            Console.WriteLine("Processed file '{0}'.", path);
-                            System.Console.WriteLine("Lines in document:" + linesInDoc);
+                           // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
+                           // Console.WriteLine("File Document #: " + docNumber);
+                          
+                           // System.Console.WriteLine("Lines in document:" + linesInDoc);
 
                             //Indexer.docNumber++;
                             Indexer._DocNumber.WaitOne();
                             int freshNum = Interlocked.Increment(ref Indexer.docNumber);
                             Indexer._DocNumber.ReleaseMutex();
-                            
-                            Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString(), freshNum);
+
+                            Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
+                            string str = bufferDocument.ToString();
+
+
+                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, str, freshNum, ref DicList));
+                            // Start the thread, passing the number.
+
+                            ReadFileThreads.Add(thread);
+                        //    thread.Start();
+                            //Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString(), freshNum);
                             //dictionary resault
 
                             //remove metadata
 
                             //merge dic
                             //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
-
+                            /*
                             System.Console.WriteLine("terms in document:" + newDict.Count);
                             System.Console.WriteLine("Merging in ReadFile...");
 
@@ -92,7 +113,7 @@ namespace IR_Engine
                             //newDocument = String.Empty; //refresh string
 
                             //print original
-
+                            */
                             bufferDocument.Clear();
                             // System.Console.WriteLine("Deleteing stringg... Done.");
                             //      printDic(myPostings);
@@ -112,7 +133,7 @@ namespace IR_Engine
                 }
             }
 
-            Console.WriteLine("File Processed!");
+            Console.WriteLine("File add to threadpool!");
             long fileSize = new System.IO.FileInfo(path).Length;
             Console.WriteLine("File size: " + GetBytesReadable(fileSize));
             Console.WriteLine("Total amount:" + Indexer.docNumber + " Documents.");
@@ -129,59 +150,128 @@ namespace IR_Engine
 
             //DocumentFileToID
 
+            // _pool.Release(4);
+
+            Console.WriteLine("starting " + ReadFileThreads.Count + " threads...");
+            foreach (Thread thred in ReadFileThreads)
+            {
+                thred.Start();
+             //   thred.Join();
+            }
+
+           
+            
+            foreach (Thread tread in ReadFileThreads)
+            {
+                tread.Join();
+            }
+            
+
+            _myFilePostings.WaitOne();
+            Console.WriteLine("Saving File postings on ReadFile-temp-RAM");
+            foreach (SortedDictionary<string, string> dic in DicList)
+            {
+                SortedDictionary<string, string> dic2 = new SortedDictionary<string, string>(dic);
+                foreach (KeyValuePair<string, string> entry in dic)
+                    if (myFilePostings.ContainsKey(entry.Key))
+                        myFilePostings[entry.Key] += " " + entry.Value;
+                    else
+                        myFilePostings.Add(entry.Key.ToString(), entry.Value);
+            }
+
+            Console.WriteLine("postings saved");
+            _myFilePostings.ReleaseMutex();
+
+
+
+
             return myFilePostings;
             //    System.Console.Clear();
         }
+
+
+        private static void DoWork(ref Semaphore _ReadFileSemaphore, object path, int num, ref List<SortedDictionary<string, string>> DicList)
+        {
+            string str = path.ToString();
+            counter--;
+            _ReadFileSemaphore.WaitOne(); //limit threads
+         
+            SortedDictionary<string, string> newDict = Parse.parseString(str, num);
+            //add to main memory first
+            //  return newDict;
+            DicList.Add(newDict);
+            //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
+            counter++;
+            _ReadFileSemaphore.Release();
+        }
+
+
+
         /// <summary>
         /// http://stackoverflow.com/questions/7306214/append-lines-to-a-file-using-a-streamwriter
         /// </summary>
         /// <param name="dic">input dictionary.</param>
         /// <param name="directoryPath">output file (full path)</param>
-        public static void saveDic(Dictionary<string, string> dic, string directoryPath)
+        public static void saveDic(SortedDictionary<string, string> dic, string directoryPath)
         {
-            var list = dic.Keys.ToList();
-            list.Sort();
+          //  var list = dic.Keys.ToList();
+           // list.Sort();
+           
             char last = ' ';
             string filePath;
             Directory.CreateDirectory(directoryPath);
 
             ///method: dictionary2file and file2dictionary
-
+            Console.WriteLine("saving " + dic.Count + " terms to HDD payh: " + directoryPath);
 
             StreamWriter file2 = new StreamWriter(directoryPath + @"\misc.txt", true);
             // Loop through keys.
-            foreach (var key in list)
+            foreach (var key in dic)
             {
+                string term = key.Key.ToString();
+                char c = term[0];
+                if (c=='<' && term == "<DOCDATA>")
+                {
+                    Indexer._DocumentMetadata.WaitOne();
+                    //  Console.WriteLine()
+                    // char[] delimiterCharsLang = { '<', '>' };
+                    Indexer.DocumentMetadata.Add(term.Split(new char[]{ '>','^'})[1] , key.Value);
+                   Indexer._DocumentMetadata.ReleaseMutex();
 
-                if (!Char.IsLetter(key[0]))
+
+                }
+                else
+                if (!Char.IsLetter(c))
                 {
                     filePath = directoryPath + @"\misc.txt";
                     last = '?';
                 }
                 else
                 {
-                    if (last != key[0])
+                    if (last != key.Key.ToString()[0])
                     {
                         file2.Close();
-                        filePath = directoryPath + @"\" + key[0] + ".txt";
+                        filePath = directoryPath + @"\" + key.Key.ToString()[0] + ".txt";
                         file2 = new StreamWriter(filePath, true);
                     }
                 }
 
-                string line = dic[key];
+                string line = key.Value;
                 //deadlock
-                file2.WriteLine(key + "^" + line);
-                if (Char.IsLetter(key[0]))
+                file2.WriteLine(key.Key.ToString() + "^" + line);
+                if (Char.IsLetter(key.ToString()[0]))
                 {
-                    last = key[0];
+                    last = key.ToString()[0];
                 }
             }
+
+
             file2.Close();
         }
 
-        public static Dictionary<String, String> fileToDictionary(string path)
+        public static SortedDictionary<String, String> fileToDictionary(string path)
         {
-            Dictionary<string, string> newDic = new Dictionary<string, string>();
+            SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
 
             using (StreamReader sr = File.OpenText(path))
             {
@@ -209,17 +299,7 @@ namespace IR_Engine
             return newDic;
         }
 
-        public static void printDic(Dictionary<string, string> dic)
-        {
-            var list = dic.Keys.ToList();
-            list.Sort();
-
-            // Loop through keys.
-            foreach (var key in list)
-            {
-                Console.WriteLine("{0}: {1}", key, dic[key]);
-            }
-        }
+      
 
         // Reference 2:
         public static int NaiveSearch(string str, string pattern, int index = 0)
