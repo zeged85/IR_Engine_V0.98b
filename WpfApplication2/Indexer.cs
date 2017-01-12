@@ -154,17 +154,17 @@ namespace IR_Engine
             //sorting
             myPostings.Clear();
 
-            string dbpath = "PostingFiles";
-            if (Indexer.ifStemming == true)
-                dbpath = "Stemming";
+           // string dbpath = "PostingFiles";
+           // if (Indexer.ifStemming == true)
+             //   dbpath = "Stemming";
 
             string[] fileEntries = Directory.GetFiles(postingFilesPath);
             foreach (string fileName in fileEntries)
             {
                 Console.WriteLine("loading file " + fileName);
                 SortedDictionary<string, string> fileDic = ReadFile.fileToDictionary(fileName);
-                Console.WriteLine("saving file to " + postingFilesPath + dbpath);
-                ReadFile.saveDic(fileDic, postingFilesPath + dbpath + @"\");
+                Console.WriteLine("saving file to " + postingFilesPath + "PostingFiles"/*dbpath*/);
+                ReadFile.saveDic(fileDic, postingFilesPath + "PostingFiles"/*dbpath*/ + @"\");
             }
             myPostings.Clear();
         }
@@ -176,9 +176,9 @@ namespace IR_Engine
             //http://stackoverflow.com/questions/7296956/how-to-list-all-sub-directories-in-a-directory
             var directories = Directory.GetDirectories(postingFilesPath);
 
-            string dbpath = "PostingFiles";
-            if (Indexer.ifStemming == true)
-                dbpath = "Stemming";
+          //  string dbpath = "PostingFiles";
+         //   if (Indexer.ifStemming == true)
+           //     dbpath = "Stemming";
 
 
 
@@ -186,7 +186,7 @@ namespace IR_Engine
             foreach (string dirToBeDELETED in directories)
             {
                 //delete all folders
-                if (dirToBeDELETED != postingFilesPath + dbpath && dirToBeDELETED != postingFilesPath + "Stemming")
+                if (dirToBeDELETED != postingFilesPath + "PostingFiles"/*dbpath*/ && dirToBeDELETED != postingFilesPath + "Stemming")
                 {
                     ProcessDirectory(dirToBeDELETED, DeletePostingFiles);
                     //delete directories
@@ -228,12 +228,12 @@ namespace IR_Engine
             //0 create dictionary. use static
             myPostings.Clear();
 
-            string dbpath = "PostingFiles";
-            if (Indexer.ifStemming == true)
-                dbpath = "Stemming";
+         //   string dbpath = "PostingFiles";
+          //  if (Indexer.ifStemming == true)
+            //    dbpath = "Stemming";
 
             //upload postingfiles to main memomry Library<String,String>
-            string[] fileEntries2 = Directory.GetFiles(postingFilesPath + dbpath);
+            string[] fileEntries2 = Directory.GetFiles(postingFilesPath +  "PostingFiles"/*dbpath*/);
             foreach (string fileName in fileEntries2)
                 ProcessFile(fileName, LoadPostingFiles);
         }
@@ -403,16 +403,10 @@ namespace IR_Engine
 
             bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10)
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
-
-
-
         }
 
         public void mmm()
         {
-
-
-
 
             //http://stackoverflow.com/questions/10391481/number-of-occurrences-of-a-character-in-a-string
 
@@ -585,8 +579,6 @@ namespace IR_Engine
             Console.WriteLine(myMethodName.Method.ToString() + ":Processing file '{0}'.", path);
             myMethodName(path);
         }
-
-
 
     }
 }

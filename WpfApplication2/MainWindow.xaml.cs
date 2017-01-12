@@ -34,11 +34,6 @@ namespace WpfApplication2
         // public static bool stemmingSelected;
         string tmpAddress;
 
-
-
-
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -50,9 +45,16 @@ namespace WpfApplication2
             DateTime m_start = DateTime.Now;
 
             string error = "";
-            Indexer.postingFilesPath = m_postingFilesPath + "\\";
             Indexer.documentsPath = m_documentsPath + "\\";
 
+            if (Indexer.ifStemming == true)
+            {
+                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
+            }
+            else
+            {
+                Indexer.postingFilesPath = m_postingFilesPath + "\\";
+            }
             if (!Directory.Exists(m_documentsPath))
             {
                 isValid = false;
@@ -78,9 +80,11 @@ namespace WpfApplication2
             else
             {
 
+
                 //Thread t1 = new Thread(tc.mmm); ;
                 //tc.mmm();
                 //t1.Start();
+
                 s_Engine = new Engine();
                 DateTime m_end = DateTime.Now;
                 string m_time = (m_end - m_start).ToString();
@@ -95,7 +99,7 @@ namespace WpfApplication2
             Dialog.ShowDialog();
             m_documentsPath = Dialog.SelectedPath;
             documentsFolder_Text.Text = m_documentsPath;
-            // System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
+            
         }
 
 
@@ -112,29 +116,13 @@ namespace WpfApplication2
             Dialog.ShowDialog();
             m_postingFilesPath = Dialog.SelectedPath;
 
-            if (Stemming.IsChecked == true)
-            {
-                tmpAddress = m_postingFilesPath;
-                string path = m_postingFilesPath + @"\Stemming";
-                System.IO.Directory.CreateDirectory(path);
-                m_postingFilesPath = path;
-
-            }
-
             postingFilesFolder_Text.Text = m_postingFilesPath;
-            // System.Windows.MessageBox.Show("The selected path for posting files: " + m_postingFilesPath);
-
-
+            
         }
 
         private void postingFilesFolderSelected(object sender, RoutedEventArgs e)
         {
             m_postingFilesPath = postingFilesFolder_Text.Text;
-
-            //if (Stemming.IsChecked == true)
-            // {
-            //   m_postingFilesPath=postingFilesFolder_Text.Text +"\Stemming"
-            // }
         }
 
         private void isStemming(object sender, RoutedEventArgs e)
@@ -142,30 +130,14 @@ namespace WpfApplication2
             if (Stemming.IsChecked == true)
             {
                 Indexer.ifStemming = true;
-                Reset(this,new RoutedEventArgs());
-            //    System.Windows.MessageBox.Show("Please enter path for process with Stemming");
+               // System.Windows.MessageBox.Show("Please enter path for process with Stemming");
             }
             else
             {
                 Indexer.ifStemming = false;
-                Reset(this, new RoutedEventArgs());
             }
         }
 
-        private void isNotStemming(object sender, RoutedEventArgs e)
-        {
-            if (Stemming.IsChecked == true)
-            {
-                Indexer.ifStemming = true;
-                Reset(this, new RoutedEventArgs());
-                //    System.Windows.MessageBox.Show("Please enter path for process with Stemming");
-            }
-            else
-            {
-                Indexer.ifStemming = false;
-                Reset(this, new RoutedEventArgs());
-            }
-        }
 
         private void Reset(object sender, RoutedEventArgs e)
         {
@@ -179,10 +151,10 @@ namespace WpfApplication2
                 {
                     foreach (FileInfo f in d.GetFiles())
                         f.Delete();
-
                     //   foreach (di di in d.GetDirectories())
                     //     di.Delete();
                 }
+
                 if (dPost.Exists)
                 {
                     foreach (FileInfo f in dPost.GetFiles())
@@ -195,21 +167,18 @@ namespace WpfApplication2
 
                 DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
 
-
                 if (stem.Exists)
                 {
                     foreach (FileInfo f in stem.GetFiles())
                         f.Delete();
-
                     Directory.Delete(m_postingFilesPath + "\\Stemming");
                 }
-
             }
-
 
             DirectoryInfo di = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
             DirectoryInfo dj = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath + "\\PostingFiles");
             DirectoryInfo ds = new DirectoryInfo(m_postingFilesPath + "\\Stemming");
+            
             if (di.Exists)
             {
                 foreach (FileInfo f in di.GetFiles())
@@ -218,12 +187,14 @@ namespace WpfApplication2
                 //   foreach (di di in d.GetDirectories())
                 //     di.Delete();
             }
+
             if (dj.Exists)
             {
                 foreach (FileInfo f in dj.GetFiles())
                     f.Delete();
                 Directory.Delete(m_postingFilesPath + "\\PostingFiles");
             }
+
             if (ds.Exists)
             {
                 foreach (FileInfo f in ds.GetFiles())
@@ -231,9 +202,7 @@ namespace WpfApplication2
 
                 foreach (DirectoryInfo dir in ds.GetDirectories())
                     dir.Delete(true);
-
                 Directory.Delete(m_postingFilesPath + "\\Stemming");
-
             }
         }
 
@@ -276,11 +245,15 @@ namespace WpfApplication2
 
         private void loadDictionaryPressed(object sender, RoutedEventArgs e)
         {
-            Indexer.postingFilesPath = m_postingFilesPath + "\\";
-            tc.loadPostingFiles();
-            tc.createDictionary();
 
+            if (m_postingFilesPath == null)
+                System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
+            else
+            {
+                Indexer.postingFilesPath = m_postingFilesPath + "\\";
+                tc.loadPostingFiles();
+                tc.createDictionary();
+            }
         }
-
     }
 }
