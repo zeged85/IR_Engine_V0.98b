@@ -65,11 +65,11 @@ namespace IR_Engine
                     {
                         if (linesInDoc != 0) //end of document before
                         {
-                     //       ReadFile.wordPosition = 0;
+                     
                             //      System.Console.WriteLine(newDocument);
                             
                             docNumberInFile++;
-                           // totalDocs++;
+                           
                             //countAmountOfUniqueInDoc = 0;
 
                            // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
@@ -77,7 +77,6 @@ namespace IR_Engine
                           
                            // System.Console.WriteLine("Lines in document:" + linesInDoc);
 
-                            //Indexer.docNumber++;
                             Indexer._DocNumber.WaitOne();
 
                             int freshNum = Interlocked.Increment(ref Indexer.docNumber);

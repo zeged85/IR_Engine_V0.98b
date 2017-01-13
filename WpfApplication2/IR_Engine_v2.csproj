@@ -61,9 +61,7 @@
     <Compile Include="DictionaryWindow.xaml.cs">
       <DependentUpon>DictionaryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Engine.cs" />
     <Compile Include="IModel.cs" />
-    <Compile Include="inUpdate.cs" />
     <Compile Include="Language.xaml.cs">
       <DependentUpon>Language.xaml</DependentUpon>
     </Compile>

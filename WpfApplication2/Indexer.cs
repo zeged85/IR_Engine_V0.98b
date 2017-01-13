@@ -20,7 +20,6 @@ namespace IR_Engine
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
            
-
         }
 
         private int progress;
@@ -130,7 +129,7 @@ namespace IR_Engine
                 thread.Start();
             }
 
-            // _pool.Release(5);
+          
 
             Thread memoryHanlder = new Thread(SavePostingToStaticDictionary);
             memoryHanlder.Priority = ThreadPriority.Highest;

@@ -42,10 +42,19 @@ namespace IR_Engine
                 //    model.moveArm(az, elv1, elv2, grip);
             }
         }
-        public void MoveRobot(double speed, int angle)
+
+        private int docSum;
+        public int VM_DocSum
         {
-            model.move(speed, angle);
+            get { return docSum; }
+            set
+            {
+                docSum = value;
+                this.NotifyPropertyChanged("VM_DocSum");
+            }
         }
+
+
 
         public void loadPostingFiles()
         {
@@ -63,8 +72,7 @@ namespace IR_Engine
 
 
             model.loadMonths();
-           
-           
+
             model.initiate(); //
 
             model.Progress = 5;

@@ -96,7 +96,7 @@ namespace IR_Engine
                 int day;
                 int year;
 
-                int limiter = 10;
+               // int limiter = 10;
                 while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
@@ -114,45 +114,29 @@ namespace IR_Engine
 
                         if (!languagesList.Contains(lang))
                         {
-                            languagesList.Add(lang);
+                            languagesList.Add(lang); ///need to add mutex
                             //add to string
                         }
 
                     }
-
-                    //   Console.WriteLine("");
-
-                    //     Console.WriteLine(line.TrimStart());
-
-                    //    System.Console.WriteLine("Press any key to exit.");
-                    //    System.Console.ReadKey();
 
                     //  limiter--;
                     //    char[] delimiterChars = { ' ', ',', '.', ':', '\t', '(', ')', '"', '/', '-', '\'', '?', '[', ']', '$', '%', ';', '*', '+', '=', '&', '\'', '`', '#', '|', '\"', '{', '}', '!', '<', '>', '_', '\\', '@' };
                     char[] delimiterChars = { ' ' };
 
 
-                    //          List<char> signs = new List<char>();
-                    //          foreach (char c in delimiterChars)
-                    //              signs.Add(c);
 
                     string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
 
                     //   System.Console.WriteLine("{0} words in text:", words.Length);
-                    //     List<string> splitWords = SplitAndKeepDelimiters(line, delimiterChars);
+                 
 
                     lineIdx++;
-                    //     foreach (string withspaces in splitWords)
-                    //     {
-                    //         string[] noSpecs = withspaces.Split();
-
-
+                   
 
                     foreach (string s in words) /// MAIN PARSE LOOP
                     {
-                        //      string term = s.TrimStart().TrimEnd();
-
-                        //    System.Console.WriteLine(s);
+                      
                         addTermToLongTerm = false;
                         resetLongTerm = false;
 
@@ -559,60 +543,7 @@ namespace IR_Engine
             }
         }
 
-        /// http://stackoverflow.com/questions/4680128/c-split-a-string-with-delimiters-but-keep-the-delimiters-in-the-result
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="delimiters"></param>
-        /// <returns></returns>
-        public static List<string> SplitAndKeepDelimiters(string s, params char[] delimiters)
-        {
-            var parts = new List<string>();
-            if (!string.IsNullOrEmpty(s))
-            {
-                int iFirst = 0;
-
-                do
-                {
-                    int space = s.IndexOf(' ', iFirst);
-                    if (space == iFirst)
-                    {
-                        iFirst++;
-                        continue;
-                    }
-
-
-                    int iLast = s.IndexOfAny(delimiters, iFirst);
-
-                    if ((space != -1 && (iLast == -1 || space < iLast)))
-                    {
-                        parts.Add(s.Substring(space, space - iFirst));
-                        iFirst = space + 1;
-
-                        continue;
-                    }
-
-                    if (iLast >= 0)
-                    {
-                        if (iLast > iFirst)
-                            parts.Add(s.Substring(iFirst, iLast - iFirst)); //part before the delimiter
-                        parts.Add(new string(s[iLast], 1));//the delimiter
-                        iFirst = iLast + 1;
-
-                        continue;
-                    }
-
-
-
-
-                    //No delimiters were found, but at least one character remains. Add the rest and stop.
-                    parts.Add(s.Substring(iFirst, s.Length - iFirst));
-                    break;
-
-                } while (iFirst < s.Length);
-            }
-
-            return parts;
-        }
+      
 
 
     }

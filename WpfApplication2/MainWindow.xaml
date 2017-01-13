@@ -171,6 +171,8 @@
 
         </StatusBar>
         <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" Margin="326,504,416,10.5" />
+        
+        
     </Grid>
 
 

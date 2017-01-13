@@ -30,7 +30,7 @@ namespace WpfApplication2
 
         //  Indexer tc = new Indexer();
         ViewModel vm;
-        Engine s_Engine;
+        //Engine s_Engine;
         bool isValid = true;
         string m_documentsPath, m_postingFilesPath;
         // public static bool stemmingSelected;
@@ -120,7 +120,7 @@ namespace WpfApplication2
              string m_time = (m_end - m_start).ToString();
              MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
              
-
+                    
                 });
                 t2.Start();
                 /*
