@@ -121,7 +121,7 @@
                 Grid.RowSpan="2"/>
 
 
-        <CheckBox x:Name="Stemming" Content="Stemming" Margin="78,282,323,226" RenderTransformOrigin="2.112,-6.75" Unchecked="isNotStemming" Checked="isStemming" FontWeight="Bold" Grid.RowSpan="2">
+        <CheckBox x:Name="Stemming" Content="Stemming" Margin="78,282,323,226" RenderTransformOrigin="2.112,-6.75"  Checked="isStemming" FontWeight="Bold" Grid.RowSpan="2">
             <CheckBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
