@@ -11,9 +11,17 @@ namespace WpfApplication2
     {
         Indexer idx;
 
-        public Engine()
+        public Engine(Indexer idx)
         {
-            idx = new Indexer();
+            //load stopwards months etc...
+      //      this.idx = idx;
+        }
+
+        public void ignite()
+        {
+           // idx = new Indexer();
+/*
+            
 
             idx.loadMonths();
 
@@ -41,10 +49,7 @@ namespace WpfApplication2
             idx.PrintfreqInAllCorpusList(); //
 
             idx.mmm();
-
-
-
-
+            */
         }
     }
 }

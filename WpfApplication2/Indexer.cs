@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,27 @@ using System.Threading.Tasks;
 
 namespace IR_Engine
 {
-    public class Indexer
+    public class Indexer : IModel
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged(string PropName)
+        {
+
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
+           
+
+        }
+
+        private int progress;
+        public int Progress
+        {
+            get { return progress; }
+            set { progress = value; NotifyPropertyChanged("Progress"); }
+        }
+
         public static SortedDictionary<string, string> myPostings;
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
@@ -80,7 +100,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _pool = new Semaphore(3, 3);
+            _pool = new Semaphore(2, 2);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -129,6 +149,8 @@ namespace IR_Engine
             Console.WriteLine("Refreshing Memory...Last time");
             //create last foldet
             postingFolderCounter++;
+           
+
             Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
             ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
 
@@ -550,8 +572,11 @@ namespace IR_Engine
 
 
                 }
+
+                Progress = docNumber / 1300;
+
                 //https://social.msdn.microsoft.com/Forums/vstudio/en-US/660a1f75-b287-4565-bfdd-75105e0a5527/c-wait-for-x-seconds?forum=netfxbcl
-                System.Threading.Thread.Sleep(3000);
+                System.Threading.Thread.Sleep(1500);
             }
         }
 
@@ -580,5 +605,9 @@ namespace IR_Engine
             myMethodName(path);
         }
 
+        public void move(double speed, int angle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

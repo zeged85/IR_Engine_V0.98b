@@ -29,13 +29,13 @@ namespace IR_Engine
         
        // private static Semaphore _ReadFileSemaphore;
         static int counter;
-
+        
 
         int gil = 0;
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(4, 4) ;
+            Semaphore _ReadFileSemaphore = new Semaphore(4, 4) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -86,7 +86,7 @@ namespace IR_Engine
                             string str = bufferDocument.ToString();
 
 
-                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, str, freshNum, ref DicList));
+                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore,ref _myFilePostings, str, freshNum, ref DicList));
                             // Start the thread, passing the number.
 
                             ReadFileThreads.Add(thread);
@@ -190,18 +190,19 @@ namespace IR_Engine
         }
 
 
-        private static void DoWork(ref Semaphore _ReadFileSemaphore, object path, int num, ref List<SortedDictionary<string, string>> DicList)
+        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex mut, object path, int num, ref List<SortedDictionary<string, string>> DicList)
         {
             string str = path.ToString();
-            counter--;
+         //   counter--;
             _ReadFileSemaphore.WaitOne(); //limit threads
-         
+            mut.WaitOne();
             SortedDictionary<string, string> newDict = Parse.parseString(str, num);
             //add to main memory first
             //  return newDict;
             DicList.Add(newDict);
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
-            counter++;
+         //   counter++;
+            mut.ReleaseMutex();
             _ReadFileSemaphore.Release();
         }
 
