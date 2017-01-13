@@ -66,27 +66,49 @@ namespace IR_Engine
            
            
             model.initiate(); //
-         
+
+            model.Progress = 5;
+
             model.freeMemory(); // create last folder
-          
+
+            model.Progress = 10;
+
             model.MergeAllToSingleUnSorted();
-           
+
+            model.Progress = 20;
+
             model.sort();
-          
+
+            model.Progress = 30;
+
             model.deleteGarbage();
-           
+
+            model.Progress = 40;
+
             model.dumpDocumentMetadata();
-         
+
+            model.Progress = 50;
+
             model.loadPostingFiles();
-          
+
+            model.Progress = 60;
+
             model.loadMetadata();
-           
+
+            model.Progress = 70;
+
             model.createDictionary();
-         
+
+            model.Progress = 80;
+
             model.UniqueWordsQuery();
-            
+
+            model.Progress = 90;
+
             model.PrintfreqInAllCorpusList(); //
-        
+
+            model.Progress = 100;
+
             model.mmm();
         }
     }

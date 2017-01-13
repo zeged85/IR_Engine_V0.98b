@@ -30,6 +30,8 @@ namespace IR_Engine
             set { progress = value; NotifyPropertyChanged("Progress"); }
         }
 
+        
+
         public static SortedDictionary<string, string> myPostings;
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
@@ -59,6 +61,9 @@ namespace IR_Engine
 
         public static SortedDictionary<string, int> Months = new SortedDictionary<string, int>();
         //  public static List<string> UniqueList = new List<string>();
+
+        int FileCountInFolder;
+        int FileCounter;
 
         public Indexer()
         {
@@ -96,6 +101,8 @@ namespace IR_Engine
 
         }
 
+     
+
         public void initiate()
         {
             _DocumentMetadata = new Mutex();
@@ -106,6 +113,8 @@ namespace IR_Engine
             if (Directory.Exists(documentsPath))
             {
                 // This path is a directory
+                //http://stackoverflow.com/questions/16193126/counting-the-number-of-files-in-a-folder-in-c-sharp
+                FileCountInFolder = Directory.GetFiles(documentsPath).Length;
                 stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
                 ProcessDirectory(documentsPath, FileToParse);
             }
@@ -114,7 +123,7 @@ namespace IR_Engine
                 Console.WriteLine("{0} is not a valid file or directory.", documentsPath);
             }
 
-
+            FileCounter = 0;
 
             foreach (Thread thread in threads)
             {
@@ -131,6 +140,7 @@ namespace IR_Engine
             foreach (Thread thread in threads)
             {
                 thread.Join();
+                Progress = (FileCounter++ * 100) / FileCountInFolder;
             }
             Console.WriteLine("Main thread exits.");
 
@@ -557,7 +567,7 @@ namespace IR_Engine
         {
             while (!stopMemoryHandler)
             {
-                if (myPostings.Count > 10000)
+                if (myPostings.Count > 30000)
                 {
                     _mainMemory.WaitOne();
                     SortedDictionary<string, string> freeDic = new SortedDictionary<string, string>(myPostings);
@@ -573,7 +583,7 @@ namespace IR_Engine
 
                 }
 
-                Progress = docNumber / 1300;
+//                Progress = docNumber / 1400;
 
                 //https://social.msdn.microsoft.com/Forums/vstudio/en-US/660a1f75-b287-4565-bfdd-75105e0a5527/c-wait-for-x-seconds?forum=netfxbcl
                 System.Threading.Thread.Sleep(1500);

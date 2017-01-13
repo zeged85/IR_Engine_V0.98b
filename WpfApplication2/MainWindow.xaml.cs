@@ -111,10 +111,18 @@ namespace WpfApplication2
                // vm.startEngine();
                 //  s_Engine.ignite();
                 Thread t1 = new Thread(vm.startEngine);
-                 t1.Start();
-              //  s_Engine.ignite();
-                
-                
+                // t1.Start();
+                //  s_Engine.ignite();
+                Thread t2 = new Thread(delegate() { t1.Start();
+                    t1.Join();
+                    
+             DateTime m_end = DateTime.Now;
+             string m_time = (m_end - m_start).ToString();
+             MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+             
+
+                });
+                t2.Start();
                 /*
                 DateTime m_end = DateTime.Now;
                 string m_time = (m_end - m_start).ToString();

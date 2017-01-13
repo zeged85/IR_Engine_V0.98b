@@ -24,7 +24,7 @@ namespace IR_Engine
       //  public static int wordPosition = 0;
         //UTF!!!
         public string filesPathToDelete;
-        public static int totalDocs = 0;
+       // public static volatile int totalDocs = 0;
        // private static List<Thread> ReadFileThreads;
         
        // private static Semaphore _ReadFileSemaphore;
@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(4, 4) ; //one for every file
+            Semaphore _ReadFileSemaphore = new Semaphore(5, 5) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -44,7 +44,7 @@ namespace IR_Engine
             // Reference 1:
             //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
 
-            int docNumber = 0;
+            int docNumberInFile = 0;
             int linesInDoc = 0;
             string newDocument = String.Empty;
             //https://msdn.microsoft.com/en-us/library/system.text.stringbuilder(v=vs.110).aspx#StringAndSB
@@ -68,8 +68,8 @@ namespace IR_Engine
                      //       ReadFile.wordPosition = 0;
                             //      System.Console.WriteLine(newDocument);
                             
-                            docNumber++;
-                            totalDocs++;
+                            docNumberInFile++;
+                           // totalDocs++;
                             //countAmountOfUniqueInDoc = 0;
 
                            // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
@@ -79,7 +79,9 @@ namespace IR_Engine
 
                             //Indexer.docNumber++;
                             Indexer._DocNumber.WaitOne();
+
                             int freshNum = Interlocked.Increment(ref Indexer.docNumber);
+                       
                             Indexer._DocNumber.ReleaseMutex();
 
                             Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
@@ -98,28 +100,9 @@ namespace IR_Engine
 
                             //merge dic
                             //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
-                            /*
-                            System.Console.WriteLine("terms in document:" + newDict.Count);
-                            System.Console.WriteLine("Merging in ReadFile...");
-
-                            foreach (KeyValuePair<string, string> entry in newDict)
-                                if (myFilePostings.ContainsKey(entry.Key))
-                                    myFilePostings[entry.Key] += " " + entry.Value;// + "}@" + Indexer.docNumber;
-                                else
-                                    myFilePostings.Add(entry.Key.ToString(), entry.Value);// + "}@" + Indexer.docNumber);
-                            System.Console.WriteLine("Merging in ReadFile... Done.");
-
-                            System.Console.WriteLine("Deleteing string...");
-                            //newDocument = String.Empty; //refresh string
-
-                            //print original
-                            */
+            
                             bufferDocument.Clear();
-                            // System.Console.WriteLine("Deleteing stringg... Done.");
-                            //      printDic(myPostings);
-                            //      Console.WriteLine("-------------------------------");
-                            //           Console.WriteLine("Press any key to continue.");
-                            //      System.Console.ReadKey();
+                 
                         }
                         linesInDoc = 1;
                     }
@@ -137,7 +120,7 @@ namespace IR_Engine
             long fileSize = new System.IO.FileInfo(path).Length;
             Console.WriteLine("File size: " + GetBytesReadable(fileSize));
             Console.WriteLine("Total amount:" + Indexer.docNumber + " Documents.");
-            Console.WriteLine("Documents in file:" + docNumber + " Documents.");
+            Console.WriteLine("Documents in file:" + docNumberInFile + " Documents.");
             Console.WriteLine("-----------------------");
 
             //  printDic(myPostings);
@@ -242,6 +225,7 @@ namespace IR_Engine
                 if (c=='<')
                 {
                     string docnumber = term.Split(new char[] { '>', '|' })[1];
+             
                     Indexer._DocumentMetadata.WaitOne();
                     //  Console.WriteLine()
                     // char[] delimiterCharsLang = { '<', '>' };
