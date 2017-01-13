@@ -237,25 +237,34 @@ namespace IR_Engine
                         }
 
 
-                      
+
                         //check number 
                         //https://msdn.microsoft.com/en-us/library/bb384043.aspx
                         //try parse
                         //NUMBERS
+                        //https://msdn.microsoft.com/en-us/library/9zbda557(v=vs.110).aspx
+                        string stringTerm = termToLower;
+
+                        string value = stringTerm; //"$1,643.57";
+                        bool isValidNumber;
+                        bool isValidInteger;
+
                         if (char.IsNumber(termToLower[0]))
                         {
                             int i = 0;
-                            string stringTerm = termToLower; // "108";
-                            bool isValidNumber = int.TryParse(stringTerm, out i); //i now = 108  
+                            decimal number;
+                            // "108";
+                            isValidNumber = Decimal.TryParse(stringTerm, out number); //i now = 108  
+                            isValidInteger = int.TryParse(stringTerm, out i);
 
-                            if (isValidNumber && i > 0 && i < 31) //possible partial day
+                            if (isValidInteger && i > 0 && i < 31) //possible partial day
                             {
                                 possibleDay = true;
                                 partialDate = true;
                                 day = i;
                             }
 
-                            if (isValidNumber)
+                            if (isValidInteger)
                             {
                                 if (i > 31)
                                 {
@@ -293,18 +302,75 @@ namespace IR_Engine
                                 //Term Number
                             }
 
-                            if (isValidNumber && i > 1000000)
+                            if (isValidNumber && i >= 1000000)
                             {
-                              //  bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
+                                string newNumber = (i / 1000000).ToString() + 'M';
+                                if (myMiniPostingListDict.ContainsKey(newNumber))
+                                    myMiniPostingListDict[newNumber] += "," + wordPositionWithSW;
+                                else
+                                    myMiniPostingListDict.Add(newNumber, "{" + wordPositionWithSW);
+
+                                continue;
+                                //  bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
                                 //35 3/4
                             }
+                            else
+                                   if (isValidNumber && isValidInteger)
+                            {
+                                // Console.WriteLine(number);
+                                string strNum = number.ToString();
+                                if (myMiniPostingListDict.ContainsKey(strNum))
+                                    myMiniPostingListDict[strNum] += "," + wordPositionWithSW;
+                                else
+                                    myMiniPostingListDict.Add(strNum, "{" + wordPositionWithSW);
 
+                                continue;
+                            }
                             if (!isValidNumber)
                             {
 
-                            }
-                        }
+                                ///"Si Ahmed Mourad, a 29-year-old Afghan veteran living in Kouba,"
+                                ///"SHIMBUN 1O Jan 87)."
+                                ///"Macedonian published on pages 6-7 the results of an opinion poll"
+                                ///"Kiro Gligorov, President of the Republic      76/15           78/13"
+                                ///"On pages 6 and 7 of its 15-16 January issue, VECER also published"
+                                ///"BALKANS BRANCH AT (703) 733-6481)"
+                                ///"ELAG/25 February/POLCHF/EED/DEW 28/2023Z FEB"
+                                ///"Hours of operation:      0400-2400 GMT Monday-Friday; 24 hours"
+                                ///"Day of publication:      1st and 15th of the month"
+                                ///"Address:                 Zvonimirova 20/a, Rijeka"
+                                ///"Hours of operation:      Monday, Thursday 0810-0000 GMT; Tuesday,"
+                                ///"Wednesday 0810-0045 GMT; Friday"
+                                ///"0825-0015 GMT"
+                                ///"Address:                 Mito Hadzivasilev Jasmin, 910O0 Skopje"
+                                ///"Address:                 Cetinjska 3-III, 11001 Beograd"
+                                ///"Address:                 Brankova 13-15, 11000 Beograd"
+                                ///"Address:                 Narodnog Fronta 45/VII, 11000 Belgrade"
+                                ///"Hours of operation:      0715-0030 GMT (Monday-Friday); 0730-0015"
+                                ///"733-6120.  Comments and queries concerning the World Media Report"
+                                ///"Group, at (703) 733-6131."
+                                ///"Document Number: WMR 94-001, Publication Date: 17 February 1994)"
+                                ///"Washington, DC 20013-2604, Fax: (703) 733-6042.  For additional"
+                                ///"information or assistance, call FBIS at (202) 338-6735."
+                                ///"GIG/28FEB94/OSD/PF 01/0305z Mar"
+                                ///"EAG/BIETZ/jf 1/1717Z MAR"
+                                ///"93-151 \"Regional Census Prompted by Security, Economic Concerns,\" 8"
+                                ///"April 1993, and NEAR EAST SOUTH ASIA REPORT 93AFO622B \"Illegal"
+                                ///"ENEAG/01 Mar/POLCHF/ECONF/TOTF/NEASA Division/jf 1/2129Z MAR"
+                                ///"after the exposure of more than 2O foreign intelligence agents,"
+                                ///"a private television company access to Russia's 4th television"
+                                ///"an approximate cost between 3O and 7O million francs.  The company's"
+                                ///"imported meat from 2O percent to 35 percent; in other words, for"
 
+
+
+                   
+                                Console.WriteLine("Unable to parse '{0}'.", value);
+                                continue;
+                            }
+                            }
+                        
+                    
                         if (Indexer.Months.ContainsKey(termToLower))
                         {
                             partialDate = true;

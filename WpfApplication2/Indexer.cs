@@ -80,7 +80,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _pool = new Semaphore(2, 2);
+            _pool = new Semaphore(3, 3);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))

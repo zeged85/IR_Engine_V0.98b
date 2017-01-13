@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(2, 2) ;
+            Semaphore _ReadFileSemaphore = new Semaphore(4, 4) ;
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
