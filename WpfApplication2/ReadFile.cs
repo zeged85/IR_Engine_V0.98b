@@ -24,18 +24,18 @@ namespace IR_Engine
       //  public static int wordPosition = 0;
         //UTF!!!
         public string filesPathToDelete;
-        public static int totalDocs = 0;
+       // public static volatile int totalDocs = 0;
        // private static List<Thread> ReadFileThreads;
         
        // private static Semaphore _ReadFileSemaphore;
         static int counter;
-
+        
 
         int gil = 0;
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(2, 2) ;
+            Semaphore _ReadFileSemaphore = new Semaphore(5, 5) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -44,7 +44,7 @@ namespace IR_Engine
             // Reference 1:
             //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
 
-            int docNumber = 0;
+            int docNumberInFile = 0;
             int linesInDoc = 0;
             string newDocument = String.Empty;
             //https://msdn.microsoft.com/en-us/library/system.text.stringbuilder(v=vs.110).aspx#StringAndSB
@@ -65,11 +65,11 @@ namespace IR_Engine
                     {
                         if (linesInDoc != 0) //end of document before
                         {
-                     //       ReadFile.wordPosition = 0;
+                     
                             //      System.Console.WriteLine(newDocument);
                             
-                            docNumber++;
-                            totalDocs++;
+                            docNumberInFile++;
+                           
                             //countAmountOfUniqueInDoc = 0;
 
                            // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
@@ -77,16 +77,17 @@ namespace IR_Engine
                           
                            // System.Console.WriteLine("Lines in document:" + linesInDoc);
 
-                            //Indexer.docNumber++;
                             Indexer._DocNumber.WaitOne();
+
                             int freshNum = Interlocked.Increment(ref Indexer.docNumber);
+                       
                             Indexer._DocNumber.ReleaseMutex();
 
                             Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
                             string str = bufferDocument.ToString();
 
 
-                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, str, freshNum, ref DicList));
+                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore,ref _myFilePostings, str, freshNum, ref DicList));
                             // Start the thread, passing the number.
 
                             ReadFileThreads.Add(thread);
@@ -98,28 +99,9 @@ namespace IR_Engine
 
                             //merge dic
                             //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
-                            /*
-                            System.Console.WriteLine("terms in document:" + newDict.Count);
-                            System.Console.WriteLine("Merging in ReadFile...");
-
-                            foreach (KeyValuePair<string, string> entry in newDict)
-                                if (myFilePostings.ContainsKey(entry.Key))
-                                    myFilePostings[entry.Key] += " " + entry.Value;// + "}@" + Indexer.docNumber;
-                                else
-                                    myFilePostings.Add(entry.Key.ToString(), entry.Value);// + "}@" + Indexer.docNumber);
-                            System.Console.WriteLine("Merging in ReadFile... Done.");
-
-                            System.Console.WriteLine("Deleteing string...");
-                            //newDocument = String.Empty; //refresh string
-
-                            //print original
-                            */
+            
                             bufferDocument.Clear();
-                            // System.Console.WriteLine("Deleteing stringg... Done.");
-                            //      printDic(myPostings);
-                            //      Console.WriteLine("-------------------------------");
-                            //           Console.WriteLine("Press any key to continue.");
-                            //      System.Console.ReadKey();
+                 
                         }
                         linesInDoc = 1;
                     }
@@ -137,7 +119,7 @@ namespace IR_Engine
             long fileSize = new System.IO.FileInfo(path).Length;
             Console.WriteLine("File size: " + GetBytesReadable(fileSize));
             Console.WriteLine("Total amount:" + Indexer.docNumber + " Documents.");
-            Console.WriteLine("Documents in file:" + docNumber + " Documents.");
+            Console.WriteLine("Documents in file:" + docNumberInFile + " Documents.");
             Console.WriteLine("-----------------------");
 
             //  printDic(myPostings);
@@ -190,18 +172,19 @@ namespace IR_Engine
         }
 
 
-        private static void DoWork(ref Semaphore _ReadFileSemaphore, object path, int num, ref List<SortedDictionary<string, string>> DicList)
+        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex mut, object path, int num, ref List<SortedDictionary<string, string>> DicList)
         {
             string str = path.ToString();
-            counter--;
+         //   counter--;
             _ReadFileSemaphore.WaitOne(); //limit threads
-         
+            mut.WaitOne();
             SortedDictionary<string, string> newDict = Parse.parseString(str, num);
             //add to main memory first
             //  return newDict;
             DicList.Add(newDict);
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
-            counter++;
+         //   counter++;
+            mut.ReleaseMutex();
             _ReadFileSemaphore.Release();
         }
 
@@ -241,6 +224,7 @@ namespace IR_Engine
                 if (c=='<')
                 {
                     string docnumber = term.Split(new char[] { '>', '|' })[1];
+             
                     Indexer._DocumentMetadata.WaitOne();
                     //  Console.WriteLine()
                     // char[] delimiterCharsLang = { '<', '>' };

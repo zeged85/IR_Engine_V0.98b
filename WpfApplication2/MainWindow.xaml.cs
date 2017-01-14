@@ -17,33 +17,54 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Threading;
+using System.ComponentModel;
 
 namespace WpfApplication2
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         //essential fields
 
-        Indexer tc = new Indexer();
-        Engine s_Engine;
+        //  Indexer tc = new Indexer();
+        ViewModel vm;
+        //Engine s_Engine;
         bool isValid = true;
         string m_documentsPath, m_postingFilesPath;
         // public static bool stemmingSelected;
         string tmpAddress;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public MainWindow()
         {
             InitializeComponent();
+            vm = new ViewModel(new Indexer());
+            DataContext = vm;
+            vm.VM_Progress = 0;
 
+                 vm.PropertyChanged +=
+                          delegate (Object sender, PropertyChangedEventArgs e)
+                          {
+                              NotifyPropertyChanged("MW_" + e.PropertyName);
+                          };
         }
+
+        public void NotifyPropertyChanged(string PropName)
+        {
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
+        }
+        
+
+      
 
         private void Start(object sender, RoutedEventArgs e)
         {
             DateTime m_start = DateTime.Now;
-
+            
             string error = "";
             Indexer.documentsPath = m_documentsPath + "\\";
 
@@ -81,17 +102,35 @@ namespace WpfApplication2
             {
 
 
-                //Thread t1 = new Thread(tc.mmm); ;
+                // Thread t1 = new Thread(tc.mmm); ;
                 //tc.mmm();
                 //t1.Start();
 
-                s_Engine = new Engine();
+               
+               // s_Engine = new Engine(vm.model);
+               // vm.startEngine();
+                //  s_Engine.ignite();
+                Thread t1 = new Thread(vm.startEngine);
+                // t1.Start();
+                //  s_Engine.ignite();
+                Thread t2 = new Thread(delegate() { t1.Start();
+                    t1.Join();
+                    
+             DateTime m_end = DateTime.Now;
+             string m_time = (m_end - m_start).ToString();
+             MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+             
+                    
+                });
+                t2.Start();
+                /*
                 DateTime m_end = DateTime.Now;
                 string m_time = (m_end - m_start).ToString();
                 MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                */
             }
         }
-
+       
         private void documents_Browser(object sender, RoutedEventArgs e)
         {
 
@@ -99,7 +138,7 @@ namespace WpfApplication2
             Dialog.ShowDialog();
             m_documentsPath = Dialog.SelectedPath;
             documentsFolder_Text.Text = m_documentsPath;
-            
+          
         }
 
 
@@ -136,6 +175,7 @@ namespace WpfApplication2
             {
                 Indexer.ifStemming = false;
             }
+         
         }
 
 
@@ -252,8 +292,8 @@ namespace WpfApplication2
             {
                 //test
                 Indexer.postingFilesPath = m_postingFilesPath + "\\";
-                tc.loadPostingFiles();
-                tc.createDictionary();
+                vm.loadPostingFiles();
+                vm.createDictionary();
             }
         }
     }
