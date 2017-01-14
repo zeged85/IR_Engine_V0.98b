@@ -250,6 +250,7 @@ namespace WpfApplication2
                 System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
             else
             {
+                //test
                 Indexer.postingFilesPath = m_postingFilesPath + "\\";
                 tc.loadPostingFiles();
                 tc.createDictionary();
