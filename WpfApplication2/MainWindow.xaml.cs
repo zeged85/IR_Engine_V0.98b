@@ -34,7 +34,10 @@ namespace WpfApplication2
         bool isValid = true;
         string m_documentsPath, m_postingFilesPath;
         // public static bool stemmingSelected;
+        
         string tmpAddress;
+
+        string languageChosen;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -45,11 +48,11 @@ namespace WpfApplication2
             DataContext = vm;
             vm.VM_Progress = 0;
 
-                 vm.PropertyChanged +=
-                          delegate (Object sender, PropertyChangedEventArgs e)
-                          {
-                              NotifyPropertyChanged("MW_" + e.PropertyName);
-                          };
+            vm.PropertyChanged +=
+                     delegate(Object sender, PropertyChangedEventArgs e)
+                     {
+                         NotifyPropertyChanged("MW_" + e.PropertyName);
+                     };
         }
 
         public void NotifyPropertyChanged(string PropName)
@@ -57,14 +60,14 @@ namespace WpfApplication2
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
         }
-        
 
-      
+
+
 
         private void Start(object sender, RoutedEventArgs e)
         {
             DateTime m_start = DateTime.Now;
-            
+
             string error = "";
             Indexer.documentsPath = m_documentsPath + "\\";
 
@@ -106,21 +109,23 @@ namespace WpfApplication2
                 //tc.mmm();
                 //t1.Start();
 
-               
-               // s_Engine = new Engine(vm.model);
-               // vm.startEngine();
+
+                // s_Engine = new Engine(vm.model);
+                // vm.startEngine();
                 //  s_Engine.ignite();
                 Thread t1 = new Thread(vm.startEngine);
                 // t1.Start();
                 //  s_Engine.ignite();
-                Thread t2 = new Thread(delegate() { t1.Start();
+                Thread t2 = new Thread(delegate()
+                {
+                    t1.Start();
                     t1.Join();
-                    
-             DateTime m_end = DateTime.Now;
-             string m_time = (m_end - m_start).ToString();
-             MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
-             
-                    
+
+                    DateTime m_end = DateTime.Now;
+                    string m_time = (m_end - m_start).ToString();
+                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+
+
                 });
                 t2.Start();
                 /*
@@ -130,7 +135,7 @@ namespace WpfApplication2
                 */
             }
         }
-       
+
         private void documents_Browser(object sender, RoutedEventArgs e)
         {
 
@@ -138,7 +143,7 @@ namespace WpfApplication2
             Dialog.ShowDialog();
             m_documentsPath = Dialog.SelectedPath;
             documentsFolder_Text.Text = m_documentsPath;
-          
+
         }
 
 
@@ -156,7 +161,7 @@ namespace WpfApplication2
             m_postingFilesPath = Dialog.SelectedPath;
 
             postingFilesFolder_Text.Text = m_postingFilesPath;
-            
+
         }
 
         private void postingFilesFolderSelected(object sender, RoutedEventArgs e)
@@ -169,80 +174,100 @@ namespace WpfApplication2
             if (Stemming.IsChecked == true)
             {
                 Indexer.ifStemming = true;
-               // System.Windows.MessageBox.Show("Please enter path for process with Stemming");
+                // System.Windows.MessageBox.Show("Please enter path for process with Stemming");
             }
             else
             {
                 Indexer.ifStemming = false;
             }
-         
+
         }
 
 
         private void Reset(object sender, RoutedEventArgs e)
         {
-            // m_postingFilesPath = tmpAddress;
-            if (Stemming.IsChecked == true)
+
+            if (string.IsNullOrEmpty(m_postingFilesPath))
             {
-
-                DirectoryInfo d = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
-                DirectoryInfo dPost = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\PostingFiles");
-                if (d.Exists)
-                {
-                    foreach (FileInfo f in d.GetFiles())
-                        f.Delete();
-                    //   foreach (di di in d.GetDirectories())
-                    //     di.Delete();
-                }
-
-                if (dPost.Exists)
-                {
-                    foreach (FileInfo f in dPost.GetFiles())
-                        f.Delete();
-                    Directory.Delete(m_postingFilesPath + "\\PostingFiles");
-                }
-
-                Indexer.postingFilesPath = tmpAddress;
-                //m_postingFilesPath = tmpAddress;
-
-                DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
-
-                if (stem.Exists)
-                {
-                    foreach (FileInfo f in stem.GetFiles())
-                        f.Delete();
-                    Directory.Delete(m_postingFilesPath + "\\Stemming");
-                }
+                System.Windows.MessageBox.Show("Please choose a path for posting files to erase.");
             }
 
-            DirectoryInfo di = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
-            DirectoryInfo dj = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath + "\\PostingFiles");
-            DirectoryInfo ds = new DirectoryInfo(m_postingFilesPath + "\\Stemming");
-            
-            if (di.Exists)
+            //    else if{
+            //      System.Windows.MessageBox.Show("Folder is empty.\n" + "There is no files to erase.");
+            //}
+            else
             {
-                foreach (FileInfo f in di.GetFiles())
-                    f.Delete();
+                if (Directory.GetFiles(m_postingFilesPath).Length == 0 && Directory.GetDirectories(m_postingFilesPath).Length == 0)
+                {
+                    System.Windows.MessageBox.Show("Folder is empty.\n" + "There is no files to erase.");
 
-                //   foreach (di di in d.GetDirectories())
-                //     di.Delete();
-            }
+                }
+                else
+                {
+                    // m_postingFilesPath = tmpAddress;
+                    if (Stemming.IsChecked == true)
+                    {
 
-            if (dj.Exists)
-            {
-                foreach (FileInfo f in dj.GetFiles())
-                    f.Delete();
-                Directory.Delete(m_postingFilesPath + "\\PostingFiles");
-            }
+                        DirectoryInfo d = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
+                        DirectoryInfo dPost = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\PostingFiles");
+                        if (d.Exists)
+                        {
+                            foreach (FileInfo f in d.GetFiles())
+                                f.Delete();
+                            //   foreach (di di in d.GetDirectories())
+                            //     di.Delete();
+                        }
 
-            if (ds.Exists)
-            {
-                foreach (FileInfo f in ds.GetFiles())
-                    f.Delete();
+                        if (dPost.Exists)
+                        {
+                            foreach (FileInfo f in dPost.GetFiles())
+                                f.Delete();
+                            Directory.Delete(m_postingFilesPath + "\\PostingFiles");
+                        }
 
-                foreach (DirectoryInfo dir in ds.GetDirectories())
-                    dir.Delete(true);
-                Directory.Delete(m_postingFilesPath + "\\Stemming");
+                        Indexer.postingFilesPath = tmpAddress;
+                        //m_postingFilesPath = tmpAddress;
+
+                        DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
+
+                        if (stem.Exists)
+                        {
+                            foreach (FileInfo f in stem.GetFiles())
+                                f.Delete();
+                            Directory.Delete(m_postingFilesPath + "\\Stemming");
+                        }
+                    }
+
+                    DirectoryInfo di = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
+                    DirectoryInfo dj = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath + "\\PostingFiles");
+                    DirectoryInfo ds = new DirectoryInfo(m_postingFilesPath + "\\Stemming");
+
+                    if (di.Exists)
+                    {
+                        foreach (FileInfo f in di.GetFiles())
+                            f.Delete();
+
+                        //   foreach (di di in d.GetDirectories())
+                        //     di.Delete();
+                    }
+
+                    if (dj.Exists)
+                    {
+                        foreach (FileInfo f in dj.GetFiles())
+                            f.Delete();
+                        Directory.Delete(m_postingFilesPath + "\\PostingFiles");
+                    }
+
+                    if (ds.Exists)
+                    {
+                        foreach (FileInfo f in ds.GetFiles())
+                            f.Delete();
+
+                        foreach (DirectoryInfo dir in ds.GetDirectories())
+                            dir.Delete(true);
+                        Directory.Delete(m_postingFilesPath + "\\Stemming");
+                    }
+                }
             }
         }
 
@@ -279,7 +304,9 @@ namespace WpfApplication2
         private void languageChoose_Pressed(object sender, RoutedEventArgs e)
         {
             Language m_Language = new Language();
+            
             m_Language.Show();
+           // languageChosen = 
 
         }
 

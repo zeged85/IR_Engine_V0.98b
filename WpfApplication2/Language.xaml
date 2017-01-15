@@ -1,9 +1,10 @@
 ﻿<Window x:Class="WpfApplication2.Language"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Choose Language" Height="81" Width="305" Background="#FFE0E3F7">
+        Title="Choose Language" Height="88" Width="291" Background="#FFE0E3F7">
 
-    <ComboBox  Margin="10" TextOptions.TextFormattingMode="Display" RenderTransformOrigin="-0.131,4.79">
+    <ComboBox Name="l_combo" Margin="10" TextOptions.TextFormattingMode="Display" RenderTransformOrigin="-0.131,4.79"
+              SelectionChanged="l_combo_SelectionChanged">
         <ComboBoxItem>Afrikaans</ComboBoxItem>
         <ComboBoxItem>French</ComboBoxItem>
         <ComboBoxItem>Arabic</ComboBoxItem>
@@ -60,16 +61,16 @@
         <ComboBoxItem>Span</ComboBoxItem>
         <ComboBoxItem>Pashto</ComboBoxItem>
         <ComboBoxItem>Swedish</ComboBoxItem>
-        <ComboBox>Arabi</ComboBox>
+        <ComboBoxItem>Arabi</ComboBoxItem>
         <ComboBoxItem>Latvian</ComboBoxItem>
-        <ComboBox>Dari</ComboBox>
+        <ComboBoxItem>Dari</ComboBoxItem>
         <ComboBoxItem>Hindi</ComboBoxItem>
-        <ComboBox>Tamil</ComboBox>
-        <ComboBox>Armenian</ComboBox>
+        <ComboBoxItem>Tamil</ComboBoxItem>
+        <ComboBoxItem>Armenian</ComboBoxItem>
         <ComboBoxItem>Georgian</ComboBoxItem>
         <ComboBoxItem>Estonian</ComboBoxItem>
         <ComboBoxItem>Belarusian</ComboBoxItem>
-        <ComboBox>Tajik</ComboBox>
+        <ComboBoxItem>Tajik</ComboBoxItem>
         <ComboBoxItem>Lithuanian</ComboBoxItem>
         <ComboBoxItem>Kazakh</ComboBoxItem>
         <ComboBoxItem>International</ComboBoxItem>
