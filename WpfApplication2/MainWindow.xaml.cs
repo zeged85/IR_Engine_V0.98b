@@ -36,6 +36,7 @@ namespace WpfApplication2
         // public static bool stemmingSelected;
         
         string tmpAddress;
+        string tmpForNoStemming;
 
         string languageChosen;
 
@@ -71,13 +72,16 @@ namespace WpfApplication2
             string error = "";
             Indexer.documentsPath = m_documentsPath + "\\";
 
+            tmpForNoStemming = m_postingFilesPath + "\\";
+
             if (Indexer.ifStemming == true)
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
             }
             else
             {
-                Indexer.postingFilesPath = m_postingFilesPath + "\\";
+                Indexer.postingFilesPath = tmpForNoStemming;
+               // Indexer.postingFilesPath = m_postingFilesPath + "\\";
             }
             if (!Directory.Exists(m_documentsPath))
             {
@@ -103,6 +107,7 @@ namespace WpfApplication2
 
             else
             {
+                Indexer.docNumber = 0;
 
 
                 // Thread t1 = new Thread(tc.mmm); ;
@@ -120,7 +125,7 @@ namespace WpfApplication2
                 {
                     t1.Start();
                     t1.Join();
-
+                    Indexer.clearAllData();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
                     MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
@@ -128,6 +133,7 @@ namespace WpfApplication2
 
                 });
                 t2.Start();
+               // t2.Join();
                 /*
                 DateTime m_end = DateTime.Now;
                 string m_time = (m_end - m_start).ToString();
@@ -293,7 +299,7 @@ namespace WpfApplication2
                 while ((str = s.ReadLine()) != null)
                 {
                     split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
-
+                    
                     m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
                 }
                 s.Close();

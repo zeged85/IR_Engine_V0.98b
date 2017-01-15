@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using IR_Engine;
+using IR_Engine_TRD;
+using WpfApplication2;
 
 namespace WpfApplication2
 {
@@ -33,7 +36,8 @@ namespace WpfApplication2
            // languageChosen = comBox.SelectionBoxItemStringFormat;
            // languageChosen = comBox.SelectedValue.ToString();
             //  languageChosen = comBox.SelectedItem.ToString();
-            // = comBox.SelectionBoxItem.ToString();
+            Searcher.languageChosed = comBox.SelectionBoxItem.ToString();
+            
             //MessageBox.Show(languageChosen);
             //Console.WriteLine(languageChosen);
         }
