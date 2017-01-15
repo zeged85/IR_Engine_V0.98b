@@ -74,15 +74,18 @@ namespace WpfApplication2
 
             tmpForNoStemming = m_postingFilesPath + "\\";
 
-            if (Indexer.ifStemming == true)
+            if (/*Indexer.ifStemming == true*/ Stemming.IsChecked==true)
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
             }
-            else
+            else if(/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
             {
                 Indexer.postingFilesPath = tmpForNoStemming;
                // Indexer.postingFilesPath = m_postingFilesPath + "\\";
             }
+
+
+
             if (!Directory.Exists(m_documentsPath))
             {
                 isValid = false;
@@ -108,7 +111,6 @@ namespace WpfApplication2
             else
             {
                 Indexer.docNumber = 0;
-
 
                 // Thread t1 = new Thread(tc.mmm); ;
                 //tc.mmm();
