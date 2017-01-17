@@ -109,7 +109,7 @@ namespace IR_Engine
             freqInAllCorpusList.Clear();
             uniqueTerms.Clear();
             PostingFileTermList.Clear();
-            stopWords.Clear();
+            //stopWords.Clear();
             DocumentMetadata.Clear();
             threads.Clear();
         }
@@ -356,6 +356,7 @@ namespace IR_Engine
             }
             file2.Close();
 
+          //  PostingFileTermList.Clear();
         }
 
         public void UniqueWordsQuery() //update metadata.txt
@@ -576,6 +577,7 @@ namespace IR_Engine
 
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
             _pool.Release();
+           // newDict.Clear();
         }
 
         void SavePostingToStaticDictionary()

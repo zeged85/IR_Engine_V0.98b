@@ -34,7 +34,7 @@ namespace WpfApplication2
         bool isValid = true;
         string m_documentsPath, m_postingFilesPath;
         // public static bool stemmingSelected;
-        
+
         string tmpAddress;
         string tmpForNoStemming;
 
@@ -74,14 +74,14 @@ namespace WpfApplication2
 
             tmpForNoStemming = m_postingFilesPath + "\\";
 
-            if (/*Indexer.ifStemming == true*/ Stemming.IsChecked==true)
+            if (/*Indexer.ifStemming == true*/ Stemming.IsChecked == true)
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
             }
-            else if(/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
+            else if (/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
             {
                 Indexer.postingFilesPath = tmpForNoStemming;
-               // Indexer.postingFilesPath = m_postingFilesPath + "\\";
+                // Indexer.postingFilesPath = m_postingFilesPath + "\\";
             }
 
 
@@ -128,6 +128,7 @@ namespace WpfApplication2
                     t1.Start();
                     t1.Join();
                     Indexer.clearAllData();
+                    Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
                     MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
@@ -135,7 +136,7 @@ namespace WpfApplication2
 
                 });
                 t2.Start();
-               // t2.Join();
+                // t2.Join();
                 /*
                 DateTime m_end = DateTime.Now;
                 string m_time = (m_end - m_start).ToString();
@@ -236,14 +237,14 @@ namespace WpfApplication2
                         Indexer.postingFilesPath = tmpAddress;
                         //m_postingFilesPath = tmpAddress;
 
-                        DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
+                        //       DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
 
-                        if (stem.Exists)
-                        {
-                            foreach (FileInfo f in stem.GetFiles())
-                                f.Delete();
-                            Directory.Delete(m_postingFilesPath + "\\Stemming");
-                        }
+                        //     if (stem.Exists)
+                        //    {
+                        //      foreach (FileInfo f in stem.GetFiles())
+                        //        f.Delete();
+                        //   Directory.Delete(m_postingFilesPath + "\\Stemming");
+                        // }
                     }
 
                     DirectoryInfo di = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
@@ -294,27 +295,59 @@ namespace WpfApplication2
 
             else
             {
-                DictionaryWindow m_Dictionary = new DictionaryWindow();
-                string str;
-                string[] split;
-                StreamReader s = new StreamReader(m_postingFilesPath + "\\Dictionary.txt");
-                while ((str = s.ReadLine()) != null)
+                if (!Stemming.IsChecked == true)
                 {
-                    split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
-                    
-                    m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
+                    if (File.Exists(m_postingFilesPath + "\\Dictionary.txt"))
+                    {
+                        DictionaryWindow m_Dictionary = new DictionaryWindow();
+                        string str;
+                        string[] split;
+                        StreamReader s = new StreamReader(m_postingFilesPath + "\\Dictionary.txt");
+                        while ((str = s.ReadLine()) != null)
+                        {
+                            split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
+
+                            m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
+                        }
+                        s.Close();
+                        m_Dictionary.Show();
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("The requested Dictionary (without stemming)\n is not exist in the current folder.");
+                    }
                 }
-                s.Close();
-                m_Dictionary.Show();
+                else
+                {
+                    if (File.Exists(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt"))
+                    {
+                        DictionaryWindow m_Dictionary = new DictionaryWindow();
+                        string str;
+                        string[] split;
+                        StreamReader s = new StreamReader(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt");
+                        while ((str = s.ReadLine()) != null)
+                        {
+                            split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
+
+                            m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
+                        }
+                        s.Close();
+                        m_Dictionary.Show();
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("The requested Dictionary (with stemming)\n is not exist in the current folder.");
+                    }
+                }
             }
         }
 
         private void languageChoose_Pressed(object sender, RoutedEventArgs e)
         {
             Language m_Language = new Language();
-            
+
             m_Language.Show();
-           // languageChosen = 
+            // languageChosen = 
 
         }
 
@@ -325,10 +358,21 @@ namespace WpfApplication2
                 System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
             else
             {
-                //test
-                Indexer.postingFilesPath = m_postingFilesPath + "\\";
-                vm.loadPostingFiles();
-                vm.createDictionary();
+                if (!Stemming.IsChecked == true)
+                {
+                    //test
+                    Indexer.postingFilesPath = m_postingFilesPath + "\\";
+                    vm.loadPostingFiles();
+                    vm.createDictionary();
+                }
+                else
+                {
+                    Indexer.postingFilesPath = m_postingFilesPath + "\\Stemming" + "\\";
+                    vm.loadPostingFiles();
+                    vm.createDictionary();
+                }
+
+                Indexer.clearAllData();            
             }
         }
     }
