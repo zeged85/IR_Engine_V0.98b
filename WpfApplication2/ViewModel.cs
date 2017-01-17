@@ -71,6 +71,8 @@ namespace IR_Engine
         {
             //make dict singleton
             model_indexer.loadDictionary();
+            startSearcher();
+
         }
         
         public void startEngine()
@@ -118,7 +120,7 @@ namespace IR_Engine
 
             //
 
-           model_indexer. loadDictionary(); //from dict.txt
+        //   model_indexer. loadDictionary(); //from dict.txt
 
             //
 
@@ -135,7 +137,7 @@ namespace IR_Engine
 
 
             //
-
+            //check is indexer full
             model_indexer.loadDictionary(); //from dict.txt
 
             //
@@ -145,7 +147,7 @@ namespace IR_Engine
         public void startSearcher()
         {
             Seracher search = new Seracher();
-            if (search.proccessQuery("test"))
+            if (search.proccessQuery("test "))
                 Console.WriteLine("Word exists in memory");
             else
                 Console.WriteLine("Word does not exist in memory");
