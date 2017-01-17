@@ -139,10 +139,11 @@ namespace WpfApplication2
 
                 });
                 t2.Start();
-                
-
-
-               
+                /*
+                DateTime m_end = DateTime.Now;
+                string m_time = (m_end - m_start).ToString();
+                MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                */
             }
         }
 
