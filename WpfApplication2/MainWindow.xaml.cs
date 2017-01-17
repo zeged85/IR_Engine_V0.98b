@@ -279,60 +279,7 @@ namespace WpfApplication2
                     {
                         dir.Delete(true);
                     }
-                    /*
-
-                    // m_postingFilesPath = tmpAddress;
-                    if (Stemming.IsChecked == true)
-                    {
-
-                        DirectoryInfo d = new DirectoryInfo( m_postingFilesPath);
-                        DirectoryInfo dPost = new DirectoryInfo(m_postingFilesPath + "\\PostingFiles");
-                        if (d.Exists)
-                        {
-                            foreach (FileInfo f in d.GetFiles())
-                                f.Delete();
-                            //   foreach (di di in d.GetDirectories())
-                            //     di.Delete();
-                        }
-
-                        if (dPost.Exists)
-                        {
-                            foreach (FileInfo f in dPost.GetFiles())
-                                f.Delete();
-                            Directory.Delete(m_postingFilesPath + "\\PostingFiles");
-                        }
-
-                        Indexer.postingFilesPath = tmpAddress;
-                        
-                    }
-
-                    DirectoryInfo di = new DirectoryInfo( m_postingFilesPath);
-                    DirectoryInfo dj = new DirectoryInfo( m_postingFilesPath + "\\PostingFiles");
-                    DirectoryInfo ds = new DirectoryInfo(m_postingFilesPath + "\\Stemming");
-
-                    if (di.Exists)
-                    {
-                        foreach (FileInfo f in di.GetFiles())
-                            f.Delete();
-                    }
-
-                    if (dj.Exists)
-                    {
-                        foreach (FileInfo f in dj.GetFiles())
-                            f.Delete();
-                        Directory.Delete(m_postingFilesPath + "\\PostingFiles");
-                    }
-
-                    if (ds.Exists)
-                    {
-                        foreach (FileInfo f in ds.GetFiles())
-                            f.Delete();
-
-                        foreach (DirectoryInfo dir in ds.GetDirectories())
-                            dir.Delete(true);
-                        Directory.Delete(m_postingFilesPath + "\\Stemming");
-                    }
-                    */
+            
                     System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
                 }
             }
@@ -353,14 +300,13 @@ namespace WpfApplication2
 
             else
             {
-                if (!Stemming.IsChecked == true)
-                {
-                    if (File.Exists(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt"))
+            
+                    if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
                     {
                         DictionaryWindow m_Dictionary = new DictionaryWindow();
                         string str;
                         string[] split;
-                        StreamReader s = new StreamReader(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt");
+                        StreamReader s = new StreamReader(Indexer.postingFilesPath + "\\Dictionary.txt");
                         while ((str = s.ReadLine()) != null)
                         {
                             split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -374,29 +320,8 @@ namespace WpfApplication2
                     {
                         System.Windows.Forms.MessageBox.Show("The requested Dictionary (without stemming)\n is not exist in the current folder.");
                     }
-                }
-                else
-                {
-                    if (File.Exists(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt"))
-                    {
-                        DictionaryWindow m_Dictionary = new DictionaryWindow();
-                        string str;
-                        string[] split;
-                        StreamReader s = new StreamReader(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt");
-                        while ((str = s.ReadLine()) != null)
-                        {
-                            split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
-
-                            m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
-                        }
-                        s.Close();
-                        m_Dictionary.Show();
-                    }
-                    else
-                    {
-                        System.Windows.Forms.MessageBox.Show("The requested Dictionary (with stemming)\n is not exist in the current folder.");
-                    }
-                }
+                
+                
             }
         }
 
@@ -417,35 +342,21 @@ namespace WpfApplication2
                 System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
             else
             {
-                if (!Stemming.IsChecked == true)
-                {
-                    if (!File.Exists(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt"))
+                
+                    if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
                     {
                         //test
-                        Indexer.postingFilesPath = m_postingFilesPath + "\\UnStemming" + "\\";
-                        vm.loadPostingFiles();
-                        vm.createDictionary();
+                  
+                        vm.loadDictionary();
                     }
                     else
                     {
                         System.Windows.Forms.MessageBox.Show("Requested dictionary for files created without Stemming,\nIs already exists.");
                     }
-                }
-                else
-                {
-                    if (!File.Exists(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt"))
-                    {
-                        Indexer.postingFilesPath = m_postingFilesPath + "\\Stemming" + "\\";
-                        vm.loadPostingFiles();
-                        vm.createDictionary();
-                    }
-                    else
-                    {
-                        System.Windows.Forms.MessageBox.Show("Requested dictionary for files created with Stemming,\nIs already exists.");
-                    }
-                }
-
-                Indexer.clearAllData();
+                
+                
+              //  vm.loadDictionary();
+              //  Indexer.clearAllData();
             }
         }
     }
