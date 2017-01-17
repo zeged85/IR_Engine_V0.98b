@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(5, 5) ; //one for every file
+            Semaphore _ReadFileSemaphore = new Semaphore(8, 8) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -86,7 +86,7 @@ namespace IR_Engine
                             Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
                             string str = bufferDocument.ToString();
 
-
+                           // DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList);
                             Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore,ref _myFilePostings, str, freshNum, ref DicList));
                             // Start the thread, passing the number.
 
