@@ -106,10 +106,13 @@ namespace WpfApplication2
                 //tc.mmm();
                 //t1.Start();
 
-               
-               // s_Engine = new Engine(vm.model);
-               // vm.startEngine();
+
+                // s_Engine = new Engine(vm.model);
+                // vm.startEngine();
                 //  s_Engine.ignite();
+
+              //  vm.startEngine();
+                
                 Thread t1 = new Thread(vm.startEngine);
                 // t1.Start();
                 //  s_Engine.ignite();
@@ -123,11 +126,10 @@ namespace WpfApplication2
                     
                 });
                 t2.Start();
-                /*
-                DateTime m_end = DateTime.Now;
-                string m_time = (m_end - m_start).ToString();
-                MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
-                */
+                
+
+
+               
             }
         }
        
