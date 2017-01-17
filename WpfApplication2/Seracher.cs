@@ -4,14 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IR_Engine_TRD
+namespace IR_Engine
 {
-    class Seracher
+    public class Seracher
     {
-       // Searcher(string dictionary, string postingFiles)
-      //  {
 
+ 
+        public bool proccessQuery(string query)
+        {
 
-      //  }
+            if (Indexer.myPostings.ContainsKey(query))
+            {
+                string val = Indexer.myPostings[query];
+                Console.WriteLine(query + " : " + val);
+                return true;
+            }
+            return false;
+
+        }
+
+        
+
     }
 }

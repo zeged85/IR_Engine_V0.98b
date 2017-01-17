@@ -78,6 +78,7 @@ namespace WpfApplication2
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
                 Indexer.ifStemming = true;
+                
             }
             else if (/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
             {
@@ -146,6 +147,10 @@ namespace WpfApplication2
                 string m_time = (m_end - m_start).ToString();
                 MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
                 */
+
+
+
+
             }
         }
 
@@ -187,10 +192,14 @@ namespace WpfApplication2
             if (Stemming.IsChecked == true)
             {
                 Indexer.ifStemming = true;
+                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
+             
                 // System.Windows.MessageBox.Show("Please enter path for process with Stemming");
             }
             else
             {
+                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "UnStemming" + "\\";
+               
                 Indexer.ifStemming = false;
             }
 
@@ -365,18 +374,20 @@ namespace WpfApplication2
                 if (!Stemming.IsChecked == true)
                 {
                     //test
-                    Indexer.postingFilesPath = m_postingFilesPath + "\\";
-                    vm.loadPostingFiles();
-                    vm.createDictionary();
+                    Indexer.postingFilesPath = m_postingFilesPath + "\\UnStemming" + "\\";
+                    //  vm.loadPostingFiles();
+                    //  vm.createDictionary();
                 }
                 else
                 {
                     Indexer.postingFilesPath = m_postingFilesPath + "\\Stemming" + "\\";
-                    vm.loadPostingFiles();
-                    vm.createDictionary();
+                    //  vm.loadPostingFiles();
+                    //  vm.createDictionary();
+                 
                 }
 
-                Indexer.clearAllData();            
+                vm.loadDictionary();
+            //    Indexer.clearAllData();            
             }
         }
     }

@@ -232,18 +232,19 @@ namespace IR_Engine
             foreach (string dirToBeDELETED in directories)
             {
                 //delete all folders
-                if (dirToBeDELETED != postingFilesPath + "PostingFiles"/*dbpath*/ && dirToBeDELETED != postingFilesPath + "Stemming")
+                
+                if (dirToBeDELETED != postingFilesPath + "PostingFiles"/*dbpath*/ /* && dirToBeDELETED != postingFilesPath + "Stemming" */)
                 {
-                    ProcessDirectory(dirToBeDELETED, DeletePostingFiles);
+                    ProcessDirectory(dirToBeDELETED, DeleteFile);
                     //delete directories
                     Directory.Delete(dirToBeDELETED, true);
                 }
             }
             //delete all files
-            Console.WriteLine("deleteing all files...");
+            Console.WriteLine("deleteing all files in:" + postingFilesPath);
             string[] fileEntries = Directory.GetFiles(postingFilesPath);
             foreach (string fileName in fileEntries)
-                ProcessFile(fileName, DeletePostingFiles);
+                ProcessFile(fileName, DeleteFile);
 
         }
 
@@ -346,7 +347,7 @@ namespace IR_Engine
                 }
 
                 // myPostings[term] = "f:" + freqInAllCorpus;
-                file2.Write(t.ToString() + " : #" + freqInAllCorpus + ", " + " #df : " + amountOfDocs);
+                file2.Write(t.ToString() + " ^ #" + freqInAllCorpus + ", " + " #df : " + amountOfDocs);
 
                 foreach (Tuple<string, int> tup in shortDocAndFreq)
                 {
@@ -468,6 +469,18 @@ namespace IR_Engine
 
         }
 
+        public void loadDictionary()
+        {
+            Console.WriteLine("Loading File '{0}'.", postingFilesPath + @"\Dictionary.txt");
+
+
+            myPostings = ReadFile.fileToDictionary(postingFilesPath + @"\Dictionary.txt");
+            
+            Console.WriteLine("Dictionary loaded.");
+
+        }
+
+
         //https://msdn.microsoft.com/en-us/library/07wt70x2(v=vs.110).aspx
         // Process all files in the directory passed in, recurse on any directories 
         // that are found, and process the files they contain.
@@ -517,7 +530,7 @@ namespace IR_Engine
         /// </summary>
         /// <param name="path">Full path to file about to be delete</param>
         /// <returns></returns>
-        int DeletePostingFiles(string path)
+        int DeleteFile(string path)
         {
             //CAREFUL
             File.Delete(path);

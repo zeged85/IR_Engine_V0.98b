@@ -28,5 +28,7 @@ namespace IR_Engine
         void dumpDocumentMetadata();
         void loadPostingFiles();
         void createDictionary();
+
+        void loadDictionary();
     }
 }

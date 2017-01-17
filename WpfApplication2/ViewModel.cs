@@ -10,11 +10,11 @@ namespace IR_Engine
     class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private IModel model;
+        private IModel model_indexer;
         public ViewModel(IModel index)
         {
-            this.model = index;
-            model.PropertyChanged +=
+            this.model_indexer = index;
+            model_indexer.PropertyChanged +=
                           delegate(Object sender, PropertyChangedEventArgs e)
                           {
                               this.NotifyPropertyChanged("VM_" + e.PropertyName);
@@ -27,7 +27,7 @@ namespace IR_Engine
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
 
-            progress = model.Progress;
+            progress = model_indexer.Progress;
 
         }
 
@@ -54,7 +54,7 @@ namespace IR_Engine
         }
 
 
-
+        /*
         public void loadPostingFiles()
         {
             model.loadPostingFiles();
@@ -65,57 +65,91 @@ namespace IR_Engine
         {
             model.createDictionary();
         }
+        */
 
+            public void loadDictionary()
+        {
+            //make dict singleton
+            model_indexer.loadDictionary();
+        }
+        
         public void startEngine()
         {
 
-            model.loadMonths();
+            model_indexer.loadMonths();
 
-            model.initiate(); //
+            model_indexer.initiate(); //
 
-            model.Progress = 5;
+            model_indexer.Progress = 5;
 
-            model.freeMemory(); // create last folder
+            model_indexer.freeMemory(); // create last folder
 
-            model.Progress = 10;
+            model_indexer.Progress = 10;
 
-            model.MergeAllToSingleUnSorted();
+            model_indexer.MergeAllToSingleUnSorted();
 
-            model.Progress = 20;
+            model_indexer.Progress = 20;
 
-            model.sort();
+            model_indexer.sort();
 
-            model.Progress = 30;
+            model_indexer.Progress = 30;
 
-            model.deleteGarbage();
+            model_indexer.deleteGarbage();
 
-            model.Progress = 40;
+            model_indexer.Progress = 40;
 
-            model.dumpDocumentMetadata();
+            model_indexer.dumpDocumentMetadata(); //create meta.txt
 
-            model.Progress = 50;
+            model_indexer.Progress = 50;
 
-            model.loadPostingFiles();
+            model_indexer.loadPostingFiles();
 
-            model.Progress = 60;
+            model_indexer.Progress = 60;
 
-            model.loadMetadata();
+            model_indexer.loadMetadata();
 
-            model.Progress = 70;
+            model_indexer.Progress = 70;
 
-            model.createDictionary();
+            model_indexer.createDictionary(); // and save to file dict.txt
 
-            model.Progress = 80;
+            //
 
-            model.UniqueWordsQuery();
+            model_indexer.Progress = 80;
 
-            model.Progress = 90;
+            //
 
-            model.PrintfreqInAllCorpusList(); //
+           model_indexer. loadDictionary(); //from dict.txt
 
-            model.Progress = 100;
+            //
 
-            model.mmm();
+
+            model_indexer.UniqueWordsQuery();
+
+            model_indexer.Progress = 90;
+
+            model_indexer.PrintfreqInAllCorpusList(); //
+
+            model_indexer.Progress = 100;
+
+            model_indexer.mmm();
+
+
+            //
+
+            model_indexer.loadDictionary(); //from dict.txt
+
+            //
+
+        }
+
+        public void startSearcher()
+        {
+            Seracher search = new Seracher();
+            if (search.proccessQuery("test"))
+                Console.WriteLine("Word exists in memory");
+            else
+                Console.WriteLine("Word does not exist in memory");
+
         }
     }
 }
