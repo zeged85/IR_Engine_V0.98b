@@ -300,7 +300,7 @@ namespace IR_Engine
 
         public void createDictionary() // count unique
         {
-           // amountOfUnique = 0;
+            //amountOfUnique = 0;
 
             // var list = myPostings.Keys.ToList();
             PostingFileTermList = myPostings.Keys.ToList();

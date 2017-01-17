@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.ComponentModel;
 
+
 namespace WpfApplication2
 {
     /// <summary>
@@ -110,21 +111,81 @@ namespace WpfApplication2
                 System.Windows.Forms.MessageBox.Show(error);
 
 
+            /*
+            if (File.Exists(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt") && File.Exists(m_postingFilesPath + "\\UnStemming" + "\\MetaData.txt") && Directory.Exists(m_postingFilesPath + "\\UnStemming" + "\\PostingFiles") && !Stemming.IsChecked==true)
+            {
+                DialogResult d = System.Windows.Forms.MessageBox.Show("Indexed Files without Stemming already been created. Erase Them and start over?", "Confirm", MessageBoxButtons.YesNo);
+
+                if ( d == System.Windows.Forms.DialogResult.No)
+                {
+                    System.Windows.Forms.MessageBox.Show("Bye Bye");
+                }
+                else
+                {
+                    Reset(this, new RoutedEventArgs());
+
+                    Indexer.docNumber = 0;
+
+                    Thread t1 = new Thread(vm.startEngine);
+                    // t1.Start();
+                    //  s_Engine.ignite();
+                    Thread t2 = new Thread(delegate()
+                    {
+                        t1.Start();
+                        t1.Join();
+                        Indexer.clearAllData();
+                        Indexer.stopWords.Clear();
+                        DateTime m_end = DateTime.Now;
+                        string m_time = (m_end - m_start).ToString();
+                        MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+
+                    });
+                    t2.Start();
+
+                }
+            }
+
+            if (File.Exists(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt") && File.Exists(m_postingFilesPath + "\\Stemming" + "\\MetaData.txt") && Directory.Exists(m_postingFilesPath + "\\Stemming" + "\\PostingFiles") && Stemming.IsChecked==true)
+            {
+                DialogResult d = System.Windows.Forms.MessageBox.Show("Indexed Files with Stemming already been created. Erase Them and start over?", "Confirm", MessageBoxButtons.YesNo);
+
+                if (d == System.Windows.Forms.DialogResult.No)
+                {
+                    System.Windows.Forms.MessageBox.Show("Bye Bye");
+                }
+                else
+                {
+                    Reset(this, new RoutedEventArgs());
+
+                    Indexer.docNumber = 0;
+
+                    Thread t1 = new Thread(vm.startEngine);
+                    // t1.Start();
+                    //  s_Engine.ignite();
+                    Thread t2 = new Thread(delegate()
+                    {
+                        t1.Start();
+                        t1.Join();
+                        Indexer.clearAllData();
+                        Indexer.stopWords.Clear();
+                        DateTime m_end = DateTime.Now;
+                        string m_time = (m_end - m_start).ToString();
+                        MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+
+                    });
+                    t2.Start();
+                }
+            }
+            */
+
+
+
+
+            
             else
             {
                 Indexer.docNumber = 0;
 
-                // Thread t1 = new Thread(tc.mmm); ;
-                //tc.mmm();
-                //t1.Start();
-
-
-                // s_Engine = new Engine(vm.model);
-                // vm.startEngine();
-                //  s_Engine.ignite();
-
-              //  vm.startEngine();
-                
                 Thread t1 = new Thread(vm.startEngine);
                 // t1.Start();
                 //  s_Engine.ignite();
@@ -138,32 +199,25 @@ namespace WpfApplication2
                     string m_time = (m_end - m_start).ToString();
                     MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
 
-
                 });
                 t2.Start();
-                /*
-                DateTime m_end = DateTime.Now;
-                string m_time = (m_end - m_start).ToString();
-                MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
-                */
             }
+            
         }
 
         private void documents_Browser(object sender, RoutedEventArgs e)
         {
-
             FolderBrowserDialog Dialog = new FolderBrowserDialog();
             Dialog.ShowDialog();
             m_documentsPath = Dialog.SelectedPath;
             documentsFolder_Text.Text = m_documentsPath;
-
         }
 
 
         private void documentsFolderSelected(object sender, RoutedEventArgs e)
         {
             m_documentsPath = documentsFolder_Text.Text;
-            System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
+            // System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
         }
 
 
@@ -174,7 +228,6 @@ namespace WpfApplication2
             m_postingFilesPath = Dialog.SelectedPath;
 
             postingFilesFolder_Text.Text = m_postingFilesPath;
-
         }
 
         private void postingFilesFolderSelected(object sender, RoutedEventArgs e)
@@ -187,13 +240,11 @@ namespace WpfApplication2
             if (Stemming.IsChecked == true)
             {
                 Indexer.ifStemming = true;
-                // System.Windows.MessageBox.Show("Please enter path for process with Stemming");
             }
             else
             {
                 Indexer.ifStemming = false;
             }
-
         }
 
 
@@ -205,24 +256,32 @@ namespace WpfApplication2
                 System.Windows.MessageBox.Show("Please choose a path for posting files to erase.");
             }
 
-            //    else if{
-            //      System.Windows.MessageBox.Show("Folder is empty.\n" + "There is no files to erase.");
-            //}
             else
             {
                 if (Directory.GetFiles(m_postingFilesPath).Length == 0 && Directory.GetDirectories(m_postingFilesPath).Length == 0)
                 {
                     System.Windows.MessageBox.Show("Folder is empty.\n" + "There is no files to erase.");
-
                 }
                 else
                 {
+                    System.IO.DirectoryInfo di = new DirectoryInfo(m_postingFilesPath);
+
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                    foreach (DirectoryInfo dir in di.GetDirectories())
+                    {
+                        dir.Delete(true);
+                    }
+                    /*
+
                     // m_postingFilesPath = tmpAddress;
                     if (Stemming.IsChecked == true)
                     {
 
-                        DirectoryInfo d = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
-                        DirectoryInfo dPost = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\PostingFiles");
+                        DirectoryInfo d = new DirectoryInfo( m_postingFilesPath);
+                        DirectoryInfo dPost = new DirectoryInfo(m_postingFilesPath + "\\PostingFiles");
                         if (d.Exists)
                         {
                             foreach (FileInfo f in d.GetFiles())
@@ -239,29 +298,17 @@ namespace WpfApplication2
                         }
 
                         Indexer.postingFilesPath = tmpAddress;
-                        //m_postingFilesPath = tmpAddress;
-
-                        //       DirectoryInfo stem = new DirectoryInfo(/*TempClass.postingFilesPath*/m_postingFilesPath + "\\Stemming");
-
-                        //     if (stem.Exists)
-                        //    {
-                        //      foreach (FileInfo f in stem.GetFiles())
-                        //        f.Delete();
-                        //   Directory.Delete(m_postingFilesPath + "\\Stemming");
-                        // }
+                        
                     }
 
-                    DirectoryInfo di = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath);
-                    DirectoryInfo dj = new DirectoryInfo(/*TempClass.postingFilesPath*/ m_postingFilesPath + "\\PostingFiles");
+                    DirectoryInfo di = new DirectoryInfo( m_postingFilesPath);
+                    DirectoryInfo dj = new DirectoryInfo( m_postingFilesPath + "\\PostingFiles");
                     DirectoryInfo ds = new DirectoryInfo(m_postingFilesPath + "\\Stemming");
 
                     if (di.Exists)
                     {
                         foreach (FileInfo f in di.GetFiles())
                             f.Delete();
-
-                        //   foreach (di di in d.GetDirectories())
-                        //     di.Delete();
                     }
 
                     if (dj.Exists)
@@ -280,6 +327,8 @@ namespace WpfApplication2
                             dir.Delete(true);
                         Directory.Delete(m_postingFilesPath + "\\Stemming");
                     }
+                    */
+                    System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
                 }
             }
         }
@@ -301,12 +350,12 @@ namespace WpfApplication2
             {
                 if (!Stemming.IsChecked == true)
                 {
-                    if (File.Exists(m_postingFilesPath + "\\Dictionary.txt"))
+                    if (File.Exists(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt"))
                     {
                         DictionaryWindow m_Dictionary = new DictionaryWindow();
                         string str;
                         string[] split;
-                        StreamReader s = new StreamReader(m_postingFilesPath + "\\Dictionary.txt");
+                        StreamReader s = new StreamReader(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt");
                         while ((str = s.ReadLine()) != null)
                         {
                             split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -357,6 +406,7 @@ namespace WpfApplication2
 
         private void loadDictionaryPressed(object sender, RoutedEventArgs e)
         {
+            // niros - last commit
 
             if (m_postingFilesPath == null)
                 System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
@@ -364,19 +414,33 @@ namespace WpfApplication2
             {
                 if (!Stemming.IsChecked == true)
                 {
-                    //test
-                    Indexer.postingFilesPath = m_postingFilesPath + "\\";
-                    vm.loadPostingFiles();
-                    vm.createDictionary();
+                    if (!File.Exists(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt"))
+                    {
+                        //test
+                        Indexer.postingFilesPath = m_postingFilesPath + "\\UnStemming" + "\\";
+                        vm.loadPostingFiles();
+                        vm.createDictionary();
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("Requested dictionary for files created without Stemming,\nIs already exists.");
+                    }
                 }
                 else
                 {
-                    Indexer.postingFilesPath = m_postingFilesPath + "\\Stemming" + "\\";
-                    vm.loadPostingFiles();
-                    vm.createDictionary();
+                    if (!File.Exists(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt"))
+                    {
+                        Indexer.postingFilesPath = m_postingFilesPath + "\\Stemming" + "\\";
+                        vm.loadPostingFiles();
+                        vm.createDictionary();
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("Requested dictionary for files created with Stemming,\nIs already exists.");
+                    }
                 }
 
-                Indexer.clearAllData();            
+                Indexer.clearAllData();
             }
         }
     }
