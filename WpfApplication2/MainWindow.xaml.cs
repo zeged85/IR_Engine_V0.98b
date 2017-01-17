@@ -77,10 +77,12 @@ namespace WpfApplication2
             if (/*Indexer.ifStemming == true*/ Stemming.IsChecked == true)
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
+                Indexer.ifStemming = true;
             }
             else if (/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
             {
-                Indexer.postingFilesPath = tmpForNoStemming;
+                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "UnStemming" + "\\";
+                Indexer.ifStemming = false;
                 // Indexer.postingFilesPath = m_postingFilesPath + "\\";
             }
 
