@@ -15,7 +15,7 @@ namespace IR_Engine
         {
             this.model = index;
             model.PropertyChanged +=
-                          delegate (Object sender, PropertyChangedEventArgs e)
+                          delegate(Object sender, PropertyChangedEventArgs e)
                           {
                               this.NotifyPropertyChanged("VM_" + e.PropertyName);
                           };
@@ -23,12 +23,12 @@ namespace IR_Engine
 
         public void NotifyPropertyChanged(string PropName)
         {
-            
+
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
 
             progress = model.Progress;
-           
+
         }
 
         private int progress;
@@ -39,7 +39,6 @@ namespace IR_Engine
             {
                 progress = value;
                 this.NotifyPropertyChanged("VM_Progress");
-                //    model.moveArm(az, elv1, elv2, grip);
             }
         }
 
@@ -59,7 +58,7 @@ namespace IR_Engine
         public void loadPostingFiles()
         {
             model.loadPostingFiles();
-           
+
         }
 
         public void createDictionary()
@@ -69,7 +68,6 @@ namespace IR_Engine
 
         public void startEngine()
         {
-
 
             model.loadMonths();
 

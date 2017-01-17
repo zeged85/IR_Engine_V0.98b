@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using IR_Engine;
+using IR_Engine_TRD;
+using WpfApplication2;
 
 namespace WpfApplication2
 {
@@ -19,9 +22,24 @@ namespace WpfApplication2
     /// </summary>
     public partial class Language : Window
     {
+      //  string languageChosen;
         public Language()
         {
             InitializeComponent();
+        }
+
+        private void l_combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comBox = sender as ComboBox;
+           // languageChosen = comBox.Text;
+           // languageChosen = comBox.Text;
+           // languageChosen = comBox.SelectionBoxItemStringFormat;
+           // languageChosen = comBox.SelectedValue.ToString();
+            //  languageChosen = comBox.SelectedItem.ToString();
+            Searcher.languageChosed = comBox.SelectionBoxItem.ToString();
+            
+            //MessageBox.Show(languageChosen);
+            //Console.WriteLine(languageChosen);
         }
     }
 }

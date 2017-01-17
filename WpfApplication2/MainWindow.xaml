@@ -28,14 +28,13 @@
 			Content="Start"
 			VerticalAlignment="Center"
 			Click="Start"
-			Margin="326,428,91,56" 
+			Margin="74,408,577,89" 
 			FontFamily="Segoe WP Black" 
 			FontSize="25" 
 			Height="52" 
 			Background="#FFF3F2F1" 
 			Foreground="Black" 
-			BorderBrush="White" 
-			Grid.RowSpan="2"/>
+			BorderBrush="White"/>
 
 
         <TextBlock Text="Documents Folder:" 
@@ -49,47 +48,56 @@
 
         <TextBox x:Name="documentsFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="219,143,423,365" 
+			Margin="217,143,425,380" 
 			RenderTransformOrigin="0.458,0.611" 
 			Height="26"/>
 
 
         <Button  Content="OK" 
-			Width="52" 
-			Margin="415,143,0,365" 
+			Width="40" 
+			Margin="402,143,0,381" 
 			Click="documentsFolderSelected" 
 			Background="White" 
 			FontWeight="Bold" 
-			HorizontalAlignment="Left" RenderTransformOrigin="-1.269,0.338"/>
+			HorizontalAlignment="Left" RenderTransformOrigin="-1.269,0.338">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="-1.988"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="-0.481"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
 
 
         <Button x:Name="documents_Button"
 			Content="Browse"
 			VerticalAlignment="Center"
 			Click="documents_Browser" 
-			Margin="495,137,182,365" 
+			Margin="476,143,201,380" 
 			FontWeight="Bold" 
 			Background="White" 
-			Height="32" 
+			Height="26" 
 			RenderTransformOrigin="0.621,2.231"/>
 
         <TextBlock Text="Posting Files Folder:" 
 			VerticalAlignment="Center" 
-			Margin="74,214,585,277" 
+			Margin="66,214,593,307" 
 			RenderTransformOrigin="-1.059,0.479" 
 			FontWeight="Bold" 
 			FontSize="14" 
-			Height="29"/>
+			Height="28"/>
 
 
         <TextBox x:Name="postingFilesFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="217,214,423,277" 
+			Margin="215,214,425,309" 
 			RenderTransformOrigin="0.458,0.611" 
-			Height="29"/>
+			Height="26"/>
 
         <Button Content="OK" 
-			Margin="415,214,335,277" 
+			Margin="400,214,350,307" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="postingFilesFolderSelected"/>
@@ -99,13 +107,18 @@
 			VerticalAlignment="Center"
 			Click="postingFiles_Browser" 
 			RenderTransformOrigin="3.459,0.5" 
-			Margin="495,214,182,277" 
+			Margin="476,214,201,307" 
 			FontWeight="Bold" 
-			Height="29" 
+			Height="28" 
 			Background="White"/>
 
 
-        <CheckBox x:Name="Stemming" Content="Stemming" Margin="78,284,629,240" RenderTransformOrigin="2.112,-6.75"  Checked="isStemming" FontWeight="Bold">
+        <CheckBox x:Name="Stemming" 
+                  Content="Stemming" 
+                  Margin="78,284,629,240" 
+                  RenderTransformOrigin="2.112,-6.75"  
+                  Checked="isStemming" 
+                  FontWeight="Bold">
             <CheckBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -121,16 +134,16 @@
 			Content="Reset All"
 			VerticalAlignment="Center"
 			Click="Reset"
-			Margin="41,435,615,57.5" 
+			Margin="621,466,74,40" 
 			FontSize="14" 
 
 			RenderTransformOrigin="2.283,0.511" 
 			Background="White" 
 			FontWeight="Bold" 
-			Height="47"/>
+			Height="43"/>
 
         <Button Content="Show Dictionary" 
-			Margin="97,357,596,143.5" 
+			Margin="74,328,603,172" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="showDictionaryPressed"/>
@@ -139,42 +152,29 @@
 			Content="Load Dictionary"
 			Click="loadDictionaryPressed"
 			VerticalAlignment="center"
-			Margin="246,357,423,144" 
+			Margin="194,330,494,172" 
 			RenderTransformOrigin="0.5,0.5" 
 			FontWeight="Bold" 
 			Background="White" 
-			Height="45"/>
+			Height="47"/>
 
         <Button Content="Choose Language" 
-			Margin="415,357,281,144" 
+			Margin="303,328,376,172" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="languageChoose_Pressed"/>
 
-        <StatusBar Margin="0,504,0,10.5" >
-
-
-            <ProgressBar x:Name="progressBar1"  Minimum="0"  Maximum="100" Value="{Binding VM_Progress}" Height="26" RenderTransformOrigin="0.5,0.5" Width="814" >
-
-                <ProgressBar.RenderTransform>
-
-                    <TransformGroup>
-                        <ScaleTransform ScaleY="-1"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </ProgressBar.RenderTransform>
-
-            </ProgressBar>
-
-
-        </StatusBar>
-        <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" Margin="326,504,416,10.5" />
-        
-        
+        <StatusBar Margin="74,475,0,40" HorizontalAlignment="Left" Width="270" />
+        <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" Margin="194,485,535,40" />
+        <ProgressBar x:Name="progressBar1"  Minimum="0"  Maximum="100" Value="{Binding VM_Progress}" RenderTransformOrigin="0.5,0.5" Margin="17,-81,398,597" >
+            <ProgressBar.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </ProgressBar.RenderTransform>
+        </ProgressBar>
     </Grid>
-
-
-
 </Window>

@@ -42,13 +42,15 @@ namespace IR_Engine
         private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
         public static string postingFilesPath/* = @"c:\IR_Engine\"*/;
-        public static volatile int docNumber = 0;
+
+        public static volatile int docNumber /*= 0*/;
         public static volatile int postingFolderCounter = 0;
         private static bool stopMemoryHandler = false;
 
         //public static string postingFilesPath = @"c:\IR_Engine\";
-        List<string> PostingFileTermList = new List<string>();
-        public static int amountOfUnique = 0;
+        public static List<string> PostingFileTermList = new List<string>();
+        
+        public static int amountOfUnique/* = 0*/;
         public static int wordNum = 0;
         public static bool ifStemming;
 
@@ -98,6 +100,18 @@ namespace IR_Engine
             Months.Add("dec", 12);
 
 
+        }
+        public static void clearAllData()
+        {
+
+            myPostings.Clear();
+            Months.Clear();
+            freqInAllCorpusList.Clear();
+            uniqueTerms.Clear();
+            PostingFileTermList.Clear();
+            //stopWords.Clear();
+            DocumentMetadata.Clear();
+            threads.Clear();
         }
 
      
@@ -286,6 +300,7 @@ namespace IR_Engine
 
         public void createDictionary() // count unique
         {
+           // amountOfUnique = 0;
 
             // var list = myPostings.Keys.ToList();
             PostingFileTermList = myPostings.Keys.ToList();
@@ -342,6 +357,7 @@ namespace IR_Engine
             }
             file2.Close();
 
+          //  PostingFileTermList.Clear();
         }
 
         public void UniqueWordsQuery() //update metadata.txt
@@ -536,6 +552,7 @@ namespace IR_Engine
                     }
                 }
                 ReadFile.saveDic(myDict, postingFilesPath);
+                myDict.Clear();
             }
             return 0;
         }
@@ -561,6 +578,7 @@ namespace IR_Engine
 
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
             _pool.Release();
+           // newDict.Clear();
         }
 
         void SavePostingToStaticDictionary()
