@@ -74,11 +74,11 @@ namespace WpfApplication2
 
             tmpForNoStemming = m_postingFilesPath + "\\";
 
-            if (/*Indexer.ifStemming == true*/ Stemming.IsChecked == true)
+            if ( Stemming.IsChecked == true)
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
             }
-            else if (/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
+            else if ( Stemming.IsChecked != true)
             {
                 Indexer.postingFilesPath = tmpForNoStemming;
                 // Indexer.postingFilesPath = m_postingFilesPath + "\\";
@@ -111,7 +111,7 @@ namespace WpfApplication2
             else
             {
                 Indexer.docNumber = 0;
-
+                Indexer.amountOfUnique = 0;
                 // Thread t1 = new Thread(tc.mmm); ;
                 //tc.mmm();
                 //t1.Start();
@@ -137,12 +137,10 @@ namespace WpfApplication2
                 });
                 t2.Start();
                 // t2.Join();
-                /*
-                DateTime m_end = DateTime.Now;
-                string m_time = (m_end - m_start).ToString();
-                MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + ReadFile.totalDocs + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
-                */
+               
             }
+            
+            
         }
 
         private void documents_Browser(object sender, RoutedEventArgs e)

@@ -597,8 +597,9 @@ namespace IR_Engine
                     Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
                     ReadFile.saveDic(freeDic, postingFilesPath + postingFolderCounter);
 
-
+                   // freeDic.Clear();
                 }
+                
 
 //                Progress = docNumber / 1400;
 
