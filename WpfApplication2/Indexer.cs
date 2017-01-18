@@ -30,8 +30,11 @@ namespace IR_Engine
         }
 
         
-
+        //RESPECT
         public static SortedDictionary<string, string> myPostings;
+
+        public static SortedList<string, string> myDictionary;
+
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
         public static volatile SortedDictionary<string, string> DocumentMetadata = new SortedDictionary<string, string>();
@@ -67,8 +70,21 @@ namespace IR_Engine
         int FileCounter;
 
         public Indexer()
-        {
-            myPostings = new SortedDictionary<string, string>();
+        {//added comparer
+         ///for case
+         ///al-sharq^#4#4(Doc#:45-1)(Doc#:4-1)(Doc#:93-1)(Doc#:52-1)
+            // al - sharq + al - awsat ^#2#2(Doc#:45-1)(Doc#:93-1)
+            ///altai ^#2#2(Doc#:46-1)(Doc#:94-1)
+            ///altanbulag ^#2#2(Doc#:18-1)(Doc#:66-1)
+            ///altanbulag + customhous ^#2#2(Doc#:18-1)(Doc#:66-1)
+            ///alter ^#6#6(Doc#:23-1)(Doc#:36-1)(Doc#:46-1)(Doc#:71-1)(Doc#:84-1)(Doc#:94-1)
+            ///altern ^#16#12(Doc#:23-1)(Doc#:26-1)(Doc#:29-1)(Doc#:35-3)(Doc#:27-1)(Doc#:42-1)(Doc#:71-1)(Doc#:74-1)(Doc#:75-1)(Doc#:77-1)(Doc#:83-3)(Doc#:90-1)
+            ///al - thawrah ^#6#6(Doc#:7-1)(Doc#:34-1)(Doc#:48-1)(Doc#:55-1)(Doc#:82-1)(Doc#:96-1)
+            ///al - thaw...
+            ///http://stackoverflow.com/questions/19370734/sortedlist-sorteddictionary-weird-behavior
+            ///https://www.dotnetperls.com/dictionary-stringcomparer
+            ///
+            myPostings = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         public void loadMonths()
@@ -120,7 +136,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _pool = new Semaphore(3, 3);
+            _pool = new Semaphore(4, 4);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -347,11 +363,11 @@ namespace IR_Engine
                 }
 
                 // myPostings[term] = "f:" + freqInAllCorpus;
-                file2.Write(t.ToString() + " ^ #" + freqInAllCorpus + ", " + " #df : " + amountOfDocs);
+                file2.Write(t.ToString() + "^#"/*tf*/ + freqInAllCorpus + "#" /*df*/ + amountOfDocs);
 
                 foreach (Tuple<string, int> tup in shortDocAndFreq)
                 {
-                    file2.Write(", (Doc#: " + tup.Item1 + " - " + tup.Item2 + ")");
+                    file2.Write("#" + tup.Item1 + "#" + tup.Item2);
                 }
                 file2.WriteLine();
                 shortDocAndFreq.Clear();
@@ -474,8 +490,11 @@ namespace IR_Engine
             Console.WriteLine("Loading File '{0}'.", postingFilesPath + @"\Dictionary.txt");
 
 
-            myPostings = ReadFile.fileToDictionary(postingFilesPath + @"\Dictionary.txt");
+            myDictionary = ReadFile.fileToSortedList(postingFilesPath + @"\Dictionary.txt");
             
+       
+
+
             Console.WriteLine("Dictionary loaded.");
 
         }

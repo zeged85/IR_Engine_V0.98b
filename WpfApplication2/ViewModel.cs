@@ -67,14 +67,7 @@ namespace IR_Engine
         }
         */
 
-            public void loadDictionary()
-        {
-            //make dict singleton
-            model_indexer.loadDictionary();
-            startSearcher();
-
-        }
-        
+  
         public void startEngine()
         {
 
@@ -147,11 +140,22 @@ namespace IR_Engine
         public void startSearcher()
         {
             Seracher search = new Seracher();
-            if (search.proccessQuery("test "))
+            if (search.proccessQuery("al"))
                 Console.WriteLine("Word exists in memory");
             else
                 Console.WriteLine("Word does not exist in memory");
 
+        
         }
+
+        public void loadDictionary()
+        {
+            //make dict singleton
+            model_indexer.loadDictionary();
+            startSearcher();
+            Indexer.clearAllData();
+        }
+
+
     }
 }

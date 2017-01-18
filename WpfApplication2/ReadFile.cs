@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(8, 8) ; //one for every file
+            Semaphore _ReadFileSemaphore = new Semaphore(12, 12) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -294,7 +294,46 @@ namespace IR_Engine
             return newDic;
         }
 
-      
+        /// <summary>
+        /// SHOULD USE TEMPLATE
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static SortedList<String, String> fileToSortedList(string path)
+        {
+            ///add comperer
+            ///
+
+
+            SortedList<string, string> newDic = new SortedList<string, string>(StringComparer.OrdinalIgnoreCase);
+
+
+
+            ///
+            using (StreamReader sr = File.OpenText(path))
+            {
+                string s = String.Empty;
+                while ((s = sr.ReadLine()) != null)
+                {
+                    //remove blank lines
+                    if (s == "")
+                        continue;
+
+                    string[] words = s.Split('^');
+                    string value = string.Empty;
+                    string key = words[0];
+                    //maybe waseful
+                    if (words.Length == 2)
+                        value = words[1];
+                 
+
+                        newDic.Add(key, value);
+              
+                }
+            }
+            return newDic;
+        }
+
 
         // Reference 2:
         public static int NaiveSearch(string str, string pattern, int index = 0)
