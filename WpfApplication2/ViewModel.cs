@@ -43,6 +43,7 @@ namespace IR_Engine
 
             docResult = search.DocResult;
 
+            
         }
 
         private int progress;
@@ -79,7 +80,18 @@ namespace IR_Engine
             }
         }
 
-        
+        private string queryInput;
+        public string VM_QueryInput
+        {
+            get { return queryInput; }
+            set
+            {
+                queryInput = value;
+                this.NotifyPropertyChanged("VM_queryInput");
+            }
+        }
+
+
 
 
 
@@ -186,6 +198,14 @@ namespace IR_Engine
             model_indexer.loadDictionary();
             startSearcher();
             Indexer.clearAllData();
+
+
+
+
+            
+
+
+
         }
 
 

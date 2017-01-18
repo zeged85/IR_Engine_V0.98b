@@ -43,26 +43,30 @@ namespace WpfApplication2
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+
         public MainWindow()
         {
             InitializeComponent();
             vm = new ViewModel(new Indexer(), new Searcher());
             DataContext = vm;
             vm.VM_Progress = 0;
+
+           // DataContext = this;
             
-            /*
-            vm.PropertyChanged +=
+            this.PropertyChanged +=
                      delegate(Object sender, PropertyChangedEventArgs e)
                      {
                          NotifyPropertyChanged("MW_" + e.PropertyName);
                      };
-                     */
+                     
         }
 
         public void NotifyPropertyChanged(string PropName)
         {
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
+           // Console.WriteLine("test");
         }
 
 
@@ -361,9 +365,11 @@ namespace WpfApplication2
                     {
                         System.Windows.Forms.MessageBox.Show("Requested dictionary for files created without Stemming,\nIs already exists.");
                     }
-                
-                
-         
+
+
+
+
+               // NotifyPropertyChanged();
             }
         }
     }

@@ -41,6 +41,14 @@ namespace IR_Engine
         public bool proccessQuery(string querySingleTerm)
         {
 
+            //http://www.c-sharpcorner.com/UploadFile/dpatra/autocomplete-textbox-in-wpf/
+            //foreach startswith
+
+         //   foreach (string s in )
+            
+
+
+
             //#tf
             int termFrequency; // in all corpurus //single
             //#df
