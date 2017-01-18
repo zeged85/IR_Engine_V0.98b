@@ -49,7 +49,7 @@ namespace IR_Engine
         public static volatile SortedDictionary<string, string> DocumentMetadata = new SortedDictionary<string, string>();
         public static Mutex _DocumentMetadata;
         public static Mutex _mainMemory;
-        private static Semaphore _pool;
+        private static Semaphore _semaphoreIndexer;
         public static Mutex _DocNumber;
         private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
@@ -145,7 +145,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _pool = new Semaphore(4, 4);
+            _semaphoreIndexer = new Semaphore(4, 4);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -163,29 +163,38 @@ namespace IR_Engine
 
             FileCounter = 0;
 
+
+
+            Thread memoryHandler = new Thread(SavePostingToStaticDictionary);
+            memoryHandler.Priority = ThreadPriority.Highest;
+            memoryHandler.Start();
+
+
+
+
             foreach (Thread thread in threads)
             {
+                _semaphoreIndexer.WaitOne(); //limit threads
                 thread.Start();
+                Progress = (FileCounter++ * 50) / FileCountInFolder;
             }
 
           
 
-            Thread memoryHanlder = new Thread(SavePostingToStaticDictionary);
-            memoryHanlder.Priority = ThreadPriority.Highest;
-            memoryHanlder.Start();
+        
 
 
             foreach (Thread thread in threads)
             {
                 thread.Join();
-                Progress = (FileCounter++ * 50) / FileCountInFolder;
+               // Progress = (FileCounter++ * 50) / FileCountInFolder;
             }
             Console.WriteLine("Main thread exits.");
 
             stopMemoryHandler = true;
             Thread lastRefresh = new Thread(freeMemory);
             lastRefresh.Start();
-            memoryHanlder.Join();
+            memoryHandler.Join();
             lastRefresh.Join();
             threads.Clear();
 
@@ -545,10 +554,14 @@ namespace IR_Engine
             foreach (KeyValuePair<string, string> entry in newDict)
 
                 ////added if statement GIL!!!!
-                // if (!myPostings.ContainsKey(entry.Key))
-                myPostings.Add(entry.Key.ToString(), entry.Value);
-            // else
-            //   myPostings[entry.Key] += entry.Value;
+                if (!myPostings.ContainsKey(entry.Key))
+                    myPostings.Add(entry.Key.ToString(), entry.Value);
+                else
+                {
+                   
+                    myPostings[entry.Key] += entry.Value;
+                    Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":" + myPostings[entry.Key]);
+                }
             Console.WriteLine("File loaded.");
             return 0;
         }
@@ -601,7 +614,7 @@ namespace IR_Engine
         private static void DoWork(object path)
         {
             string str = path.ToString();
-            _pool.WaitOne(); //limit threads
+            
             SortedDictionary<string, string> newDict = ReadFile.OpenFileForParsing(str);
 
             //add to main memory first
@@ -618,7 +631,7 @@ namespace IR_Engine
             _mainMemory.ReleaseMutex();
 
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
-            _pool.Release();
+            _semaphoreIndexer.Release();
            // newDict.Clear();
         }
 
@@ -629,7 +642,18 @@ namespace IR_Engine
                 if (myPostings.Count > 30000)
                 {
                     _mainMemory.WaitOne();
-                    SortedDictionary<string, string> freeDic = new SortedDictionary<string, string>(myPostings);
+
+
+
+                    //fix this
+                    SortedDictionary<string, string> freeDic = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (KeyValuePair<string,string> pair in myPostings)
+                    {
+                        freeDic.Add(pair.Key, pair.Value);
+                    }
+
+
                     myPostings.Clear();
                     _mainMemory.ReleaseMutex();
                     Console.WriteLine("Refreshing Memory...");
@@ -656,8 +680,22 @@ namespace IR_Engine
             //https://msdn.microsoft.com/en-us/library/system.threading.semaphore(v=vs.110).aspx
 
             // Thread t = new Thread(new ParameterizedThreadStart(DoWork));
-         //   DoWork(path);
+            //   DoWork(path);
+
+
+
+
+            //new edition
+            ///_pool.WaitOne(); //limit threads
+           
+
+
+
+
             Thread thread = new Thread(() => DoWork(path));
+
+         //   notwaitsemaphore,
+
             // Start the thread, passing the number.
 
             threads.Add(thread);
