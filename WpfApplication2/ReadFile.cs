@@ -77,6 +77,8 @@ namespace IR_Engine
                           
                            // System.Console.WriteLine("Lines in document:" + linesInDoc);
 
+
+                            //update docnumbr
                             Indexer._DocNumber.WaitOne();
 
                             int freshNum = Interlocked.Increment(ref Indexer.docNumber);
@@ -84,13 +86,30 @@ namespace IR_Engine
                             Indexer._DocNumber.ReleaseMutex();
 
                             Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
+
+
+
+
+                            //the document in string
                             string str = bufferDocument.ToString();
 
+
+
+
+
                            // DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList);
-                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore,ref _myFilePostings, str, freshNum, ref DicList));
+                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList));
                             // Start the thread, passing the number.
 
+
+
+
+
                             ReadFileThreads.Add(thread);
+
+
+
+
                         //    thread.Start();
                             //Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString(), freshNum);
                             //dictionary resault
@@ -137,8 +156,11 @@ namespace IR_Engine
             Console.WriteLine("starting " + ReadFileThreads.Count + " threads...");
             foreach (Thread thred in ReadFileThreads)
             {
+
+                //semaphore
+                _ReadFileSemaphore.WaitOne();
                 thred.Start();
-             //   thred.Join();
+            
             }
 
            
@@ -176,7 +198,12 @@ namespace IR_Engine
         {
             string str = path.ToString();
          //   counter--;
-            _ReadFileSemaphore.WaitOne(); //limit threads
+
+    ///late edition
+         //   _ReadFileSemaphore.WaitOne(); //limit threads
+
+
+
             mut.WaitOne();
             SortedDictionary<string, string> newDict = Parse.parseString(str, num);
             //add to main memory first
