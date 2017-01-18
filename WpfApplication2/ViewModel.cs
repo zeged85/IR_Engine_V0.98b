@@ -88,6 +88,11 @@ namespace IR_Engine
             {
                 queryInput = value;
                 this.NotifyPropertyChanged("VM_queryInput");
+
+
+
+
+             //   triger searchResult
             }
         }
 

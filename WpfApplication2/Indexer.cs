@@ -656,7 +656,7 @@ namespace IR_Engine
             //https://msdn.microsoft.com/en-us/library/system.threading.semaphore(v=vs.110).aspx
 
             // Thread t = new Thread(new ParameterizedThreadStart(DoWork));
-            DoWork(path);
+         //   DoWork(path);
             Thread thread = new Thread(() => DoWork(path));
             // Start the thread, passing the number.
 
