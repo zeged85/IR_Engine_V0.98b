@@ -30,6 +30,15 @@ namespace IR_Engine
         }
 
         
+        /// MVVM
+        
+
+
+
+
+
+        /// </summary>
+
         //RESPECT
         public static SortedDictionary<string, string> myPostings;
 
@@ -169,7 +178,7 @@ namespace IR_Engine
             foreach (Thread thread in threads)
             {
                 thread.Join();
-                Progress = (FileCounter++ * 100) / FileCountInFolder;
+                Progress = (FileCounter++ * 50) / FileCountInFolder;
             }
             Console.WriteLine("Main thread exits.");
 

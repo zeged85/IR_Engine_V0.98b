@@ -50,11 +50,13 @@ namespace WpfApplication2
             DataContext = vm;
             vm.VM_Progress = 0;
 
+            /*
             vm.PropertyChanged +=
                      delegate(Object sender, PropertyChangedEventArgs e)
                      {
                          NotifyPropertyChanged("MW_" + e.PropertyName);
                      };
+                     */
         }
 
         public void NotifyPropertyChanged(string PropName)

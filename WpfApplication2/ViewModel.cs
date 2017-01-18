@@ -54,6 +54,22 @@ namespace IR_Engine
         }
 
 
+        private int docResult;
+        public int VM_DocResult
+        {
+            get { return docResult; }
+            set
+            {
+                docResult = value;
+                this.NotifyPropertyChanged("VM_DocResult");
+            }
+        }
+
+        
+
+
+
+
         /*
         public void loadPostingFiles()
         {
@@ -67,7 +83,7 @@ namespace IR_Engine
         }
         */
 
-  
+
         public void startEngine()
         {
 
@@ -75,41 +91,41 @@ namespace IR_Engine
 
             model_indexer.initiate(); //
 
-            model_indexer.Progress = 5;
+            model_indexer.Progress = 55;
 
             model_indexer.freeMemory(); // create last folder
 
-            model_indexer.Progress = 10;
+            model_indexer.Progress = 60;
 
             model_indexer.MergeAllToSingleUnSorted();
 
-            model_indexer.Progress = 20;
+            model_indexer.Progress = 65;
 
             model_indexer.sort();
 
-            model_indexer.Progress = 30;
+            model_indexer.Progress = 70;
 
             model_indexer.deleteGarbage();
 
-            model_indexer.Progress = 40;
+            model_indexer.Progress = 75;
 
             model_indexer.dumpDocumentMetadata(); //create meta.txt
 
-            model_indexer.Progress = 50;
+            model_indexer.Progress = 80;
 
             model_indexer.loadPostingFiles();
 
-            model_indexer.Progress = 60;
+            model_indexer.Progress = 85;
 
             model_indexer.loadMetadata();
 
-            model_indexer.Progress = 70;
+            model_indexer.Progress = 90;
 
             model_indexer.createDictionary(); // and save to file dict.txt
 
             //
 
-            model_indexer.Progress = 80;
+            model_indexer.Progress = 95;
 
             //
 
@@ -120,11 +136,11 @@ namespace IR_Engine
 
             model_indexer.UniqueWordsQuery();
 
-            model_indexer.Progress = 90;
+            model_indexer.Progress = 97;
 
             model_indexer.PrintfreqInAllCorpusList(); //
 
-            model_indexer.Progress = 100;
+            model_indexer.Progress = 99;
 
             model_indexer.mmm();
 
@@ -133,6 +149,8 @@ namespace IR_Engine
             //check is indexer full
             model_indexer.loadDictionary(); //from dict.txt
 
+
+            model_indexer.Progress = 100;
             //
 
         }

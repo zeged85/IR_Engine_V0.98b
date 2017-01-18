@@ -4,7 +4,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="WpfApplication2.MainWindow"
         Title="MainWindow" Height="580" Width="800">
 
-    <Grid Margin="0,0,0,0">
+    <Grid Margin="0,0,0,0.5">
 
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -164,17 +164,61 @@
 			Background="White" 
 			Click="languageChoose_Pressed"/>
 
-        <StatusBar Margin="74,475,0,40" HorizontalAlignment="Left" Width="270" />
+
+
+        <!-- Here's a valid comment. Notice it's outside the <UserControl> tag's braces -->
+
+        <!-- http://stackoverflow.com/questions/7921672/how-to-add-comments-into-a-xaml-file-in-wpfs -->
+
+        <!-- 
+        
+        
+        <StatusBar Margin="0,504,0,10.5" >
+        
+ -            <ProgressBar x:Name="progressBar1"  Minimum="0"  Maximum="100" Value="{Binding VM_Progress}" Height="26" RenderTransformOrigin="0.5,0.5" Width="814" >
+ -
+ -                <ProgressBar.RenderTransform>
+ -
+ -                    <TransformGroup>
+ -                        <ScaleTransform ScaleY="-1"/>
+ -                        <SkewTransform/>
+ -                        <RotateTransform/>
+ -                        <TranslateTransform/>
+ -                    </TransformGroup>
+ -                </ProgressBar.RenderTransform>
+ -
+ -            </ProgressBar>
+ -
+ -
+ -        </StatusBar>
+ -        <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" Margin="326,504,416,10.5" />
+ -        
+        
+        
+        
+        
+        -->
+
+
+
+        <StatusBar Margin="74,475,0,40" HorizontalAlignment="Left" Width="270" >
+
+            <ProgressBar x:Name="progressBar1" Minimum="0"  Maximum="100" Value="{Binding VM_Progress}"  Height="45" Width="275" >
+
+
+               
+
+            </ProgressBar>
+        </StatusBar>
         <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" Margin="194,485,535,40" />
-        <ProgressBar x:Name="progressBar1"  Minimum="0"  Maximum="100" Value="{Binding VM_Progress}" RenderTransformOrigin="0.5,0.5" Margin="17,-81,398,597" >
-            <ProgressBar.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleY="-1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </ProgressBar.RenderTransform>
-        </ProgressBar>
+
+
+
+
+        <TextBox  Text="{Binding Path=Name2}" Margin="512,332,74,172"/>
+
+
+
+
     </Grid>
 </Window>

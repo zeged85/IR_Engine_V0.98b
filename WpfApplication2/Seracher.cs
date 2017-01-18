@@ -301,7 +301,13 @@ namespace IR_Engine
 
         }
 
-        
+        private string docResult;
+        public string DocResult
+        {
+            get { return docResult; }
+            set { docResult = value; NotifyPropertyChanged("DocResult"); }
+        }
+
 
     }
 }
