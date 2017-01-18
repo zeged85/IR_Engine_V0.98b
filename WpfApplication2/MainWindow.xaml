@@ -214,7 +214,7 @@
 
 
 
-        <TextBox  Text="{Binding VM_queryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="512,272,74,259"     />
+        <TextBox  Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="512,272,74,259"     />
 
 
         <TextBox  Text="{Binding VM_DocResult}" Margin="512,328,74,172"     />
