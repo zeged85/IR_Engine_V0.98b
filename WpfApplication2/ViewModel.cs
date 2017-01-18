@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IR_Engine;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,14 +12,25 @@ namespace IR_Engine
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private IModel model_indexer;
-        public ViewModel(IModel index)
+        private ISearcher search;
+        public ViewModel(IModel index, ISearcher searcher)
         {
             this.model_indexer = index;
+            this.search = searcher;
+
+            search.PropertyChanged +=
+                          delegate (Object sender, PropertyChangedEventArgs e)
+                          {
+                              this.NotifyPropertyChanged("VM_" + e.PropertyName);
+                          };
+
             model_indexer.PropertyChanged +=
                           delegate(Object sender, PropertyChangedEventArgs e)
                           {
                               this.NotifyPropertyChanged("VM_" + e.PropertyName);
                           };
+
+           // docResult = new string.DefaultIfEmpty();
         }
 
         public void NotifyPropertyChanged(string PropName)
@@ -28,6 +40,8 @@ namespace IR_Engine
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
 
             progress = model_indexer.Progress;
+
+            docResult = search.DocResult;
 
         }
 
@@ -54,8 +68,8 @@ namespace IR_Engine
         }
 
 
-        private int docResult;
-        public int VM_DocResult
+        private string docResult;
+        public string VM_DocResult
         {
             get { return docResult; }
             set
@@ -157,7 +171,7 @@ namespace IR_Engine
 
         public void startSearcher()
         {
-            Seracher search = new Seracher();
+           
             if (search.proccessQuery("al"))
                 Console.WriteLine("Word exists in memory");
             else

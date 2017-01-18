@@ -46,10 +46,10 @@ namespace WpfApplication2
         public MainWindow()
         {
             InitializeComponent();
-            vm = new ViewModel(new Indexer());
+            vm = new ViewModel(new Indexer(), new Searcher());
             DataContext = vm;
             vm.VM_Progress = 0;
-
+            
             /*
             vm.PropertyChanged +=
                      delegate(Object sender, PropertyChangedEventArgs e)
@@ -347,9 +347,15 @@ namespace WpfApplication2
                 
                     if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
                     {
-                        //test
-                  
-                        vm.loadDictionary();
+                    //test
+
+                    Thread newthread = new Thread(vm.loadDictionary);
+
+                    newthread.Start();
+                     //   vm.loadDictionary();
+
+
+
                     }
                     else
                     {
@@ -357,8 +363,7 @@ namespace WpfApplication2
                     }
                 
                 
-              //  vm.loadDictionary();
-              //  Indexer.clearAllData();
+         
             }
         }
     }

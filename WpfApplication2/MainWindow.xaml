@@ -215,7 +215,7 @@
 
 
 
-        <TextBox  Text="{Binding Path=Name2}" Margin="512,332,74,172"/>
+        <TextBox  Text="{Binding VM_DocResult}" Margin="512,332,74,172"/>
 
 
 

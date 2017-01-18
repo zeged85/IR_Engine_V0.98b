@@ -62,13 +62,14 @@
       <DependentUpon>DictionaryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="IModel.cs" />
+    <Compile Include="ISearcher.cs" />
     <Compile Include="Language.xaml.cs">
       <DependentUpon>Language.xaml</DependentUpon>
     </Compile>
     <Compile Include="Indexer.cs" />
     <Compile Include="ReadFile.cs" />
+    <Compile Include="whatisthis.cs" />
     <Compile Include="Searcher.cs" />
-    <Compile Include="Seracher.cs" />
     <Compile Include="Stemmer.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="DictionaryWindow.xaml">

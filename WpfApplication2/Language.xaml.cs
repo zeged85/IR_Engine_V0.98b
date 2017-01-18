@@ -36,7 +36,7 @@ namespace WpfApplication2
            // languageChosen = comBox.SelectionBoxItemStringFormat;
            // languageChosen = comBox.SelectedValue.ToString();
             //  languageChosen = comBox.SelectedItem.ToString();
-            Searcher.languageChosed = comBox.SelectionBoxItem.ToString();
+            whatisthis.languageChosed = comBox.SelectionBoxItem.ToString();
             
             //MessageBox.Show(languageChosen);
             //Console.WriteLine(languageChosen);
