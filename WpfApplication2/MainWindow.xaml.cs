@@ -28,13 +28,11 @@ namespace WpfApplication2
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         //essential fields
-
-        //  Indexer tc = new Indexer();
         ViewModel vm;
-        //Engine s_Engine;
+
         bool isValid = true;
         string m_documentsPath, m_postingFilesPath;
-        // public static bool stemmingSelected;
+
 
         string tmpAddress;
         string tmpForNoStemming;
@@ -44,36 +42,26 @@ namespace WpfApplication2
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-
         public MainWindow()
         {
             InitializeComponent();
             vm = new ViewModel(new Indexer(), new Searcher());
             DataContext = vm;
             vm.VM_Progress = 0;
-
             // DataContext = this;
-
             this.PropertyChanged +=
-                     delegate (Object sender, PropertyChangedEventArgs e)
+                     delegate(Object sender, PropertyChangedEventArgs e)
                      {
                          NotifyPropertyChanged("MW_" + e.PropertyName);
                      };
-
         }
-
-
-
 
         public void NotifyPropertyChanged(string PropName)
         {
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
-           // Console.WriteLine("test");
+            // Console.WriteLine("test");
         }
-
-
-
 
         private void Start(object sender, RoutedEventArgs e)
         {
@@ -89,11 +77,10 @@ namespace WpfApplication2
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
                 Indexer.ifStemming = true;
             }
-            else if (/*!Indexer.ifStemming == true*/ Stemming.IsChecked != true)
+            else if (Stemming.IsChecked != true)
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "UnStemming" + "\\";
                 Indexer.ifStemming = false;
-                // Indexer.postingFilesPath = m_postingFilesPath + "\\";
             }
 
 
@@ -119,12 +106,10 @@ namespace WpfApplication2
             if (!isValid)
                 System.Windows.Forms.MessageBox.Show(error);
 
-
-
-            
             else
             {
                 Indexer.docNumber = 0;
+                Indexer.amountOfUnique = 0;
 
                 Thread t1 = new Thread(vm.startEngine);
                 // t1.Start();
@@ -142,7 +127,7 @@ namespace WpfApplication2
                 });
                 t2.Start();
             }
-            
+
         }
 
         private void documents_Browser(object sender, RoutedEventArgs e)
@@ -168,7 +153,6 @@ namespace WpfApplication2
             m_postingFilesPath = Dialog.SelectedPath;
 
             postingFilesFolder_Text.Text = m_postingFilesPath;
-
             isStemming(this, null);
         }
 
@@ -183,13 +167,12 @@ namespace WpfApplication2
             {
                 Indexer.ifStemming = true;
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
-             
-                // System.Windows.MessageBox.Show("Please enter path for process with Stemming");
+
             }
             else
             {
                 Indexer.postingFilesPath = m_postingFilesPath + "\\" + "UnStemming" + "\\";
-               
+
                 Indexer.ifStemming = false;
             }
         }
@@ -221,7 +204,7 @@ namespace WpfApplication2
                     {
                         dir.Delete(true);
                     }
-            
+
                     System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
                 }
             }
@@ -231,6 +214,7 @@ namespace WpfApplication2
         {
             bool tmp = true;
             string err = string.Empty;
+
             if (!Directory.Exists(m_postingFilesPath))
             {
                 tmp = false;
@@ -242,29 +226,29 @@ namespace WpfApplication2
 
             else
             {
-            
-                    if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
-                    {
-                        DictionaryWindow m_Dictionary = new DictionaryWindow();
-                        string str;
-                        string[] split;
-                        StreamReader s = new StreamReader(Indexer.postingFilesPath + "\\Dictionary.txt");
-                        while ((str = s.ReadLine()) != null)
-                        {
-                            split = str.Split(new string[] { ":", "," }, StringSplitOptions.RemoveEmptyEntries);
+                isStemming(this, null);
 
-                            m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
-                        }
-                        s.Close();
-                        m_Dictionary.Show();
-                    }
-                    else
+                if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
+                {
+                    DictionaryWindow m_Dictionary = new DictionaryWindow();
+                    string str;
+                    string[] split;
+                    StreamReader s = new StreamReader(Indexer.postingFilesPath + "\\Dictionary.txt");
+                    while ((str = s.ReadLine()) != null)
                     {
-                        System.Windows.Forms.MessageBox.Show("The requested Dictionary (without stemming)\n is not exist in the current folder.");
+                        split = str.Split(new string[] { "^", "#" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        m_Dictionary.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
                     }
-                
-                
+                    s.Close();
+                    m_Dictionary.Show();
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("The requested Dictionary is not exist in the current folder.");
+                }
             }
+            isStemming(this, null);
         }
 
         private void languageChoose_Pressed(object sender, RoutedEventArgs e)
@@ -284,28 +268,22 @@ namespace WpfApplication2
                 System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
             else
             {
-                
-                    if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
-                    {
+                isStemming(this, null);
+
+                if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
+                {
                     //test
 
                     Thread newthread = new Thread(vm.loadDictionary);
 
                     newthread.Start();
-                     //   vm.loadDictionary();
-
-
-
-                    }
-                    else
-                    {
-                        System.Windows.Forms.MessageBox.Show("Requested dictionary for files created without Stemming,\nIs already exists.");
-                    }
-
-
-
-
-               // NotifyPropertyChanged();
+                    //   vm.loadDictionary();
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Requested dictionary for files created without Stemming,\nIs already exists.");
+                }
+                // NotifyPropertyChanged();
             }
         }
     }
