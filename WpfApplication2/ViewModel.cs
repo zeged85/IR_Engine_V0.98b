@@ -37,9 +37,22 @@ namespace IR_Engine
         {
 
 
-            progress = model_indexer.Progress;
+          //  progress = model_indexer.Progress;
 
-            docResult = search.DocResult;
+
+            if (PropName == "VM_Searcher_DocResult")
+            {
+                docResult = search.DocResult;
+                PropName = "VM_DocResult";
+            }
+
+
+
+            if (PropName == "VM_Progress")
+            {
+                progress = model_indexer.Progress;
+                //PropName = "VM_DocResult";
+            }
 
 
 
@@ -137,21 +150,22 @@ namespace IR_Engine
 
         public void startEngine()
         {
+            VM_DocResult = "loading files...";
 
             model_indexer.loadMonths();
 
             model_indexer.initiate(); //
 
-            model_indexer.Progress = 55;
+           // model_indexer.Progress = 55;
 
             model_indexer.freeMemory(); // create last folder
 
-            model_indexer.Progress = 60;
-
+            model_indexer.Progress = 50;
+            VM_DocResult = "merging...";
             model_indexer.MergeAllToSingleUnSorted();
 
             model_indexer.Progress = 65;
-
+            VM_DocResult = "sorting...";
             model_indexer.sort();
 
             model_indexer.Progress = 70;
@@ -163,7 +177,7 @@ namespace IR_Engine
             model_indexer.dumpDocumentMetadata(); //create meta.txt
 
             model_indexer.Progress = 80;
-
+            VM_DocResult = "loading Posting Files...";
             model_indexer.loadPostingFiles();
 
             model_indexer.Progress = 85;
@@ -171,7 +185,7 @@ namespace IR_Engine
             model_indexer.loadMetadata();
 
             model_indexer.Progress = 90;
-
+            VM_DocResult = "createing Dictionary...";
             model_indexer.createDictionary(); // and save to file dict.txt
 
             //
@@ -203,7 +217,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 100;
             //
-
+            VM_DocResult = "done.";
         }
 
         public void searchQuery(string query)

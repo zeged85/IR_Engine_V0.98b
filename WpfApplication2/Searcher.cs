@@ -29,7 +29,7 @@ namespace IR_Engine
         public string DocResult
         {
             get { return docResult; }
-            set { docResult = value; NotifyPropertyChanged("DocResult"); }
+            set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
 
