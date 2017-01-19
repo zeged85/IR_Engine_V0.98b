@@ -67,11 +67,7 @@ namespace IR_Engine
                 DocResult = querySingleTerm + " : " + val;
                 //MVVM
 
-              //  DocResult += "System.Environment.NewLine";
-              //  DocResult += "test";
-
-
-
+     
                 //count docs
                 char[] delimiterCharsLang = { '#'};
                 string[] termData  = val.Split(delimiterCharsLang);
@@ -161,12 +157,18 @@ namespace IR_Engine
 
 
 
-
+                DocResult += System.Environment.NewLine;
                 //display the elements of the sortedlist after sorting it with Value's
                 Console.WriteLine("The elements in the SortedList after sorting :");
                 foreach (KeyValuePair<int, int> pair in desc)
                 {
+
                     Console.WriteLine("DocNo:{0} => Popularity:{1}", pair.Key, pair.Value);
+
+                    DocResult += "DocNo: {" +  pair.Key + "} => Popularity: {" +pair.Value + "}";
+
+                    DocResult += System.Environment.NewLine;
+
                 }
 
 

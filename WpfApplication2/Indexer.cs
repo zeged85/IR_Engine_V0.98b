@@ -50,12 +50,14 @@ namespace IR_Engine
         public static Mutex _DocumentMetadata;
         public static Mutex _mainMemory;
         private static Semaphore _semaphoreIndexer;
-        public static Mutex _DocNumber;
+    
         private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
         public static string postingFilesPath/* = @"c:\IR_Engine\"*/;
 
+        public static Mutex _DocNumber;
         public static volatile int docNumber /*= 0*/;
+
         public static volatile int postingFolderCounter = 0;
         private static bool stopMemoryHandler = false;
 
@@ -63,7 +65,7 @@ namespace IR_Engine
         public static List<string> PostingFileTermList = new List<string>();
         
         public static int amountOfUnique/* = 0*/;
-        public static int wordNum = 0;
+    //    public static int wordNum = 0;
         public static bool ifStemming;
 
         public static SortedDictionary<string, string> stopWords;

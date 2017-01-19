@@ -233,8 +233,10 @@ namespace IR_Engine
 
         public void loadDictionary()
         {
+
             //make dict singleton
             model_indexer.loadDictionary();
+           
             //searchQuery("test");
             Indexer.clearAllData();
 

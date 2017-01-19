@@ -81,7 +81,7 @@ namespace IR_Engine
                             //update docnumbr
                             Indexer._DocNumber.WaitOne();
 
-                            int freshNum = Interlocked.Increment(ref Indexer.docNumber);
+                           int freshNum = Interlocked.Increment(ref Indexer.docNumber);
                        
                             Indexer._DocNumber.ReleaseMutex();
 
@@ -110,10 +110,6 @@ namespace IR_Engine
 
 
 
-                        //    thread.Start();
-                            //Dictionary<string, string> newDict = Parse.parseString(bufferDocument.ToString(), freshNum);
-                            //dictionary resault
-
                             //remove metadata
 
                             //merge dic
@@ -141,9 +137,7 @@ namespace IR_Engine
             Console.WriteLine("Documents in file:" + docNumberInFile + " Documents.");
             Console.WriteLine("-----------------------");
 
-            //  printDic(myPostings);
-            //  saveDic(myPostings,"");
-
+        
             //   System.Console.WriteLine("Press any key to exit.");
             //   System.Console.ReadKey();
 
@@ -194,7 +188,7 @@ namespace IR_Engine
         }
 
 
-        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex mut, object path, int num, ref List<SortedDictionary<string, string>> DicList)
+        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex _DictionaryListMutex, object path,  int num, ref List<SortedDictionary<string, string>> DicList)
         {
             string str = path.ToString();
          //   counter--;
@@ -204,14 +198,14 @@ namespace IR_Engine
 
 
 
-            mut.WaitOne();
+            _DictionaryListMutex.WaitOne();
             SortedDictionary<string, string> newDict = Parse.parseString(str, num);
             //add to main memory first
             //  return newDict;
             DicList.Add(newDict);
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
          //   counter++;
-            mut.ReleaseMutex();
+            _DictionaryListMutex.ReleaseMutex();
             _ReadFileSemaphore.Release();
         }
 

@@ -80,6 +80,7 @@ namespace IR_Engine
                 //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
 
                 SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>();
+                //moving this to static may improve preformence?
 
                 //text parsing - main work
                 int lineIdx = 0; // lines in document
