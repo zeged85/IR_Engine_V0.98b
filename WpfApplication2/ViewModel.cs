@@ -36,12 +36,17 @@ namespace IR_Engine
         public void NotifyPropertyChanged(string PropName)
         {
 
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
 
             progress = model_indexer.Progress;
 
             docResult = search.DocResult;
+
+
+
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
+
+
 
             
         }
@@ -86,10 +91,25 @@ namespace IR_Engine
             get { return queryInput; }
             set
             {
+                //check if dic loaded
+
+
+                //fire query
+              
+
+                if (value[value.Length-1] == ' ')// if user entered ' ' char
+                {//check term1-term*
+
+             
+                    //show most populer term*
+
+
+                }
                 queryInput = value;
-                this.NotifyPropertyChanged("VM_queryInput");
+                searchQuery(queryInput);
 
-
+                this.NotifyPropertyChanged("VM_QueryInput");
+                
 
 
              //   triger searchResult
@@ -186,10 +206,10 @@ namespace IR_Engine
 
         }
 
-        public void startSearcher()
+        public void searchQuery(string query)
         {
            
-            if (search.proccessQuery("al"))
+            if (search.proccessQuery(query))
                 Console.WriteLine("Word exists in memory");
             else
                 Console.WriteLine("Word does not exist in memory");
@@ -201,7 +221,7 @@ namespace IR_Engine
         {
             //make dict singleton
             model_indexer.loadDictionary();
-            startSearcher();
+            //searchQuery("test");
             Indexer.clearAllData();
 
 

@@ -336,6 +336,10 @@ namespace IR_Engine
 
                 return true;
             }
+            else
+            {
+                DocResult = "";
+            }
             return false;
 
         }
