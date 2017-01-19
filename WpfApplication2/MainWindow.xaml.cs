@@ -52,49 +52,15 @@ namespace WpfApplication2
             DataContext = vm;
             vm.VM_Progress = 0;
 
-           // DataContext = this;
-            
+            // DataContext = this;
+
             this.PropertyChanged +=
-                     delegate(Object sender, PropertyChangedEventArgs e)
+                     delegate (Object sender, PropertyChangedEventArgs e)
                      {
                          NotifyPropertyChanged("MW_" + e.PropertyName);
                      };
 
-
-         //   this.QueryInputTextBox.
-
-
-             //   AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-           // this.textBox1.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
         }
-
-        
-            /*
-        this.textBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
- this.textBox1.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
-private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            TextBox t = sender as TextBox;
-            if (t != null)
-            {
-                //say you want to do a search when user types 3 or more chars
-                if (t.Text.Length >= 3)
-                {
-                    //SuggestStrings will have the logic to return array of strings either from cache/db
-                    string[] arr = SuggestStrings(t.Text);
-
-                    AutoCompleteStringCollection collection = new AutoCompleteStringCollection();
-                    collection.AddRange(arr);
-
-                    this.textBox1.AutoCompleteCustomSource = collection;
-                }
-            }
-        }
-
-
-            */
 
 
 
@@ -154,75 +120,6 @@ private void textBox1_TextChanged(object sender, EventArgs e)
                 System.Windows.Forms.MessageBox.Show(error);
 
 
-            /*
-            if (File.Exists(m_postingFilesPath + "\\UnStemming" + "\\Dictionary.txt") && File.Exists(m_postingFilesPath + "\\UnStemming" + "\\MetaData.txt") && Directory.Exists(m_postingFilesPath + "\\UnStemming" + "\\PostingFiles") && !Stemming.IsChecked==true)
-            {
-                DialogResult d = System.Windows.Forms.MessageBox.Show("Indexed Files without Stemming already been created. Erase Them and start over?", "Confirm", MessageBoxButtons.YesNo);
-
-                if ( d == System.Windows.Forms.DialogResult.No)
-                {
-                    System.Windows.Forms.MessageBox.Show("Bye Bye");
-                }
-                else
-                {
-                    Reset(this, new RoutedEventArgs());
-
-                    Indexer.docNumber = 0;
-
-                    Thread t1 = new Thread(vm.startEngine);
-                    // t1.Start();
-                    //  s_Engine.ignite();
-                    Thread t2 = new Thread(delegate()
-                    {
-                        t1.Start();
-                        t1.Join();
-                        Indexer.clearAllData();
-                        Indexer.stopWords.Clear();
-                        DateTime m_end = DateTime.Now;
-                        string m_time = (m_end - m_start).ToString();
-                        MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
-
-                    });
-                    t2.Start();
-
-                }
-            }
-
-            if (File.Exists(m_postingFilesPath + "\\Stemming" + "\\Dictionary.txt") && File.Exists(m_postingFilesPath + "\\Stemming" + "\\MetaData.txt") && Directory.Exists(m_postingFilesPath + "\\Stemming" + "\\PostingFiles") && Stemming.IsChecked==true)
-            {
-                DialogResult d = System.Windows.Forms.MessageBox.Show("Indexed Files with Stemming already been created. Erase Them and start over?", "Confirm", MessageBoxButtons.YesNo);
-
-                if (d == System.Windows.Forms.DialogResult.No)
-                {
-                    System.Windows.Forms.MessageBox.Show("Bye Bye");
-                }
-                else
-                {
-                    Reset(this, new RoutedEventArgs());
-
-                    Indexer.docNumber = 0;
-
-                    Thread t1 = new Thread(vm.startEngine);
-                    // t1.Start();
-                    //  s_Engine.ignite();
-                    Thread t2 = new Thread(delegate()
-                    {
-                        t1.Start();
-                        t1.Join();
-                        Indexer.clearAllData();
-                        Indexer.stopWords.Clear();
-                        DateTime m_end = DateTime.Now;
-                        string m_time = (m_end - m_start).ToString();
-                        MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
-
-                    });
-                    t2.Start();
-                }
-            }
-            */
-
-
-
 
             
             else
@@ -271,6 +168,8 @@ private void textBox1_TextChanged(object sender, EventArgs e)
             m_postingFilesPath = Dialog.SelectedPath;
 
             postingFilesFolder_Text.Text = m_postingFilesPath;
+
+            isStemming(this, null);
         }
 
         private void postingFilesFolderSelected(object sender, RoutedEventArgs e)

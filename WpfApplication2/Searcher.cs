@@ -67,6 +67,10 @@ namespace IR_Engine
                 DocResult = querySingleTerm + " : " + val;
                 //MVVM
 
+              //  DocResult += "System.Environment.NewLine";
+              //  DocResult += "test";
+
+
 
                 //count docs
                 char[] delimiterCharsLang = { '#'};
