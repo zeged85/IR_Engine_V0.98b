@@ -45,6 +45,7 @@ namespace WpfApplication2
         public MainWindow()
         {
             InitializeComponent();
+            QueryInputTextBox.IsReadOnly = true; ;
             vm = new ViewModel(new Indexer(), new Searcher());
             DataContext = vm;
             vm.VM_Progress = 0;
@@ -118,8 +119,9 @@ namespace WpfApplication2
                 {
                     t1.Start();
                     t1.Join();
-                 //   Indexer.clearAllData();
-                 //   Indexer.stopWords.Clear();
+                    QueryInputTextBox.IsReadOnly = false;
+                    //   Indexer.clearAllData();
+                    //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
                     MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
@@ -206,6 +208,7 @@ namespace WpfApplication2
                     }
 
                     System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
+                    QueryInputTextBox.IsReadOnly = true;
                 }
             }
         }
@@ -277,6 +280,7 @@ namespace WpfApplication2
                     Thread newthread = new Thread(vm.loadDictionary);
 
                     newthread.Start();
+                    QueryInputTextBox.IsReadOnly = false;
                     //   vm.loadDictionary();
                 }
                 else
