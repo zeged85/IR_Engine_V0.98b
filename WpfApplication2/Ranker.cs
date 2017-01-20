@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace IR_Engine_TRD
+namespace IR_Engine
 {
     class Ranker
     {
@@ -41,6 +41,40 @@ namespace IR_Engine_TRD
 
         }
 
+        public void rankDocuments(Tuple<string, SortedList<int, int>, int, int>[] termData)
+        {
+            int R = termData[0].Item2.Count;
+
+            ///foreach Term i
+            for (int i = 0; i< termData.Length; i++)
+            {
+                Tuple<string, SortedList<int, int>, int, int> singleTermData = termData[i];
+
+                string termStr = singleTermData.Item1;
+                SortedList<int, int> DocList = singleTermData.Item2;
+                int tf = singleTermData.Item3;
+                int df = singleTermData.Item4;
+                ////////////////////
+
+                int ri = DocList.Count; //or R if this is termData[0] FullTerm
+               // R += DocList.Count;
+
+                foreach (KeyValuePair<int, int> pair in DocList)
+                {
+                    int fi = pair.Value;
+
+                    Console.WriteLine("DocNo:{0} => Popularity:{1}", pair.Key, pair.Value);
+
+
+                    //get Doc length
+
+
+
+                }
+
+                }
+
+            }
 
         // this needs to be calculate for every! term i in the query. (sigma)
         public double BM25()

@@ -74,7 +74,7 @@ namespace IR_Engine
         }
 
 
-        public Tuple<SortedList<int, int>, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm)
+        public Tuple<string, SortedList<int, int>, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm)
         {
 
             SortedList<int, int> termResult = new SortedList<int, int>();
@@ -86,7 +86,7 @@ namespace IR_Engine
 
             if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
             {
-                return new Tuple<SortedList<int, int>, int, int>(termResult,termFrequency,documentFrequenct);
+                return new Tuple<string, SortedList<int, int>, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct);
 
             }
             string val = Indexer.myDictionary[querySingleTerm];
@@ -189,7 +189,7 @@ namespace IR_Engine
 
             //return document list
 
-            return new Tuple<SortedList<int, int>,int,int> (termResult, termFrequency, documentFrequenct);
+            return new Tuple<string, SortedList<int, int>,int,int> (querySingleTerm, termResult, termFrequency, documentFrequenct);
 
         }
 
@@ -256,12 +256,13 @@ namespace IR_Engine
             {
                 queryFullTermArrayPlus += "+" + queryFullTermArray[i];
             }
-          
 
-            Tuple<SortedList<int, int>, int, int>[] termData = new Tuple<SortedList<int, int>, int, int>[size + 1];
+            string termStr = "";
+            Tuple<string, SortedList<int, int>, int, int>[] termData = new Tuple<string, SortedList<int, int>, int, int>[size + 1];
             int termFreq = 0;
             int docFreq = 0;
             SortedList<int, int> termResult;
+           
             termData[0] = getReleventDocumentsOfSingleTerm(queryFullTermArrayPlus);
             if (termData[0] == null)
             {
@@ -269,9 +270,10 @@ namespace IR_Engine
             }
             else
             {
-                termResult = termData[0].Item1;
-                termFreq = termData[0].Item2;
-                docFreq = termData[0].Item3;
+                termStr = termData[0].Item1;
+                termResult = termData[0].Item2;
+                termFreq = termData[0].Item3;
+                docFreq = termData[0].Item4;
             }
             
      
@@ -312,9 +314,9 @@ namespace IR_Engine
                         //             int docFreq = termData.Item3;
 
 
-                        DocResult += "Term" + i + ": " + '"' + querySingleTerm + '"' + " " + "tf:" + termData[i].Item2 + " df:" + termData[i].Item3;
+                        DocResult += "Term" + i + ": " + '"' + termData[i].Item1 + '"' + " " + "tf:" + termData[i].Item3 + " df:" + termData[i].Item4;
 
-                    if (termData[i].Item2 > 0)
+                    if (termData[i].Item3 > 0)
                     {
                         exists = true;
                         //term found!
@@ -327,6 +329,17 @@ namespace IR_Engine
                     DocResult += System.Environment.NewLine;
                     //MVVM
                 }
+
+
+                //send to ranker
+               // termData
+
+                    
+
+               //     Ranker rank = new Ranker(termData)
+
+                    //bm25 rank every term
+
             }
 
 
@@ -339,6 +352,19 @@ namespace IR_Engine
             //show most 1.popularByFreq 2.Original Term/Additional -Term2
 
 
+            //global
+            int numOfDocsInCorpus = Indexer.DocumentMetadata.Count; //N
+            int numOfTermsInCorpus = Indexer.myDictionary.Count;
+
+
+            //per term
+
+
+         //   Ranker rank = new Ranker();
+
+        //    rank.BM25(termData);
+
+           // termData
 
             return exists;
         }
