@@ -76,11 +76,21 @@ namespace IR_Engine
 
         public Tuple<SortedList<int, int>, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm)
         {
-            string val = Indexer.myDictionary[querySingleTerm];
+
+            SortedList<int, int> termResult = new SortedList<int, int>();
             //#tf
-            int termFrequency; // in all corpurus //single
+            int termFrequency = 0; // in all corpurus //single
             //#df
-            int documentFrequenct;
+            int documentFrequenct = 0;
+
+
+            if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
+            {
+                return new Tuple<SortedList<int, int>, int, int>(termResult,termFrequency,documentFrequenct);
+
+            }
+            string val = Indexer.myDictionary[querySingleTerm];
+      
 
 
 
@@ -94,11 +104,7 @@ namespace IR_Engine
 
 
 
-            //MVVM
-            DocResult = "Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct;
-            //MVVM
-
-
+          
             Console.WriteLine("Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct);
 
 
@@ -140,9 +146,6 @@ namespace IR_Engine
 
             //rank docs by termFreqinDoc
 
-
-
-            SortedList<int, int> termResult = new SortedList<int, int>();
 
 
 
@@ -238,50 +241,98 @@ namespace IR_Engine
         ///http://stackoverflow.com/questions/8090786/c-sharp-sorted-list-how-to-get-the-next-element
         ///http://stackoverflow.com/questions/6131827/how-do-i-get-the-element-with-the-smallest-key-in-a-collection-in-o1-or-olog
         ///CREATE SORTEDLIST
-        public bool proccessQuery(string querySingleTerm)
+        public bool proccessQuery(string queryFullTerm)
         {
 
             //http://www.c-sharpcorner.com/UploadFile/dpatra/autocomplete-textbox-in-wpf/
-          
+            //break full term to single terms
+            string[] queryFullTermArray = queryFullTerm.Split(' ');
+            bool exists = false;
+
+            Tuple<SortedList<int, int>, int, int>[] termData = new Tuple<SortedList<int, int>, int, int>[queryFullTermArray.Length+ 1];
+            int termFreq = 0;
+            int docFreq = 0;
+            SortedList<int, int> termResult;
+            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTerm);
+            if (termData[0] == null)
+            {
+                termResult = new SortedList<int, int>();
+            }
+            else
+            {
+                termResult = termData[0].Item1;
+                termFreq = termData[0].Item2;
+                docFreq = termData[0].Item3;
+            }
+            
+     
+
+
+            //get full term data
+            //MVVM
+            DocResult = "Full-Term: " + '"' + queryFullTerm + '"' + " " + "tf:" + termFreq + " df:" + docFreq;
+            DocResult += System.Environment.NewLine;
+            //MVVM
+
+
 
 
             //foreach term in full query
 
+            //get seperated terms data
+            if (queryFullTermArray.Length> 1) { 
+            int i = 0;
+                foreach (string querySingleTerm in queryFullTermArray)
+                {
+
+                    i++;
+
+                    //MVVM
+                    // DocResult += 
+                    // DocResult += System.Environment.NewLine;
+                    //MVVM
 
 
-            if (Indexer.myDictionary  .ContainsKey(querySingleTerm)) //single term
-            {
-                Tuple<SortedList<int, int>, int, int> termData = getReleventDocumentsOfSingleTerm(querySingleTerm);
+                    if (Indexer.myDictionary.ContainsKey(querySingleTerm)) //single term
+                    {
+                        exists = true;
+                        termData[i] = getReleventDocumentsOfSingleTerm(querySingleTerm);
 
-                SortedList<int, int> termResult = termData.Item1;
-                int termFreq = termData.Item2;
-                int docFreq = termData.Item3;
-
-
-
+                        //            SortedList<int, int> termResult = termData[i].Item1;
+                        //             int termFreq = termData.Item2;
+                        //             int docFreq = termData.Item3;
 
 
-
-                //send to ranker?
+                        DocResult += "Term" + i + ": " + '"' + querySingleTerm + '"' + " " + "tf:" + termData[i].Item2 + " df:" + termData[i].Item3;
 
 
 
+                        //send to ranker?
 
+                    }
 
+                    else
+                    {
 
+                    }
 
-                Console.WriteLine("mark");
-
-                //show most 1.popularByFreq 2.Original Term/Additional -Term2
-
-                return true;
+                    DocResult += System.Environment.NewLine;
+                    //MVVM
+                }
             }
-            else
-            {
-                DocResult = "";
-            }
-            return false;
 
+
+
+
+
+
+            Console.WriteLine("mark");
+
+            //show most 1.popularByFreq 2.Original Term/Additional -Term2
+
+
+
+            return exists;
         }
 
 
