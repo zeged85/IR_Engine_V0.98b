@@ -215,7 +215,7 @@
 
 
         <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="476,230,23,290"  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown"  TextChanged="txtAutoSuggestName_TextChanged" />
-        <ListBox Name="listBoxSuggestion" Visibility="Hidden"  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" KeyDown="listBoxSuggestion_KeyDown" Margin="480,262,23,128" />
+        <ListBox Name="listBoxSuggestion" Visibility="Hidden"  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyDown="listBoxSuggestion_KeyDown" Margin="476,262,23,225" />
 
         <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,332,23,40"     />
 

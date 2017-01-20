@@ -314,7 +314,11 @@ private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs 
         {
             if (e.Key == Key.Down)
             {
-                listBoxSuggestion.Focus();
+
+                //  listBoxSuggestion.Focus();
+                //   listBoxSuggestion.SelectedIndex = 0;
+                ListBoxItem item = (ListBoxItem)listBoxSuggestion.ItemContainerGenerator.ContainerFromIndex(0);
+                FocusManager.SetFocusedElement(this, item);
             }
         }
 
