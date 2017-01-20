@@ -35,8 +35,40 @@ namespace IR_Engine
 
         /// MVVM
 
+            
+            public string getDocData(int doc)
+        {
+            string ans = string.Empty;
 
+            if (Indexer.DocumentMetadata.ContainsKey(doc))
+            {
+                //parse doc data
+                string[] val = Indexer.DocumentMetadata[doc].Split('#');
 
+                string DOCNO = val[0];
+                string mostFreqTermInDoc = val[1];
+                int maxOccurencesInDocument = Int32.Parse(val[2]);
+                string language = val[3];
+                int uniqueInDocAmount = Int32.Parse(val[4]);
+                int totalInDocIncludingSW = Int32.Parse(val[5]);
+                int totalInDocwithoutSW = Int32.Parse(val[6]);
+                int AmountUniqueInCorpus = Int32.Parse(val[7]);
+
+          
+                ///12: FBIS3-521 , ifp : 5, English , uniqueInDoc : 74, totalInDocIncludingSW : 201, totalInDocwithoutSW : 114}@12 #Unique in corpus:3
+                ///13: FBIS3-85 , 2-28 : 2, French , uniqueInDoc : 66, totalInDocIncludingSW : 164, totalInDocwithoutSW : 89}@13 #Unique in corpus:3
+                ///14: FBIS3-52 , report : 32, , uniqueInDoc : 562, totalInDocIncludingSW : 1885, totalInDocwithoutSW : 1177}@14 #Unique in corpus:129
+                ///15: FBIS3-86 , oau : 6, Arabic , uniqueInDoc : 95, totalInDocIncludingSW : 264, totalInDocwithoutSW : 152}@15 #Unique in corpus:8
+                 ans= DOCNO + "| max_tf (in Doc):" + mostFreqTermInDoc + "| tf (in Doc):" + maxOccurencesInDocument +
+                  "| Language:" + language + "| UniqueInDoc :" + uniqueInDocAmount + "| totalInDocIncludingSW :" + totalInDocIncludingSW
+                +"| totalInDocwithoutSW:" + totalInDocwithoutSW + "| AmountUniqueInCorpus:" + AmountUniqueInCorpus;
+
+              
+            }
+            return ans;
+        }
+
+        
 
         public bool proccessQuery(string querySingleTerm)
         {
@@ -60,14 +92,9 @@ namespace IR_Engine
             {
              
                 string val = Indexer.myDictionary[querySingleTerm];
-                Console.WriteLine(querySingleTerm + " : " + val);
 
 
-                //MVVM
-                DocResult = querySingleTerm + " : " + val;
-                //MVVM
 
-     
                 //count docs
                 char[] delimiterCharsLang = { '#'};
                 string[] termData  = val.Split(delimiterCharsLang);
@@ -75,6 +102,18 @@ namespace IR_Engine
                 int.TryParse(termData[1], out termFrequency);
                 int.TryParse(termData[2], out documentFrequenct);
 
+
+
+
+                //MVVM
+                DocResult = "Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct;
+                //MVVM
+
+
+                Console.WriteLine("Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct);
+
+
+                /////////////////
 
                 int length = termData.Length;
                 int document;
@@ -165,7 +204,7 @@ namespace IR_Engine
 
                     Console.WriteLine("DocNo:{0} => Popularity:{1}", pair.Key, pair.Value);
 
-                    DocResult += "DocNo: {" +  pair.Key + "} => Popularity: {" +pair.Value + "}";
+                    DocResult += "DocNo: {" +  pair.Key + "} => Popularity: {" +pair.Value + "}" + getDocData(pair.Key);
 
                     DocResult += System.Environment.NewLine;
 

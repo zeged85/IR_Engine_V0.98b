@@ -46,7 +46,7 @@ namespace IR_Engine
 
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
-        public static volatile SortedDictionary<string, string> DocumentMetadata = new SortedDictionary<string, string>();
+        public static volatile SortedDictionary<int, string> DocumentMetadata = new SortedDictionary<int, string>();
         public static Mutex _DocumentMetadata;
         public static Mutex _mainMemory;
         private static Semaphore _semaphoreIndexer;
@@ -72,7 +72,7 @@ namespace IR_Engine
 
         public static List<string> uniqueTerms = new List<string>();
 
-        public static SortedDictionary<string, int> freqInAllCorpusList = new SortedDictionary<string, int>();
+        public static SortedDictionary<string, int> freqInAllCorpusList = new SortedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
         public static SortedDictionary<string, int> Months = new SortedDictionary<string, int>();
         //  public static List<string> UniqueList = new List<string>();
@@ -294,7 +294,7 @@ namespace IR_Engine
 
             StreamWriter file6 = new StreamWriter(postingFilesPath + @"\Metadata.txt", true);
 
-            foreach (KeyValuePair<string, string> docMetadata in DocumentMetadata)
+            foreach (KeyValuePair<int, string> docMetadata in DocumentMetadata)
             {
                 file6.WriteLine(docMetadata.Key + "$" + docMetadata.Value);
             }
@@ -321,16 +321,20 @@ namespace IR_Engine
                 ProcessFile(fileName, LoadPostingFiles);
         }
 
+        
         public void loadMetadata()
         {
             //load DocumentMetadata
+
+            DocumentMetadata.Clear();
 
             using (StreamReader sr = File.OpenText(postingFilesPath + @"\Metadata.txt"))
             {
                 string s = String.Empty;
                 while ((s = sr.ReadLine()) != null)
                 {
-                    DocumentMetadata.Add(s.Split('$')[0], s.Split('$')[1]);
+
+                    DocumentMetadata.Add(Int32.Parse( s.Split('^')[0]), s.Split('^')[1]);
                 }
             }
         }
@@ -457,6 +461,8 @@ namespace IR_Engine
                 }
             }
 
+
+            //CREATE AND SAVE METADATA TO FILE
             StreamWriter file3 = new StreamWriter(postingFilesPath + @"\Metadata.txt", true);
 
             foreach (var post in DocumentMetadata)
@@ -465,13 +471,14 @@ namespace IR_Engine
                 //    UniqueList.Contains
                 //    if (post.Key )
 
-                int number = Int32.Parse(post.Key);
+                int number = post.Key;
+                    
 
-                file3.WriteLine(post.Key + ":" + post.Value + " #Unique in corpus:" + UniqueWordsDictionaryCounterForQuery[number]);
+                file3.WriteLine(post.Key + "^" + post.Value + "#" + UniqueWordsDictionaryCounterForQuery[number]);
             }
 
             file3.Close();
-
+            loadMetadata(); //reload
 
         }
 
@@ -512,7 +519,7 @@ namespace IR_Engine
 
             myDictionary = ReadFile.fileToSortedList(postingFilesPath + @"\Dictionary.txt");
             
-       
+          
 
 
             Console.WriteLine("Dictionary loaded.");

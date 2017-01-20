@@ -244,7 +244,7 @@ namespace IR_Engine
                 char c = term[0];
                 if (c=='<')
                 {
-                    string docnumber = term.Split(new char[] { '>', '|' })[1];
+                    int docnumber = Int32.Parse( term.Split(new char[] { '>', '|' })[1]) ;
              
                     Indexer._DocumentMetadata.WaitOne();
                     //  Console.WriteLine()

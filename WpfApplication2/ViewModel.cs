@@ -150,6 +150,8 @@ namespace IR_Engine
 
         public void startEngine()
         {
+            Indexer.clearAllData();
+
             VM_DocResult = "loading files...";
 
             model_indexer.loadMonths();
@@ -174,7 +176,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 75;
 
-            model_indexer.dumpDocumentMetadata(); //create meta.txt
+          //  model_indexer.dumpDocumentMetadata(); //create meta.txt
 
             model_indexer.Progress = 80;
             VM_DocResult = "loading Posting Files...";
@@ -182,7 +184,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 85;
 
-            model_indexer.loadMetadata();
+         //   model_indexer.loadMetadata();
 
             model_indexer.Progress = 90;
             VM_DocResult = "createing Dictionary...";
@@ -194,16 +196,16 @@ namespace IR_Engine
 
             //
 
-        //   model_indexer. loadDictionary(); //from dict.txt
+            //   model_indexer. loadDictionary(); //from dict.txt
 
             //
 
 
-            model_indexer.UniqueWordsQuery();
+            model_indexer.UniqueWordsQuery(); //CREATE METADATA
 
             model_indexer.Progress = 97;
 
-            model_indexer.PrintfreqInAllCorpusList(); //
+            model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
 
             model_indexer.Progress = 99;
 
@@ -236,9 +238,21 @@ namespace IR_Engine
 
             //make dict singleton
             model_indexer.loadDictionary();
-           
-            //searchQuery("test");
-            Indexer.clearAllData();
+
+            //load metadata also
+
+            model_indexer.loadMetadata();
+
+            //get dictionary size
+
+            //get metadata size
+
+
+
+
+
+//is this needed?
+          //  Indexer.clearAllData();
 
 
 

@@ -79,7 +79,7 @@ namespace IR_Engine
 
                 //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
 
-                SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>();
+                SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 //moving this to static may improve preformence?
 
                 //text parsing - main work
@@ -933,12 +933,10 @@ namespace IR_Engine
                 }
 
                 //  myDocumentData.                
-                string METADATA_SECURE = /*thisDocNumber + "^" + */DOCNO /*+ " max_tf (in Document)="*/+ ", " + maxTerm + /*" tf (in Document)="*/ " : " + maxOccurencesInDocument +
-                    /*", Language : "*/ ", " + languageDocument + ", uniqueInDoc : " + countAmountOfUniqueInDoc + ", totalInDocIncludingSW : " + wordPositionWithSW + ", totalInDocwithoutSW : " + wordPositionWithoutSW;
+                string METADATA_SECURE = DOCNO + "#" + maxTerm + "#" + maxOccurencesInDocument +"#" 
+                    + languageDocument + "#" + countAmountOfUniqueInDoc + "#" + wordPositionWithSW + "#" + wordPositionWithoutSW;
 
-                myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber + '|', METADATA_SECURE);
-
-
+     
                 //MUTEX
                 //http://www.c-sharpcorner.com/UploadFile/1d42da/threading-with-mutex/
                 //  Indexer._DocumentMetadata.WaitOne();
@@ -955,6 +953,8 @@ namespace IR_Engine
                 {
                     myMiniPostingListDict[key] += "}@" + thisDocNumber;
                 }
+                myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber + '|', METADATA_SECURE);
+
 
                 Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
                 return myMiniPostingListDict;

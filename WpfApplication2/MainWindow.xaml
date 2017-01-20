@@ -134,13 +134,13 @@
 			Content="Reset All"
 			VerticalAlignment="Center"
 			Click="Reset"
-			Margin="621,466,74,40" 
+			Margin="270,410,402,90" 
 			FontSize="14" 
 
 			RenderTransformOrigin="2.283,0.511" 
 			Background="White" 
 			FontWeight="Bold" 
-			Height="43"/>
+			Height="52"/>
 
         <Button Content="Show Dictionary" 
 			Margin="74,328,603,172" 
@@ -206,7 +206,7 @@
             <ProgressBar x:Name="progressBar1" Minimum="0"  Maximum="100" Value="{Binding VM_Progress}"  Height="45" Width="275" >
 
 
-               
+
 
             </ProgressBar>
         </StatusBar>
@@ -214,10 +214,10 @@
 
 
 
-        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="512,272,74,259"     />
+        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="476,276,23,244"     />
 
 
-        <TextBox  Text="{Binding VM_DocResult}" Margin="512,328,74,172"     />
+        <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,332,23,40"     />
 
 
 
