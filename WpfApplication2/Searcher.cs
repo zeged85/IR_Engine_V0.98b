@@ -31,8 +31,8 @@ namespace IR_Engine
 
         /// MVVM
 
-            
-            public Tuple<string,string,int,string,int,int,int,int> getDocData(int doc)
+        //https://www.dotnetperls.com/tuple
+        public Tuple<string,string,int,string,int,int,int,int> getDocData(int doc)
         {
             // string ans = string.Empty;
 
@@ -348,7 +348,7 @@ namespace IR_Engine
         /// retun list of querySingleTerm-term 
         /// </summary>
         /// <param name="querySingleTerm"></param>
-        public void autoComplete(string querySingleTerm)
+        public List<string> autoComplete(string querySingleTerm)
         {
 
             //    //AUTO COMPLETE
@@ -376,7 +376,7 @@ namespace IR_Engine
             Console.WriteLine(nextTermFullKey + ":" + nextTermValue);
 
 
-
+            List<string> termList = new List<string>();
 
 
             while (nextTerm1stKey == querySingleTerm)//while term = "term1-"
@@ -398,7 +398,7 @@ namespace IR_Engine
 
 
                 ////
-
+                termList.Add(nextTermFullKey);
 
 
                 //    function above
@@ -412,6 +412,8 @@ namespace IR_Engine
 
 
             }
+
+            return termList;
         }
 
 

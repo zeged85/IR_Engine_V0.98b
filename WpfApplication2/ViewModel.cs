@@ -237,6 +237,12 @@ namespace IR_Engine
         
         }
 
+        public List<string> autoComplete(string querySingleTerm)
+        {
+
+            return search.autoComplete(querySingleTerm);
+        }
+
         public void loadDictionary()
         {
 

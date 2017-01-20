@@ -39,7 +39,7 @@
 
         <TextBlock Text="Documents Folder:" 
 			VerticalAlignment="Top" 
-			Margin="66,143,596,0" 
+			Margin="70,107,592,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
@@ -48,14 +48,14 @@
 
         <TextBox x:Name="documentsFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="217,143,425,380" 
+			Margin="221,108,421,418" 
 			RenderTransformOrigin="0.458,0.611" 
 			Height="26"/>
 
 
         <Button  Content="OK" 
 			Width="40" 
-			Margin="402,143,0,381" 
+			Margin="406,107,0,417" 
 			Click="documentsFolderSelected" 
 			Background="White" 
 			FontWeight="Bold" 
@@ -75,7 +75,7 @@
 			Content="Browse"
 			VerticalAlignment="Center"
 			Click="documents_Browser" 
-			Margin="476,143,201,380" 
+			Margin="480,108,197,418" 
 			FontWeight="Bold" 
 			Background="White" 
 			Height="26" 
@@ -83,7 +83,7 @@
 
         <TextBlock Text="Posting Files Folder:" 
 			VerticalAlignment="Center" 
-			Margin="66,214,593,307" 
+			Margin="70,180,589,344" 
 			RenderTransformOrigin="-1.059,0.479" 
 			FontWeight="Bold" 
 			FontSize="14" 
@@ -92,12 +92,12 @@
 
         <TextBox x:Name="postingFilesFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="215,214,425,309" 
+			Margin="219,180,421,346" 
 			RenderTransformOrigin="0.458,0.611" 
 			Height="26"/>
 
         <Button Content="OK" 
-			Margin="400,214,350,307" 
+			Margin="404,178,346,343" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="postingFilesFolderSelected"/>
@@ -107,7 +107,7 @@
 			VerticalAlignment="Center"
 			Click="postingFiles_Browser" 
 			RenderTransformOrigin="3.459,0.5" 
-			Margin="476,214,201,307" 
+			Margin="480,180,197,344" 
 			FontWeight="Bold" 
 			Height="28" 
 			Background="White"/>
@@ -115,7 +115,7 @@
 
         <CheckBox x:Name="Stemming" 
                   Content="Stemming" 
-                  Margin="78,284,629,240" 
+                  Margin="644,140,63,384" 
                   RenderTransformOrigin="2.112,-6.75"  
                   Checked="isStemming" 
                   FontWeight="Bold">
@@ -214,8 +214,8 @@
 
 
 
-        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="476,276,23,244"     />
-
+        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="476,230,23,290"  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown"  TextChanged="txtAutoSuggestName_TextChanged" />
+        <ListBox Name="listBoxSuggestion" Visibility="Hidden"  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" KeyDown="listBoxSuggestion_KeyDown" Margin="480,262,23,128" />
 
         <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,332,23,40"     />
 

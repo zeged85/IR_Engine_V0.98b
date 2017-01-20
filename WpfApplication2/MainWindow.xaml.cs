@@ -285,6 +285,59 @@ namespace WpfApplication2
                 }
                 // NotifyPropertyChanged();
             }
+
+        }
+
+private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            listBoxSuggestion.Items.Clear();
+            if (QueryInputTextBox.Text != "")
+            {
+                List<string> namelist = vm.autoComplete(QueryInputTextBox.Text);
+                if (namelist.Count > 0)
+                {
+                    listBoxSuggestion.Visibility = Visibility.Visible;
+                    foreach (var obj in namelist)
+                    {
+                        listBoxSuggestion.Items.Add(obj);
+                    }
+                }
+            }
+            else
+            {
+                listBoxSuggestion.Visibility = Visibility.Hidden;
+            }
+        }
+
+
+        private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                listBoxSuggestion.Focus();
+            }
+        }
+
+
+        private void listBoxSuggestion_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (listBoxSuggestion.SelectedIndex == 0 && e.Key == Key.Up)
+            {
+                QueryInputTextBox.Focus();
+            }
+        }
+
+        private void listBoxSuggestion_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (listBoxSuggestion.SelectedIndex > -1)
+            {
+                if (e.Key == Key.Enter)
+                {
+                  //  QueryInputTextBox.Text = listBoxSuggestion.SelectedItem.ToString();
+                  vm.  VM_QueryInput = listBoxSuggestion.SelectedItem.ToString();
+                    listBoxSuggestion.Visibility = Visibility.Hidden;
+                }
+            }
         }
     }
 }

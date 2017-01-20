@@ -13,8 +13,8 @@ namespace IR_Engine
         void move(double speed, int angle);
 
         bool proccessQuery(string query);
-      //  void startSearcher();
-
+        //  void startSearcher();
+        List<string> autoComplete(string querySingleTerm);
         void initiate();
       
     }
