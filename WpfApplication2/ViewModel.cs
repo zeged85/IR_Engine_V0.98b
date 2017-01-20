@@ -109,7 +109,8 @@ namespace IR_Engine
 
                 //fire query
               
-
+                
+                /*
                 if (value[value.Length-1] == ' ')// if user entered ' ' char
                 {//check term1-term*
 
@@ -118,6 +119,9 @@ namespace IR_Engine
 
 
                 }
+                */
+
+                
                 queryInput = value;
                 searchQuery(queryInput);
 

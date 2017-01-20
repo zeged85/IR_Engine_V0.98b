@@ -248,12 +248,21 @@ namespace IR_Engine
             //break full term to single terms
             string[] queryFullTermArray = queryFullTerm.Split(' ');
             bool exists = false;
+            string queryFullTermArrayPlus = queryFullTermArray[0];
+            int size = queryFullTermArray.Length;
 
-            Tuple<SortedList<int, int>, int, int>[] termData = new Tuple<SortedList<int, int>, int, int>[queryFullTermArray.Length+ 1];
+            //create fullterm string with +
+            for (int i = 1; i<size; i++)
+            {
+                queryFullTermArrayPlus += "+" + queryFullTermArray[i];
+            }
+          
+
+            Tuple<SortedList<int, int>, int, int>[] termData = new Tuple<SortedList<int, int>, int, int>[size + 1];
             int termFreq = 0;
             int docFreq = 0;
             SortedList<int, int> termResult;
-            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTerm);
+            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTermArrayPlus);
             if (termData[0] == null)
             {
                 termResult = new SortedList<int, int>();
@@ -293,9 +302,9 @@ namespace IR_Engine
                     //MVVM
 
 
-                    if (Indexer.myDictionary.ContainsKey(querySingleTerm)) //single term
-                    {
-                        exists = true;
+                   // if (Indexer.myDictionary.ContainsKey(querySingleTerm)) //single term
+                    
+                  
                         termData[i] = getReleventDocumentsOfSingleTerm(querySingleTerm);
 
                         //            SortedList<int, int> termResult = termData[i].Item1;
@@ -305,16 +314,15 @@ namespace IR_Engine
 
                         DocResult += "Term" + i + ": " + '"' + querySingleTerm + '"' + " " + "tf:" + termData[i].Item2 + " df:" + termData[i].Item3;
 
-
+                    if (termData[i].Item2 > 0)
+                    {
+                        exists = true;
+                        //term found!
+                    }
 
                         //send to ranker?
 
-                    }
-
-                    else
-                    {
-
-                    }
+               
 
                     DocResult += System.Environment.NewLine;
                     //MVVM
