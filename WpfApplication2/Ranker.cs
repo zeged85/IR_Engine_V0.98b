@@ -66,7 +66,7 @@ namespace IR_Engine
                     //get Doc length
 
                 
-                        Tuple<string, string, int, string, int, int, int, int> DocData = Searcher.getDocData(pair.Key);
+                        Document DocData = Searcher.getDocData(pair.Key);
 
                     //   string[] val = Indexer.DocumentMetadata[doc].Split('#');
 
@@ -75,7 +75,7 @@ namespace IR_Engine
                   ///  int maxOccurencesInDocument = DocData.Item3;
                   ///  string language = DocData.Item4;
                   ///  int uniqueInDocAmount = DocData.Item5;
-                    int totalInDocIncludingSW = DocData.Item6;  /// |d| doc length
+                    int totalInDocIncludingSW = DocData.totalInDocIncludingSW;  /// |d| doc length
                                                                 ///  int totalInDocwithoutSW = DocData.Item7;
                                                                 ///  int AmountUniqueInCorpus = DocData.Rest;
 
@@ -92,7 +92,8 @@ namespace IR_Engine
         {
             double logNumerator = (ri+0.5)/(R-ri+0.5);
             double logDenominator = (ni - ri + 0.5) / (N - ni - R + ri + 0.5);
-
+            if (logDenominator < 0)
+                logDenominator = 0.0000001;
             double K = K1 * ((1 - b) + b * (docLength / avgdl));
 
             double log = Math.Log10(logNumerator / logDenominator);

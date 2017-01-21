@@ -34,7 +34,7 @@ namespace IR_Engine
         /// MVVM
 
         //https://www.dotnetperls.com/tuple
-        public static Tuple<string,string,int,string,int,int,int,int> getDocData(int doc)
+        public static Document getDocData(int doc)
         {
             // string ans = string.Empty;
 
@@ -68,7 +68,7 @@ namespace IR_Engine
 
 
                 //Tuple<int, string, bool> tuple =
-                return new Tuple<string, string, int, string, int, int, int, int>(DOCNO, mostFreqTermInDoc, maxOccurencesInDocument, language, uniqueInDocAmount, totalInDocIncludingSW, totalInDocwithoutSW, AmountUniqueInCorpus);
+                return new Document(DOCNO, mostFreqTermInDoc, maxOccurencesInDocument, language, uniqueInDocAmount, totalInDocIncludingSW, totalInDocwithoutSW, AmountUniqueInCorpus);
             }
             else
             {
@@ -419,18 +419,18 @@ namespace IR_Engine
                        
 
 
-                   Tuple<string, string, int, string, int, int, int, int> DocData = getDocData(docNum);
+                   Document DocData = getDocData(docNum);
 
 
 
-                        string DOCNO = DocData.Item1;
-                        string mostFreqTermInDoc = DocData.Item2;
-                        int maxOccurencesInDocument = DocData.Item3;
-                        string language = DocData.Item4;
-                        int uniqueInDocAmount = DocData.Item5;
-                        int totalInDocIncludingSW = DocData.Item6;
-                        int totalInDocwithoutSW = DocData.Item7;
-                        int AmountUniqueInCorpus = DocData.Rest;
+                    string DOCNO = DocData.DOCNO;
+                    string mostFreqTermInDoc = DocData.mostFreqTermInDoc;
+                        int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
+                        string language = DocData.language;
+                        int uniqueInDocAmount = DocData.uniqueInDocAmount;
+                        int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
+                        int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
+                        int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
 
 
 
