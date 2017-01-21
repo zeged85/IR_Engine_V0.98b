@@ -39,7 +39,22 @@ namespace IR_Engine
 
         public void rankDocuments(Tuple<string, SortedList<int, int>, int, int, int>[] termData)
         {
-            int R = termData[0].Item2.Count;
+            // int R = termData[0].Item2.Count;
+            int R = 0;
+            int ri = 0;
+
+
+            //compute ri
+
+            if (termData.Length == 1)
+            {
+         //       ri = R;
+            }
+            else
+            {
+
+            }
+
 
             ///foreach Term i
             for (int i = 0; i< termData.Length; i++)
@@ -53,7 +68,7 @@ namespace IR_Engine
                 int qfi = singleTermData.Item5;
                 ////////////////////
 
-                int ri = DocList.Count; //or R if this is termData[0] FullTerm
+                int ni = DocList.Count; //or R if this is termData[0] FullTerm
                // R += DocList.Count;
 
                 foreach (KeyValuePair<int, int> pair in DocList)
@@ -79,7 +94,7 @@ namespace IR_Engine
                                                                 ///  int totalInDocwithoutSW = DocData.Item7;
                                                                 ///  int AmountUniqueInCorpus = DocData.Rest;
 
-                    double docRankResult = BM25(totalInDocIncludingSW, ri, 0, R, fi, qfi);
+                    double docRankResult = BM25(totalInDocIncludingSW, ri, ni, R, fi, qfi);
 
                 }
 

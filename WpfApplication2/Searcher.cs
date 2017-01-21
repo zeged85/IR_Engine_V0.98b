@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,8 +29,45 @@ namespace IR_Engine
             set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
-        
 
+        public void openQueryFile(string path)
+        {
+            SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
+
+            using (StreamReader sr = File.OpenText(path))
+            {
+                string s = String.Empty;
+                while ((s = sr.ReadLine()) != null)
+                {
+                    //remove blank lines
+                    if (s == "")
+                        continue;
+
+
+                    int space = s.IndexOf(' ');
+                    int query_id;
+                    bool isValidInteger = int.TryParse(s.Substring(0, space), out query_id);
+
+                    if (!isValidInteger)
+                    {
+                        ////
+                    }
+
+
+                    string query = s.Substring(space + 1);
+
+                    //first query in file
+                   SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+
+                    //sort by val double
+
+
+                    //append results to file
+
+
+                }
+            }
+        }
 
         /// MVVM
 
@@ -244,8 +282,11 @@ namespace IR_Engine
         ///http://stackoverflow.com/questions/8090786/c-sharp-sorted-list-how-to-get-the-next-element
         ///http://stackoverflow.com/questions/6131827/how-do-i-get-the-element-with-the-smallest-key-in-a-collection-in-o1-or-olog
         ///CREATE SORTEDLIST
-        public bool proccessQuery(string queryFullTerm)
+        /////////////////<DOCNO, score> id?
+        public SortedDictionary<string,double> processFullTermQuery(string queryFullTerm)
         {
+            SortedDictionary<string, double> DocRankingList = new SortedDictionary<string, double>();
+
 
             //http://www.c-sharpcorner.com/UploadFile/dpatra/autocomplete-textbox-in-wpf/
             //break full term to single terms
@@ -437,6 +478,18 @@ namespace IR_Engine
 
 
                         double score = rank.BM25(totalInDocIncludingSW, ri, 0, R, tf, qfi);
+
+                    
+                    if (DocRankingList.ContainsKey(DOCNO))
+                    {
+                        DocRankingList.Add(DOCNO, DocRankingList[DOCNO] + score);
+                    }
+                    else
+                    {
+                        DocRankingList.Add(DOCNO, score);
+                    }
+                    ///save to docResultList
+                    ///if contains sum score
                     }
 
                 
@@ -465,13 +518,13 @@ namespace IR_Engine
             //per term
 
 
-         //   Ranker rank = new Ranker();
+            //   Ranker rank = new Ranker();
 
-        //    rank.BM25(termData);
+            //    rank.BM25(termData);
 
-           // termData
+            // termData
 
-            return exists;
+            return DocRankingList;
         }
 
 

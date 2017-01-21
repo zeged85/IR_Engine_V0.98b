@@ -123,7 +123,19 @@ namespace IR_Engine
 
                 
                 queryInput = value;
-                searchQuery(queryInput);
+
+
+                   
+
+                SortedDictionary<string,double> docRankRes = VMsearchQuery(queryInput);
+                
+                //sort
+
+                //show results on screen
+
+                //queryoutput
+
+
 
                 this.NotifyPropertyChanged("VM_QueryInput");
                 
@@ -150,7 +162,7 @@ namespace IR_Engine
             model.createDictionary();
         }
         */
-
+      
 
         public void startEngine()
         {
@@ -226,15 +238,15 @@ namespace IR_Engine
             VM_DocResult = "done.";
         }
 
-        public void searchQuery(string query)
+        public SortedDictionary<string,double> VMsearchQuery(string query)
         {
-           
-            if (search.proccessQuery(query))
+            SortedDictionary<string, double> DocRankRes = search.processFullTermQuery(query);
+            if (DocRankRes.Count > 1)
                 Console.WriteLine("Word exists in memory");
             else
                 Console.WriteLine("Word does not exist in memory");
 
-        
+            return DocRankRes;
         }
 
         public List<string> autoComplete(string querySingleTerm)

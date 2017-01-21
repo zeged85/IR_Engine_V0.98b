@@ -12,7 +12,7 @@ namespace IR_Engine
         string DocResult { set; get; }
         void move(double speed, int angle);
 
-        bool proccessQuery(string query);
+        SortedDictionary<string,double> processFullTermQuery(string query);
         //  void startSearcher();
         List<string> autoComplete(string querySingleTerm);
         void initiate();
