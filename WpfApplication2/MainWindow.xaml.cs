@@ -119,7 +119,13 @@ namespace WpfApplication2
                 {
                     t1.Start();
                     t1.Join();
-                    QueryInputTextBox.IsReadOnly = false;
+                    ///http://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
+                    ///Whenever you update your UI elements from a thread other than the main thread, you need to use:
+                    this.Dispatcher.Invoke( () =>
+                    {
+                        QueryInputTextBox.IsReadOnly = false;
+                    });
+                   
                     //   Indexer.clearAllData();
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
