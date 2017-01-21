@@ -16,6 +16,9 @@ namespace IR_Engine
         //  void startSearcher();
         List<string> autoComplete(string querySingleTerm);
         void initiate();
-      
+
+   //     Tuple<string, string, int, string, int, int, int, int> getDocData(int doc);
+
+
     }
 }

@@ -80,6 +80,9 @@ namespace IR_Engine
         int FileCountInFolder;
         int FileCounter;
 
+
+        public static int NumOfWordsInCorpus = 0;
+
         public Indexer()
         {//added comparer
          ///for case
@@ -333,10 +336,14 @@ namespace IR_Engine
                 string s = String.Empty;
                 while ((s = sr.ReadLine()) != null)
                 {
-
-                    DocumentMetadata.Add(Int32.Parse( s.Split('^')[0]), s.Split('^')[1]);
+                    string[] str = s.Split('^');
+                    DocumentMetadata.Add(Int32.Parse(str[0]), str[1]);
+                    NumOfWordsInCorpus += (Int32.Parse(s.Split('#')[5]));
                 }
             }
+            //    string METADATA_SECURE = DOCNO + "#" + maxTerm + "#" + maxOccurencesInDocument + "#"
+            //         + languageDocument + "#" + countAmountOfUniqueInDoc + "#" + wordPositionWithSW + "#" + wordPositionWithoutSW;
+        // +     UniqueWordsDictionaryCounterForQuery
         }
 
         public void createDictionary() // count unique

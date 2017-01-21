@@ -28,11 +28,13 @@ namespace IR_Engine
             set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
+        
+
 
         /// MVVM
 
         //https://www.dotnetperls.com/tuple
-        public Tuple<string,string,int,string,int,int,int,int> getDocData(int doc)
+        public static Tuple<string,string,int,string,int,int,int,int> getDocData(int doc)
         {
             // string ans = string.Empty;
 
@@ -55,9 +57,9 @@ namespace IR_Engine
                 ///13: FBIS3-85 , 2-28 : 2, French , uniqueInDoc : 66, totalInDocIncludingSW : 164, totalInDocwithoutSW : 89}@13 #Unique in corpus:3
                 ///14: FBIS3-52 , report : 32, , uniqueInDoc : 562, totalInDocIncludingSW : 1885, totalInDocwithoutSW : 1177}@14 #Unique in corpus:129
                 ///15: FBIS3-86 , oau : 6, Arabic , uniqueInDoc : 95, totalInDocIncludingSW : 264, totalInDocwithoutSW : 152}@15 #Unique in corpus:8
-            ///    ans = DOCNO + "| max_tf (in Doc):" + mostFreqTermInDoc + "| tf (in Doc):" + maxOccurencesInDocument +
-            ///     "| Language:" + language + "| UniqueInDoc :" + uniqueInDocAmount + "| totalInDocIncludingSW :" + totalInDocIncludingSW
-            ///   + "| totalInDocwithoutSW:" + totalInDocwithoutSW + "| AmountUniqueInCorpus:" + AmountUniqueInCorpus;
+                ///    ans = DOCNO + "| max_tf (in Doc):" + mostFreqTermInDoc + "| tf (in Doc):" + maxOccurencesInDocument +
+                ///     "| Language:" + language + "| UniqueInDoc :" + uniqueInDocAmount + "| totalInDocIncludingSW :" + totalInDocIncludingSW
+                ///   + "| totalInDocwithoutSW:" + totalInDocwithoutSW + "| AmountUniqueInCorpus:" + AmountUniqueInCorpus;
 
 
                 //}
@@ -66,15 +68,16 @@ namespace IR_Engine
 
 
                 //Tuple<int, string, bool> tuple =
-                return new Tuple<string, string, int, string, int, int, int, int>(DOCNO, mostFreqTermInDoc,
-                maxOccurencesInDocument, language, uniqueInDocAmount, totalInDocIncludingSW, totalInDocwithoutSW, AmountUniqueInCorpus);
+                return new Tuple<string, string, int, string, int, int, int, int>(DOCNO, mostFreqTermInDoc, maxOccurencesInDocument, language, uniqueInDocAmount, totalInDocIncludingSW, totalInDocwithoutSW, AmountUniqueInCorpus);
             }
-
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
 
-        public Tuple<string, SortedList<int, int>, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm)
+        public Tuple<string, SortedList<int, int>, int, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm, int qfi)
         {
 
             SortedList<int, int> termResult = new SortedList<int, int>();
@@ -86,7 +89,7 @@ namespace IR_Engine
 
             if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
             {
-                return new Tuple<string, SortedList<int, int>, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct);
+                return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct, 0);
 
             }
             string val = Indexer.myDictionary[querySingleTerm];
@@ -105,7 +108,7 @@ namespace IR_Engine
 
 
           
-            Console.WriteLine("Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct);
+            Console.WriteLine("Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct + " qfi:" + qfi);
 
 
             /////////////////
@@ -189,7 +192,7 @@ namespace IR_Engine
 
             //return document list
 
-            return new Tuple<string, SortedList<int, int>,int,int> (querySingleTerm, termResult, termFrequency, documentFrequenct);
+            return new Tuple<string, SortedList<int, int>,int,int,int> (querySingleTerm, termResult, termFrequency, documentFrequenct, qfi);
 
         }
 
@@ -249,6 +252,9 @@ namespace IR_Engine
             string[] queryFullTermArray = queryFullTerm.Split(' ');
             bool exists = false;
             string queryFullTermArrayPlus = queryFullTermArray[0];
+
+
+
             int size = queryFullTermArray.Length;
 
             //create fullterm string with +
@@ -258,12 +264,34 @@ namespace IR_Engine
             }
 
             string termStr = "";
-            Tuple<string, SortedList<int, int>, int, int>[] termData = new Tuple<string, SortedList<int, int>, int, int>[size + 1];
+
+            //get amount of unique terms in query , qfi
+            Dictionary<string, int> TermQfiList = new Dictionary<string, int>();
+            foreach (string querySingleTerm in queryFullTermArray)
+            {
+                if (TermQfiList.ContainsKey(querySingleTerm))
+                {
+                    TermQfiList[querySingleTerm]++;
+                    //increment qfi
+
+                }
+                else
+                {
+                    TermQfiList.Add(querySingleTerm, 1);
+                }
+            }
+
+            int count = TermQfiList.Count;
+            if (count > 1)
+                count++;
+
+            Tuple<string, SortedList<int, int>, int, int, int>[] termData = new Tuple<string, SortedList<int, int>, int, int, int>[count];
             int termFreq = 0;
             int docFreq = 0;
+            int FullTermQfi = 1;//qfi=1 for full term
             SortedList<int, int> termResult;
            
-            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTermArrayPlus);
+            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTermArrayPlus, FullTermQfi); 
             if (termData[0] == null)
             {
                 termResult = new SortedList<int, int>();
@@ -274,6 +302,7 @@ namespace IR_Engine
                 termResult = termData[0].Item2;
                 termFreq = termData[0].Item3;
                 docFreq = termData[0].Item4;
+
             }
             
      
@@ -291,30 +320,37 @@ namespace IR_Engine
             //foreach term in full query
 
             //get seperated terms data
-            if (queryFullTermArray.Length> 1) { 
-            int i = 0;
-                foreach (string querySingleTerm in queryFullTermArray)
+
+
+
+            if (queryFullTermArray.Length > 1)
+            {
+
+                int i = 1;
+                foreach (KeyValuePair<string, int> pair in TermQfiList)
                 {
 
-                    i++;
-
+                    string querySingleTerm = pair.Key;
+                    int qfi = pair.Value;
                     //MVVM
                     // DocResult += 
                     // DocResult += System.Environment.NewLine;
                     //MVVM
 
 
-                   // if (Indexer.myDictionary.ContainsKey(querySingleTerm)) //single term
-                    
-                  
-                        termData[i] = getReleventDocumentsOfSingleTerm(querySingleTerm);
-
-                        //            SortedList<int, int> termResult = termData[i].Item1;
-                        //             int termFreq = termData.Item2;
-                        //             int docFreq = termData.Item3;
+                    // if (Indexer.myDictionary.ContainsKey(querySingleTerm)) //single term
 
 
-                        DocResult += "Term" + i + ": " + '"' + termData[i].Item1 + '"' + " " + "tf:" + termData[i].Item3 + " df:" + termData[i].Item4;
+
+                    termData[i] = getReleventDocumentsOfSingleTerm(querySingleTerm, qfi);
+
+
+                    //            SortedList<int, int> termResult = termData[i].Item1;
+                    //             int termFreq = termData.Item2;
+                    //             int docFreq = termData.Item3;
+
+
+                    DocResult += "Term" + i + ": " + '"' + termData[i].Item1 + '"' + " " + "tf:" + termData[i].Item3 + " df:" + termData[i].Item4 + " qfi:" + termData[i].Item5;
 
                     if (termData[i].Item3 > 0)
                     {
@@ -322,22 +358,91 @@ namespace IR_Engine
                         //term found!
                     }
 
-                        //send to ranker?
+                    //send to ranker?
 
-               
+
 
                     DocResult += System.Environment.NewLine;
                     //MVVM
+                    i++;
                 }
 
-
+            }
                 //send to ranker
-               // termData
+                // termData
 
-                    
+                ///get avgdl
+                ///
 
-               //     Ranker rank = new Ranker(termData)
+              
+                int N = Indexer.DocumentMetadata.Count;
+                int avgdl = Indexer.NumOfWordsInCorpus / N ;
+                //foreach 
 
+
+                //compute R
+
+                List<int> DocList = new List<int>();
+                int R = 0; ;
+               
+                //every term result
+                foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+                {
+                    //every document
+                    foreach (KeyValuePair<int, int> docAndTf in tup.Item2)
+                    {
+                        if (!DocList.Contains(docAndTf.Key))
+                        {
+                            R++;
+                        }
+
+                    }
+
+                }
+
+                        Ranker rank = new Ranker(avgdl, N);
+
+                //every term result
+                foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+                {
+                    string term = tup.Item1;
+                    SortedList<int, int>  termDocList = tup.Item2;
+                    termFreq = tup.Item3;
+                    docFreq = tup.Item4;
+                    int ri = tup.Item2.Count;
+                    int qfi = tup.Item5;
+                    //every document
+                    foreach (KeyValuePair<int,int> docAndTf in tup.Item2)
+                    {
+                        int docNum = docAndTf.Key;
+                        int tf = docAndTf.Value; //fi
+                       
+
+
+                   Tuple<string, string, int, string, int, int, int, int> DocData = getDocData(docNum);
+
+
+
+                        string DOCNO = DocData.Item1;
+                        string mostFreqTermInDoc = DocData.Item2;
+                        int maxOccurencesInDocument = DocData.Item3;
+                        string language = DocData.Item4;
+                        int uniqueInDocAmount = DocData.Item5;
+                        int totalInDocIncludingSW = DocData.Item6;
+                        int totalInDocwithoutSW = DocData.Item7;
+                        int AmountUniqueInCorpus = DocData.Rest;
+
+
+
+
+
+                        double score = rank.BM25(totalInDocIncludingSW, ri, 0, R, tf, qfi);
+                    }
+
+                
+
+              
+              //  rank.BM25()
                     //bm25 rank every term
 
             }

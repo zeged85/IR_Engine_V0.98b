@@ -45,7 +45,7 @@ namespace WpfApplication2
         public MainWindow()
         {
             InitializeComponent();
-            QueryInputTextBox.IsReadOnly = true; ;
+            QueryInputTextBox.IsReadOnly = true;
             vm = new ViewModel(new Indexer(), new Searcher());
             DataContext = vm;
             vm.VM_Progress = 0;
