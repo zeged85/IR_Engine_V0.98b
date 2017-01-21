@@ -353,5 +353,22 @@ private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs 
                 }
             }
         }
+
+        private void queriesFile_Browser(object sender, RoutedEventArgs e)
+        {
+
+
+            System.Windows.Forms.OpenFileDialog queriesFile = new System.Windows.Forms.OpenFileDialog();
+            
+            queriesFile.ShowDialog();
+            StreamReader reader = new StreamReader(queriesFile.OpenFile());
+            while (!reader.EndOfStream)
+            {
+                //just for testing
+                Console.WriteLine(reader.ReadLine());
+            }
+
+            
+        }
     }
 }
