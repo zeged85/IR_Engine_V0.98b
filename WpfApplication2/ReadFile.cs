@@ -169,12 +169,16 @@ namespace IR_Engine
             Console.WriteLine("Saving File postings on ReadFile-temp-RAM");
             foreach (SortedDictionary<string, string> dic in DicList)
             {
-                SortedDictionary<string, string> dic2 = new SortedDictionary<string, string>(dic);
+                //     SortedDictionary<string, string> dic2 = new SortedDictionary<string, string>(dic);
                 foreach (KeyValuePair<string, string> entry in dic)
                     if (myFilePostings.ContainsKey(entry.Key))
                         myFilePostings[entry.Key] += " " + entry.Value;
                     else
+                    {
                         myFilePostings.Add(entry.Key.ToString(), entry.Value);
+                        Console.WriteLine("Term Conflict:" + entry.Key.ToString());
+                    }
+
             }
 
             Console.WriteLine("postings saved");
