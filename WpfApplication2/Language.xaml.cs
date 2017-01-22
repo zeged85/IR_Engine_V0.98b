@@ -22,6 +22,7 @@ namespace WpfApplication2
     /// </summary>
     public partial class Language : Window
     {
+        static List<string> lanList = new List<string>();
       //  string languageChosen;
         public Language()
         {
@@ -30,16 +31,22 @@ namespace WpfApplication2
 
         private void l_combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var comBox = sender as ComboBox;
-           // languageChosen = comBox.Text;
-           // languageChosen = comBox.Text;
-           // languageChosen = comBox.SelectionBoxItemStringFormat;
-           // languageChosen = comBox.SelectedValue.ToString();
-            //  languageChosen = comBox.SelectedItem.ToString();
-            whatisthis.languageChosed = comBox.SelectionBoxItem.ToString();
+            var listBox = sender as ListBox;
+
+
+          
+           // if (comBox.IsDropDownOpen)
+            //{
+              //  string s = comBox.SelectionBoxItem.ToString();
+                //lanList.Add(s);
+             //   Console.WriteLine(comBox.SelectionBoxItem.ToString());
+            //}
+
             
+            //foreach (string s in lanList)
             //MessageBox.Show(languageChosen);
             //Console.WriteLine(languageChosen);
+            
         }
     }
 }

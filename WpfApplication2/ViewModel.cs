@@ -283,22 +283,9 @@ namespace IR_Engine
 
             //get metadata size
 
-
-
-
-
             //is this needed?
             //  Indexer.clearAllData();
 
-
-
-
-
-
-
-
         }
-
-
     }
 }

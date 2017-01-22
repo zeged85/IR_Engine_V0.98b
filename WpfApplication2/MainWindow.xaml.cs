@@ -38,7 +38,7 @@ namespace WpfApplication2
         string tmpForNoStemming;
 
         string languageChosen;
-
+        bool isDictionaryLoaded = false;
         public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -111,6 +111,7 @@ namespace WpfApplication2
             {
                 Indexer.docNumber = 0;
                 Indexer.amountOfUnique = 0;
+                isDictionaryLoaded = true;
 
                 Thread t1 = new Thread(vm.startEngine);
                 // t1.Start();
@@ -121,11 +122,11 @@ namespace WpfApplication2
                     t1.Join();
                     ///http://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
                     ///Whenever you update your UI elements from a thread other than the main thread, you need to use:
-                    this.Dispatcher.Invoke( () =>
+                    this.Dispatcher.Invoke(() =>
                     {
                         QueryInputTextBox.IsReadOnly = false;
                     });
-                   
+
                     //   Indexer.clearAllData();
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
@@ -215,6 +216,7 @@ namespace WpfApplication2
 
                     System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
                     QueryInputTextBox.IsReadOnly = true;
+                    isDictionaryLoaded = false;
                 }
             }
         }
@@ -288,17 +290,18 @@ namespace WpfApplication2
                     newthread.Start();
                     QueryInputTextBox.IsReadOnly = false;
                     //   vm.loadDictionary();
+                    isDictionaryLoaded = true;
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Requested dictionary for files created without Stemming,\nIs already exists.");
+                    System.Windows.Forms.MessageBox.Show("Files does not existed in the folder.");
                 }
                 // NotifyPropertyChanged();
             }
 
         }
 
-private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs e)
         {
             listBoxSuggestion.Items.Clear();
             if (QueryInputTextBox.Text != "")
@@ -347,8 +350,8 @@ private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs 
             {
                 if (e.Key == Key.Enter)
                 {
-                  //  QueryInputTextBox.Text = listBoxSuggestion.SelectedItem.ToString();
-                  vm.  VM_QueryInput = listBoxSuggestion.SelectedItem.ToString();
+                    //  QueryInputTextBox.Text = listBoxSuggestion.SelectedItem.ToString();
+                    vm.VM_QueryInput = listBoxSuggestion.SelectedItem.ToString();
                     listBoxSuggestion.Visibility = Visibility.Hidden;
                 }
             }
@@ -357,16 +360,22 @@ private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs 
         private void queriesFile_Browser(object sender, RoutedEventArgs e)
         {
 
+            if (isDictionaryLoaded == true)
+            {
+                System.Windows.Forms.OpenFileDialog queriesFile = new System.Windows.Forms.OpenFileDialog();
 
-            System.Windows.Forms.OpenFileDialog queriesFile = new System.Windows.Forms.OpenFileDialog();
-          
-            queriesFile.ShowDialog();
-         
+                queriesFile.ShowDialog();
+
                 //just for testing
-               // vm.VMsearchQuery
-                    vm.openQueryFile(queriesFile.FileName);
-          
-            
+                // vm.VMsearchQuery
+                vm.openQueryFile(queriesFile.FileName);
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Please load dictionary first.");
+            }
+
+
         }
     }
 }
