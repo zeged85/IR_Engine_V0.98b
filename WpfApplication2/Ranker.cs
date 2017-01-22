@@ -106,6 +106,7 @@ namespace IR_Engine
         public double BM25(int docLength, int ri, int ni, int R, int fi, int qfi)
         {
             double logNumerator = (ri+0.5)/(R-ri+0.5);
+
             double logDenominator = (ni - ri + 0.5) / (N - ni - R + ri + 0.5);
             if (logDenominator < 0)
                 logDenominator = 0.0000001;

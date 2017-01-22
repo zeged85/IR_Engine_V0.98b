@@ -80,10 +80,16 @@ namespace IR_Engine
 
                     StreamWriter file6 = new StreamWriter(@"c:\treceval\results.txt", true);
                     /// 351   0  FR940104-0-00001  1   42.38   mt
+                    int limiter = 0;
                     foreach (KeyValuePair<string, double> docResult in desc)
                     {
+                        limiter++;
                         ///query ID - ITER = 0   - 
                         file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
+                        if (limiter == 50)
+                            {
+                                break;
+                            }
                     }
 
                     file6.Close();
@@ -499,7 +505,7 @@ namespace IR_Engine
                 //compute R
 
                 List<int> DocList = new List<int>();
-                int R = 0; ;
+                int R = 0; 
                
                 //every term result
                 foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
@@ -515,7 +521,16 @@ namespace IR_Engine
                     }
 
                 }
-
+                
+                /*
+                foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+            {
+                if (tup.Item1.Contains('+'))
+                {
+                    R += tup.Item2.Count();
+                }
+            }
+            */
                         Ranker rank = new Ranker(avgdl, N);
 
                 //every term result
@@ -553,7 +568,10 @@ namespace IR_Engine
 
 
                         double score = rank.BM25(totalInDocIncludingSW, ri, 0, R, tf, qfi);
+                    if (term.Contains('+'))
+                    {
 
+                    }
                     
                     if (DocRankingList.ContainsKey(DOCNO))
                     {
