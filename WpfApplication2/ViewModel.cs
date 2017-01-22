@@ -260,8 +260,12 @@ namespace IR_Engine
 
         public List<string> autoComplete(string querySingleTerm)
         {
+            if (queryInput.Substring(querySingleTerm.Length-1)==" ")
+            {
+                return search.autoComplete(querySingleTerm.Substring(0, querySingleTerm.Length - 1));
+            }
 
-            return search.autoComplete(querySingleTerm);
+            return new List<string>();
         }
 
         public void loadDictionary()

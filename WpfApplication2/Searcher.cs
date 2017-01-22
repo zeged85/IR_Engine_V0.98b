@@ -605,7 +605,8 @@ namespace IR_Engine
 
 
                 ////
-                termList.Add(nextTermFullKey);
+                if (nextTerm1stKey == querySingleTerm)
+                    termList.Add(nextTermFullKey);
 
 
                 //    function above
