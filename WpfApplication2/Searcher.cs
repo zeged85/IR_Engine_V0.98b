@@ -78,6 +78,15 @@ namespace IR_Engine
 
                     //append results to file
 
+                    StreamWriter file6 = new StreamWriter(@"c:\treceval\results.txt", true);
+                    /// 351   0  FR940104-0-00001  1   42.38   mt
+                    foreach (KeyValuePair<string, double> docResult in desc)
+                    {
+                        ///query ID - ITER = 0   - 
+                        file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
+                    }
+
+                    file6.Close();
 
                 }
             }
