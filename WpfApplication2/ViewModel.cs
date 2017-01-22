@@ -268,12 +268,13 @@ namespace IR_Engine
         {
 
             //make dict singleton
+            VM_DocResult = "Loading Dictionary...";
             model_indexer.loadDictionary();
 
             //load metadata also
 
             model_indexer.loadMetadata();
-
+            VM_DocResult = "Ready.";
             //get dictionary size
 
             //get metadata size
@@ -282,13 +283,13 @@ namespace IR_Engine
 
 
 
-//is this needed?
-          //  Indexer.clearAllData();
+            //is this needed?
+            //  Indexer.clearAllData();
 
 
 
 
-            
+
 
 
 

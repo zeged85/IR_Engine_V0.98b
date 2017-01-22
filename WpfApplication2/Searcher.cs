@@ -59,6 +59,20 @@ namespace IR_Engine
                     //first query in file
                    SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
 
+
+                    var orderByVal = docRankRes.OrderBy(v => v.Value);
+
+                    //reverse descending
+                    //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
+
+                    orderByVal.Reverse();
+
+                    var desc = orderByVal.Reverse();
+
+                    //better just change comperer
+                    //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
+
+
                     //sort by val double
 
 
