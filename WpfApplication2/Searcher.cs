@@ -482,7 +482,7 @@ namespace IR_Engine
                     
                     if (DocRankingList.ContainsKey(DOCNO))
                     {
-                        DocRankingList.Add(DOCNO, DocRankingList[DOCNO] + score);
+                        DocRankingList[DOCNO]+=  + score;
                     }
                     else
                     {

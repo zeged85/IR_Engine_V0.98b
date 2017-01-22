@@ -17,6 +17,9 @@ namespace IR_Engine
         List<string> autoComplete(string querySingleTerm);
         void initiate();
 
+        void openQueryFile(string path);
+
+
    //     Tuple<string, string, int, string, int, int, int, int> getDocData(int doc);
 
 

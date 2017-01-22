@@ -238,6 +238,15 @@ namespace IR_Engine
             VM_DocResult = "done.";
         }
 
+
+
+        public void openQueryFile(string path)
+        {
+            search.openQueryFile(path);
+        }
+
+
+
         public SortedDictionary<string,double> VMsearchQuery(string query)
         {
             SortedDictionary<string, double> DocRankRes = search.processFullTermQuery(query);
