@@ -149,132 +149,155 @@ namespace IR_Engine
 
             ///http://stackoverflow.com/questions/9007990/how-to-do-like-on-dictionary-key
             //  var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(queryFullTerm));
-            bool superSearch = false;
-
+            //bool superSearch = false;
+            List<string> MatchingTerms = new List<string>();
             string[] str = querySingleTerm.Split('+');
             IEnumerable<string> keys;
-            if (str.Length > 1 && str[0].Length>0 && str[1].Length>0)
+
+
+            if (str.Length > 1 && str[0].Length > 0 && str[1].Length > 0)
             {
-
-               keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm));
-                superSearch = true;
-                if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
-                {
-
-                }
-                }
-         
-
-            if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
-            {
-                if (superSearch)
-                {
-             
-
-                }
-                return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct, 0);
-
+                keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm));
+                MatchingTerms = keys.ToList();
             }
-            string val = Indexer.myDictionary[querySingleTerm];
+            else
+            {
+                if (Indexer.myDictionary.ContainsKey(querySingleTerm))
+                {
+                    MatchingTerms.Add(querySingleTerm);
+                }
+            }
 
-       
-            //count docs
-            char[] delimiterCharsLang = { '#' };
-            string[] termData = val.Split(delimiterCharsLang);
+            //   keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm));
+            //    superSearch = true;
+            /*
+                if (keys.Count() > 0 && !Indexer.myDictionary.ContainsKey(querySingleTerm))
+                {
 
-            int.TryParse(termData[1], out termFrequency);
-            int.TryParse(termData[2], out documentFrequenct);
+                }
+          */
+
+            /*
+                        if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
+                        {
+                            if (superSearch)
+                            {
 
 
+                            }
+                            return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct, 0);
 
+                        }
 
+                       */
+           // keys = new List<string>();
+           // keys.Add( querySingleTerm);
           
-            Console.WriteLine("Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct + " qfi:" + qfi);
+          
 
-
-            /////////////////
-
-            int length = termData.Length;
-            int document;
-            int frequency;
-
-            //   termResult = new SortedList<int, int>[1];
-
-            //relervent documents. sorted by docNum, sort/rank by termFreq
-
-            //    termResult[0] = new SortedList<int, int>();
-
-            //TERM1, DOCS + #
-            //TERM1-TERM2, DOCS + #
-
-            ///popular -term
-            /// TERM1-TERM2  ^#3 freqInAllCorpus  #2 amountOfDocs | (DOC#:2 - 2 TIMES) (DOC#:4 - 1 TIMES)
-            /// 10-percen ^# 2 # 2 # 29#1 # 77#1
-            ///
-            /// 
-            ///10-percen+percent^#2#2#29#1#77#1
-            ///10-yea^#2#2#40#1#88#1
-            ///10-yea+year^#2#2#40#1#88#1
-            ///
-
-
-
-
-            ///return most popular doc
-            ///
-            /// sort/rank docs 1.mostPopularTerm+freq 2.amountOfUniqueInDoc by 3.SizeOfDoc w/wo SW
-            /// 
-            ///2$ FBIS3-2 , public : 95, , uniqueInDoc : 817, totalInDocIncludingSW : 4328, totalInDocwithoutSW : 3101}@2
-
-            //find all relevent documents
-
-            //rank docs by termFreqinDoc
-
-
-
-
-            //PARSE DICTIONARY TERMPOST_TUPLE TO DOC#-FREQ
-            //FIRST TERM
-            for (int i = 3; i < length - 1; i = i + 2)
+            foreach (string match in MatchingTerms)
             {
-                int.TryParse(termData[i], out document); //DOCUMENT
-                int.TryParse(termData[i + 1], out frequency); //FREQUENCY
+                string val = Indexer.myDictionary[match];
+                int  TMPtermFrequency;
+              int  TMPdocumentFrequenct;
+                //count docs
+                char[] delimiterCharsLang = { '#' };
+                string[] termData = val.Split(delimiterCharsLang);
 
-                termResult.Add(document, frequency); //ADD to LIST OF DOCS
-                                                     //doc
-                                                     //freq
+                int.TryParse(termData[1], out TMPtermFrequency);
+                int.TryParse(termData[2], out TMPdocumentFrequenct);
+
+                termFrequency+= TMPtermFrequency;
+                documentFrequenct +=      TMPdocumentFrequenct;
+
+
+
+                Console.WriteLine("Term: " + '"' + querySingleTerm + '"' + " " + "tf:" + termFrequency + " df:" + documentFrequenct + " qfi:" + qfi);
+
+
+                /////////////////
+
+                int length = termData.Length;
+                int document;
+                int frequency;
+
+                //   termResult = new SortedList<int, int>[1];
+
+                //relervent documents. sorted by docNum, sort/rank by termFreq
+
+                //    termResult[0] = new SortedList<int, int>();
+
+                //TERM1, DOCS + #
+                //TERM1-TERM2, DOCS + #
+
+                ///popular -term
+                /// TERM1-TERM2  ^#3 freqInAllCorpus  #2 amountOfDocs | (DOC#:2 - 2 TIMES) (DOC#:4 - 1 TIMES)
+                /// 10-percen ^# 2 # 2 # 29#1 # 77#1
+                ///
+                /// 
+                ///10-percen+percent^#2#2#29#1#77#1
+                ///10-yea^#2#2#40#1#88#1
+                ///10-yea+year^#2#2#40#1#88#1
+                ///
+
+
+
+
+                ///return most popular doc
+                ///
+                /// sort/rank docs 1.mostPopularTerm+freq 2.amountOfUniqueInDoc by 3.SizeOfDoc w/wo SW
+                /// 
+                ///2$ FBIS3-2 , public : 95, , uniqueInDoc : 817, totalInDocIncludingSW : 4328, totalInDocwithoutSW : 3101}@2
+
+                //find all relevent documents
+
+                //rank docs by termFreqinDoc
+
+
+
+
+                //PARSE DICTIONARY TERMPOST_TUPLE TO DOC#-FREQ
+                //FIRST TERM
+                for (int i = 3; i < length - 1; i = i + 2)
+                {
+                    int.TryParse(termData[i], out document); //DOCUMENT
+                    int.TryParse(termData[i + 1], out frequency); //FREQUENCY
+
+                    if (termResult.ContainsKey(document))
+                    {
+                        termResult[document] += frequency;
+                    }
+                    else
+                    {
+                        termResult.Add(document, frequency); //ADD to LIST OF DOCS
+                    }                              //doc
+                                                         //freq
+                }
+
+
+
+
+                //termresult
+                //return list of docs + termFrequency + documentFreq
+
+
+
+
+                ///language
+                ///
+                //retrieve final document
+
+                //use postingList??
+                //https://www.youtube.com/watch?v=IZTJgMjE5jw -- recommended
+
+
+
+
+                //return document list
+
+            
             }
-
-
-
-
-            //termresult
-            //return list of docs + termFrequency + documentFreq
-
-
-
-
-
-
-
-
-
-
-
-            ///language
-            ///
-            //retrieve final document
-
-            //use postingList??
-            //https://www.youtube.com/watch?v=IZTJgMjE5jw -- recommended
-
-
-
-
-            //return document list
-
-            return new Tuple<string, SortedList<int, int>,int,int,int> (querySingleTerm, termResult, termFrequency, documentFrequenct, qfi);
-
+            return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency, documentFrequenct, qfi);
         }
 
         public void sortDocList (SortedList<int, int> termResult)

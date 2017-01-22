@@ -68,6 +68,7 @@
       <DependentUpon>Language.xaml</DependentUpon>
     </Compile>
     <Compile Include="Indexer.cs" />
+    <Compile Include="Query.cs" />
     <Compile Include="Ranker.cs" />
     <Compile Include="ReadFile.cs" />
     <Compile Include="whatisthis.cs" />
