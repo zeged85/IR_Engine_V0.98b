@@ -70,7 +70,6 @@
     <Compile Include="Indexer.cs" />
     <Compile Include="Ranker.cs" />
     <Compile Include="ReadFile.cs" />
-    <Compile Include="whatisthis.cs" />
     <Compile Include="Searcher.cs" />
     <Compile Include="Stemmer.cs" />
     <Compile Include="ViewModel.cs" />
