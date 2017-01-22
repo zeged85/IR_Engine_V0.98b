@@ -147,17 +147,37 @@ namespace IR_Engine
             //#df
             int documentFrequenct = 0;
 
+            ///http://stackoverflow.com/questions/9007990/how-to-do-like-on-dictionary-key
+            //  var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(queryFullTerm));
+            bool superSearch = false;
+
+            string[] str = querySingleTerm.Split('+');
+            IEnumerable<string> keys;
+            if (str.Length > 1 && str[0].Length>0 && str[1].Length>0)
+            {
+
+               keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm));
+                superSearch = true;
+                if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
+                {
+
+                }
+                }
+         
 
             if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
             {
+                if (superSearch)
+                {
+             
+
+                }
                 return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct, 0);
 
             }
             string val = Indexer.myDictionary[querySingleTerm];
-      
 
-
-
+       
             //count docs
             char[] delimiterCharsLang = { '#' };
             string[] termData = val.Split(delimiterCharsLang);
@@ -311,6 +331,8 @@ namespace IR_Engine
             SortedDictionary<string, double> DocRankingList = new SortedDictionary<string, double>();
 
 
+          
+
             //http://www.c-sharpcorner.com/UploadFile/dpatra/autocomplete-textbox-in-wpf/
             //break full term to single terms
             string[] queryFullTermArray = queryFullTerm.Split(' ');
@@ -326,6 +348,13 @@ namespace IR_Engine
             {
                 queryFullTermArrayPlus += "+" + queryFullTermArray[i];
             }
+
+            /*
+            if (size > 1)
+            {
+                var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(queryFullTermArrayPlus));
+            }
+            */
 
             string termStr = "";
 
@@ -557,7 +586,7 @@ namespace IR_Engine
         /// <param name="querySingleTerm"></param>
         public List<string> autoComplete(string querySingleTerm)
         {
-
+           // var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + "+"));
             //    //AUTO COMPLETE
 
             //GET NEXT ELEMT
