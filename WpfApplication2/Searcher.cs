@@ -29,10 +29,75 @@ namespace IR_Engine
             set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
+        public Searcher()
+        {
+            ///load SYNONYMS_AND_ANTONYMS
+            ///
+          //  SYNONYMS_AND_ANTONYMS();
+        }
+
+        public void SYNONYMS_AND_ANTONYMS()
+        {
+            //open file
+
+            //parse to dictionary
+
+            SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
+
+            using (StreamReader sr = File.OpenText(@"C:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
+            {
+                string s = String.Empty;
+                while ((s = sr.ReadLine()) != null && s != "SYNONYMS AND ANTONYMS")
+                {
+
+                    
+
+
+                    //remove blank lines
+                    if (s == "")
+                        continue;
+                }
+                string txt = "";
+                while ((s = sr.ReadLine()) != null && s != "SYNONYMS AND ANTONYMS")
+                {
+                  //  txt = s;
+                    //remove blank lines
+                    if (s == "")
+                    {
+                        if (txt != "" && newDic.ContainsKey(txt))
+                        {
+
+                        }
+                        else
+                        {
+
+                            if (txt != "")
+                            {
+                                newDic.Add(txt, "");
+                            }
+                        }
+                        txt = "";
+                        continue;
+
+                    }
+                    else
+                    {
+                     
+                        if (s[s.Length - 2] == '-')
+                            s = s.Substring(0, s.Length - 2);
+                        txt += s;
+                    }
+                }
+                }
+
+
+
+
+            }
 
         public void openQueryFile(string path)
         {
-            SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
+      //      SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
 
             using (StreamReader sr = File.OpenText(path))
             {
@@ -146,6 +211,12 @@ namespace IR_Engine
 
         public Tuple<string, SortedList<int, int>, int, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm, int qfi)
         {
+            if (querySingleTerm.Contains('+'))
+            {
+
+
+            }
+
 
             SortedList<int, int> termResult = new SortedList<int, int>();
             //#tf
@@ -278,10 +349,15 @@ namespace IR_Engine
                         termResult.Add(document, frequency); //ADD to LIST OF DOCS
                     }                              //doc
                                                          //freq
+
+
+                if (document == 3800)
+                    {
+
+                    }
                 }
 
-
-
+             
 
                 //termresult
                 //return list of docs + termFrequency + documentFreq
@@ -564,17 +640,29 @@ namespace IR_Engine
                         int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
 
 
-
-
-
-                        double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
-                    if (term.Contains('+'))
+                    if (DOCNO== " FBIS3-4052 ")
                     {
 
+                    }
+                    if (tf > 10 && totalInDocIncludingSW < 500)
+                    {
+
+                    }
+
+                        double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
+
+                    if (score > 2)
+                    {
+
+                    }
+                    if (term.Contains('+'))
+                    {
+                        score = score * 3;
                     }
                     
                     if (DocRankingList.ContainsKey(DOCNO))
                     {
+                        double oldScore = DocRankingList[DOCNO]; //for debug
                         DocRankingList[DOCNO]+=  + score;
                     }
                     else
