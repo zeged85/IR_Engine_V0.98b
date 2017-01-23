@@ -19,6 +19,8 @@ namespace IR_Engine
 
         void openQueryFile(string path);
 
+        void runSingleQuery(string query);
+
 
    //     Tuple<string, string, int, string, int, int, int, int> getDocData(int doc);
 

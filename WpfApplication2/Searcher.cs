@@ -15,6 +15,8 @@ namespace IR_Engine
         public event PropertyChangedEventHandler PropertyChanged;
         public static string pathForResult;
 
+        public static string singleQueryInput;
+
         public void NotifyPropertyChanged(string PropName)
         {
 
@@ -31,34 +33,85 @@ namespace IR_Engine
         }
 
 
+        public void runSingleQuery(string queryInput)
+        {
+            //remove blank lines
+            if (!string.IsNullOrEmpty(queryInput))
+            {
+                int space = queryInput.IndexOf(' ');
+                int query_id;
+                bool isValidInteger = int.TryParse(queryInput.Substring(0, space), out query_id);
+                if (!isValidInteger)
+                {
+                    ////
+                }
+
+                string query = queryInput.Substring(space + 1);
+                //first query in file
+                SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+
+                var orderByVal = docRankRes.OrderBy(v => v.Value);
+
+                //reverse descending
+                //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
+
+                orderByVal.Reverse();
+                var desc = orderByVal.Reverse();
+
+                //better just change comperer
+                //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
+
+                //sort by val double
+                //append results to file
+
+                if (File.Exists(pathForResult + "\\result.txt"))
+                {
+                    File.Delete(pathForResult + "\\result.txt");
+                }
+                StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
+                /// 351   0  FR940104-0-00001  1   42.38   mt
+                int limiter = 0;
+                foreach (KeyValuePair<string, double> docResult in desc)
+                {
+                    limiter++;
+                    ///query ID - ITER = 0   - 
+                    file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
+                    if (limiter == 50)
+                    {
+                        break;
+                    }
+                }
+                file6.Close();
+            }
+        }
+
+
         public void openQueryFile(string path)
         {
             SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
-
             using (StreamReader sr = File.OpenText(path))
             {
+                if (File.Exists(pathForResult + "\\result.txt"))
+                {
+                    File.Delete(pathForResult + "\\result.txt");
+                }
                 string s = String.Empty;
                 while ((s = sr.ReadLine()) != null)
                 {
                     //remove blank lines
                     if (s == "")
                         continue;
-
                     int space = s.IndexOf(' ');
                     int query_id;
                     bool isValidInteger = int.TryParse(s.Substring(0, space), out query_id);
-
                     if (!isValidInteger)
                     {
                         ////
                     }
 
-
                     string query = s.Substring(space + 1);
-
                     //first query in file
                     SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
-
 
                     var orderByVal = docRankRes.OrderBy(v => v.Value);
 
@@ -66,18 +119,14 @@ namespace IR_Engine
                     //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
 
                     orderByVal.Reverse();
-
                     var desc = orderByVal.Reverse();
 
                     //better just change comperer
                     //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
 
-
                     //sort by val double
-
-
                     //append results to file
-
+                    
                     StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
                     /// 351   0  FR940104-0-00001  1   42.38   mt
                     int limiter = 0;
@@ -91,9 +140,7 @@ namespace IR_Engine
                             break;
                         }
                     }
-
                     file6.Close();
-
                 }
             }
         }

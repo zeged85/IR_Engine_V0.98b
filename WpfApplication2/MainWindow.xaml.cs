@@ -34,13 +34,14 @@ namespace WpfApplication2
         string m_documentsPath, m_postingFilesPath;
 
 
-        string tmpAddress;
+       // string tmpAddress;
         string tmpForNoStemming;
 
-        string languageChosen;
+       // string languageChosen;
         bool isDictionaryLoaded = false;
         public event PropertyChangedEventHandler PropertyChanged;
 
+       // public List<string> namelist = new List<string>();
 
         public MainWindow()
         {
@@ -322,6 +323,8 @@ namespace WpfApplication2
             }
         }
 
+       
+
 
         private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -332,6 +335,25 @@ namespace WpfApplication2
                 //   listBoxSuggestion.SelectedIndex = 0;
                 ListBoxItem item = (ListBoxItem)listBoxSuggestion.ItemContainerGenerator.ContainerFromIndex(0);
                 FocusManager.SetFocusedElement(this, item);
+            }
+            if (e.Key == Key.Enter)
+            {
+                System.Windows.Forms.MessageBox.Show("Query Activated");
+
+                Searcher.singleQueryInput = QueryInputTextBox.Text;
+                //string[] split = Searcher.singleQueryInput.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+
+              //  foreach (string s in split)
+              //  {
+              //      Console.WriteLine(s);
+              //  }
+
+                vm.runSingleQuery(Searcher.singleQueryInput);
+                
+                QueryInputTextBox.IsReadOnly = true;
+                System.Threading.Thread.Sleep(5000);
+                QueryInputTextBox.IsReadOnly = false;
             }
         }
 
@@ -388,6 +410,11 @@ namespace WpfApplication2
             Dialog.ShowDialog();
             Searcher.pathForResult = Dialog.SelectedPath;
             resultFolder_Text.Text = Dialog.SelectedPath;
+        }
+
+        private void QueryInputTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
         }
     }
 }
