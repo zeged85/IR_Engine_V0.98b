@@ -11,8 +11,9 @@ namespace IR_Engine
     public class Searcher : ISearcher
     {
 
-    
+
         public event PropertyChangedEventHandler PropertyChanged;
+        public static string pathForResult;
 
         public void NotifyPropertyChanged(string PropName)
         {
@@ -108,7 +109,6 @@ namespace IR_Engine
                     if (s == "")
                         continue;
 
-
                     int space = s.IndexOf(' ');
                     int query_id;
                     bool isValidInteger = int.TryParse(s.Substring(0, space), out query_id);
@@ -122,7 +122,7 @@ namespace IR_Engine
                     string query = s.Substring(space + 1);
 
                     //first query in file
-                   SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+                    SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
 
 
                     var orderByVal = docRankRes.OrderBy(v => v.Value);
@@ -143,7 +143,7 @@ namespace IR_Engine
 
                     //append results to file
 
-                    StreamWriter file6 = new StreamWriter(@"c:\treceval\results.txt", true);
+                    StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
                     /// 351   0  FR940104-0-00001  1   42.38   mt
                     int limiter = 0;
                     foreach (KeyValuePair<string, double> docResult in desc)
@@ -152,9 +152,9 @@ namespace IR_Engine
                         ///query ID - ITER = 0   - 
                         file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
                         if (limiter == 50)
-                            {
-                                break;
-                            }
+                        {
+                            break;
+                        }
                     }
 
                     file6.Close();
@@ -267,16 +267,16 @@ namespace IR_Engine
                         }
 
                        */
-           // keys = new List<string>();
-           // keys.Add( querySingleTerm);
-          
-          
+            // keys = new List<string>();
+            // keys.Add( querySingleTerm);
+
+
 
             foreach (string match in MatchingTerms)
             {
                 string val = Indexer.myDictionary[match];
-                int  TMPtermFrequency;
-              int  TMPdocumentFrequenct;
+                int TMPtermFrequency;
+                int TMPdocumentFrequenct;
                 //count docs
                 char[] delimiterCharsLang = { '#' };
                 string[] termData = val.Split(delimiterCharsLang);
@@ -284,8 +284,8 @@ namespace IR_Engine
                 int.TryParse(termData[1], out TMPtermFrequency);
                 int.TryParse(termData[2], out TMPdocumentFrequenct);
 
-                termFrequency+= TMPtermFrequency;
-                documentFrequenct +=      TMPdocumentFrequenct;
+                termFrequency += TMPtermFrequency;
+                documentFrequenct += TMPdocumentFrequenct;
 
 
 
@@ -348,7 +348,8 @@ namespace IR_Engine
                     {
                         termResult.Add(document, frequency); //ADD to LIST OF DOCS
                     }                              //doc
-                                                         //freq
+                    //freq
+                }
 
 
                 if (document == 3800)
@@ -377,12 +378,12 @@ namespace IR_Engine
 
                 //return document list
 
-            
+
             }
             return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency, documentFrequenct, qfi);
         }
 
-        public void sortDocList (SortedList<int, int> termResult)
+        public void sortDocList(SortedList<int, int> termResult)
         {
 
             //GET ALL lISTS OF DOCS
@@ -431,12 +432,12 @@ namespace IR_Engine
         ///http://stackoverflow.com/questions/6131827/how-do-i-get-the-element-with-the-smallest-key-in-a-collection-in-o1-or-olog
         ///CREATE SORTEDLIST
         /////////////////<DOCNO, score> id?
-        public SortedDictionary<string,double> processFullTermQuery(string queryFullTerm)
+        public SortedDictionary<string, double> processFullTermQuery(string queryFullTerm)
         {
             SortedDictionary<string, double> DocRankingList = new SortedDictionary<string, double>();
 
 
-          
+
 
             //http://www.c-sharpcorner.com/UploadFile/dpatra/autocomplete-textbox-in-wpf/
             //break full term to single terms
@@ -449,7 +450,7 @@ namespace IR_Engine
             int size = queryFullTermArray.Length;
 
             //create fullterm string with +
-            for (int i = 1; i<size; i++)
+            for (int i = 1; i < size; i++)
             {
                 queryFullTermArrayPlus += "+" + queryFullTermArray[i];
             }
@@ -488,8 +489,8 @@ namespace IR_Engine
             int docFreq = 0;
             int FullTermQfi = 1;//qfi=1 for full term
             SortedList<int, int> termResult;
-           
-            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTermArrayPlus, FullTermQfi); 
+
+            termData[0] = getReleventDocumentsOfSingleTerm(queryFullTermArrayPlus, FullTermQfi);
             if (termData[0] == null)
             {
                 termResult = new SortedList<int, int>();
@@ -502,8 +503,8 @@ namespace IR_Engine
                 docFreq = termData[0].Item4;
 
             }
-            
-     
+
+
 
 
             //get full term data
@@ -566,78 +567,78 @@ namespace IR_Engine
                 }
 
             }
-                //send to ranker
-                // termData
+            //send to ranker
+            // termData
 
-                ///get avgdl
-                ///
-
-              
-                int N = Indexer.DocumentMetadata.Count;
-                int avgdl = Indexer.NumOfWordsInCorpus / N ;
-                //foreach 
+            ///get avgdl
+            ///
 
 
-                //compute R
+            int N = Indexer.DocumentMetadata.Count;
+            int avgdl = Indexer.NumOfWordsInCorpus / N;
+            //foreach 
 
-                List<int> DocList = new List<int>();
-                int R = 0; 
-               
-                //every term result
-                foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+
+            //compute R
+
+            List<int> DocList = new List<int>();
+            int R = 0;
+
+            //every term result
+            foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+            {
+                //every document
+                foreach (KeyValuePair<int, int> docAndTf in tup.Item2)
                 {
-                    //every document
-                    foreach (KeyValuePair<int, int> docAndTf in tup.Item2)
+                    if (!DocList.Contains(docAndTf.Key))
                     {
-                        if (!DocList.Contains(docAndTf.Key))
-                        {
-                            R++;
-                        }
-
+                        R++;
                     }
 
                 }
-                
-                /*
-                foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
-            {
-                if (tup.Item1.Contains('+'))
-                {
-                    R += tup.Item2.Count();
-                }
+
             }
-            */
-                        Ranker rank = new Ranker(avgdl, N);
 
-                //every term result
-                foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+            /*
+            foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+        {
+            if (tup.Item1.Contains('+'))
+            {
+                R += tup.Item2.Count();
+            }
+        }
+        */
+            Ranker rank = new Ranker(avgdl, N);
+
+            //every term result
+            foreach (Tuple<string, SortedList<int, int>, int, int, int> tup in termData)
+            {
+                string term = tup.Item1;
+                SortedList<int, int> termDocList = tup.Item2;
+                termFreq = tup.Item3;
+                docFreq = tup.Item4;
+                int ni = tup.Item2.Count;
+                int qfi = tup.Item5;
+                //every document
+                foreach (KeyValuePair<int, int> docAndTf in tup.Item2)
                 {
-                    string term = tup.Item1;
-                    SortedList<int, int>  termDocList = tup.Item2;
-                    termFreq = tup.Item3;
-                    docFreq = tup.Item4;
-                    int ni = tup.Item2.Count;
-                    int qfi = tup.Item5;
-                    //every document
-                    foreach (KeyValuePair<int,int> docAndTf in tup.Item2)
-                    {
-                        int docNum = docAndTf.Key;
-                        int tf = docAndTf.Value; //fi
-                       
+                    int docNum = docAndTf.Key;
+                    int tf = docAndTf.Value; //fi
 
 
-                   Document DocData = getDocData(docNum);
+
+                    Document DocData = getDocData(docNum);
 
 
 
                     string DOCNO = DocData.DOCNO;
                     string mostFreqTermInDoc = DocData.mostFreqTermInDoc;
-                        int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
-                        string language = DocData.language;
-                        int uniqueInDocAmount = DocData.uniqueInDocAmount;
-                        int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
-                        int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
-                        int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
+                    int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
+                    string language = DocData.language;
+                    int uniqueInDocAmount = DocData.uniqueInDocAmount;
+                    int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
+                    int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
+                    int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
 
 
                     if (DOCNO== " FBIS3-4052 ")
@@ -650,19 +651,13 @@ namespace IR_Engine
                     }
 
                         double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
-
-                    if (score > 2)
-                    {
-
-                    }
                     if (term.Contains('+'))
                     {
                         score = score * 3;
                     }
-                    
+
                     if (DocRankingList.ContainsKey(DOCNO))
                     {
-                        double oldScore = DocRankingList[DOCNO]; //for debug
                         DocRankingList[DOCNO]+=  + score;
                     }
                     else
@@ -671,13 +666,13 @@ namespace IR_Engine
                     }
                     ///save to docResultList
                     ///if contains sum score
-                    }
+                }
 
-                
 
-              
-              //  rank.BM25()
-                    //bm25 rank every term
+
+
+                //  rank.BM25()
+                //bm25 rank every term
 
             }
 
@@ -715,7 +710,7 @@ namespace IR_Engine
         /// <param name="querySingleTerm"></param>
         public List<string> autoComplete(string querySingleTerm)
         {
-           // var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + "+"));
+            // var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + "+"));
             //    //AUTO COMPLETE
 
             //GET NEXT ELEMT
@@ -729,7 +724,7 @@ namespace IR_Engine
             // TERM1-TERM2
 
             IndexOfKey++; //Handle last index case
-                          //Get the next item by index.
+            //Get the next item by index.
 
             char[] delimiterDocs = { '+', '-' };
 
@@ -748,7 +743,7 @@ namespace IR_Engine
             {
 
                 IndexOfKey++; //Handle last index case
-                              //Get the next item by index.
+                //Get the next item by index.
 
 
 

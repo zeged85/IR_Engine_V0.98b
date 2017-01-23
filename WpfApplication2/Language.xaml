@@ -3,21 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Choose Language" Height="431" Width="291" Background="#FFE0E3F7">
 
-
-    <ListBox xmlns:sys="clr-namespace:System;assembly=mscorlib" SelectionChanged="l_combo_SelectionChanged" Name="langList">
-        <ListBox.Resources>
-            <Style TargetType="ComboBoxItem">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ComboBoxItem">
-                            <ListBox>
-                                <ContentPresenter />
-                            </ListBox>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ListBox.Resources>
+    <Grid>
+    <ListBox xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             SelectionChanged="l_combo_SelectionChanged" 
+             Name="langList">
         <CheckBox>Afrikaans</CheckBox>
         <CheckBox>French</CheckBox>
         <CheckBox>Arabic</CheckBox>
@@ -89,7 +78,7 @@
         <CheckBox>International</CheckBox>
         <CheckBox>Kyrgyz</CheckBox>
         <CheckBox>Norwegian</CheckBox>
-        <CheckBox>Tigrigna</CheckBox>
-    </ListBox>
-
+        <CheckBox Content="Tigrigna"/>
+        </ListBox>
+    </Grid>
 </Window>
