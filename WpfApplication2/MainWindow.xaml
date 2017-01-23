@@ -47,7 +47,7 @@
 
         <TextBlock Text="Choose Queries File:" 
 			VerticalAlignment="Top" 
-			Margin="74,215,563,0" 
+			Margin="70,197,567,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
@@ -222,7 +222,7 @@
 
 
 
-        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="476,230,23,290"  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown"  TextChanged="txtAutoSuggestName_TextChanged" />
+        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="476,276,23,244.5"  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown"  TextChanged="txtAutoSuggestName_TextChanged" />
         <ListBox Name="listBoxSuggestion" Visibility="Hidden"  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyDown="listBoxSuggestion_KeyDown" Margin="476,262,23,225" />
 
         <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,332,23,40"     />
@@ -232,10 +232,34 @@
 			VerticalAlignment="Center"
 			Click="queriesFile_Browser" 
 			RenderTransformOrigin="3.459,0.5" 
-			Margin="234,211,443,309.5" 
+			Margin="221,197,456,323.5" 
 			FontWeight="Bold" 
 			Height="28" 
 			Background="White"/>
+
+        <Button x:Name="savrResult_Button"
+			Content="Browse Path"
+			VerticalAlignment="Center"
+			Click="pathForResult_Browser" 
+			RenderTransformOrigin="3.459,0.5" 
+			Margin="392,241,296,279.5" 
+			FontWeight="Bold" 
+			Height="28" 
+			Background="White"/>
+
+        <TextBox x:Name="resultFolder_Text"  
+			VerticalAlignment="Center" 
+			Margin="221,243,419,281.5" 
+			RenderTransformOrigin="0.458,0.611" 
+			Height="24"/>
+
+        <TextBlock Text="Choose Result Path:" 
+			VerticalAlignment="Top" 
+			Margin="70,243,567,0" 
+			FontSize="14" 
+			FontWeight="Bold" 
+			Height="26" 
+			RenderTransformOrigin="0.36,-0.139"/>
 
 
     </Grid>
