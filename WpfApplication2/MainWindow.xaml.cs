@@ -359,8 +359,8 @@ namespace WpfApplication2
 
         private void queriesFile_Browser(object sender, RoutedEventArgs e)
         {
-
-            if (isDictionaryLoaded == true)
+            
+            if (isDictionaryLoaded == true && !string.IsNullOrEmpty(Searcher.pathForResult))
             {
                 System.Windows.Forms.OpenFileDialog queriesFile = new System.Windows.Forms.OpenFileDialog();
 
@@ -368,14 +368,26 @@ namespace WpfApplication2
 
                 //just for testing
                 // vm.VMsearchQuery
-                vm.openQueryFile(queriesFile.FileName);
+                
+                if (!string.IsNullOrEmpty(queriesFile.FileName))
+                {
+                    vm.openQueryFile(queriesFile.FileName);
+                }
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Please load dictionary first.");
+                System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd choose a path for result file.");
             }
 
 
+        }
+
+        private void pathForResult_Browser(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog Dialog = new FolderBrowserDialog();
+            Dialog.ShowDialog();
+            Searcher.pathForResult = Dialog.SelectedPath;
+            resultFolder_Text.Text = Dialog.SelectedPath;
         }
     }
 }
