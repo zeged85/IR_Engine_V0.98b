@@ -112,7 +112,7 @@ namespace IR_Engine
 
                 //SYNTEX
                 bool stopLongTerm = false; //end of line
-
+                bool addNextTermToLongTerm = false;
                 termType type = new termType();
 
                 // int limiter = 10;
@@ -152,7 +152,10 @@ namespace IR_Engine
                  
 
                     lineIdx++;
-                    
+                    if (lineIdx == 89)
+                    {
+
+                    }
 
                     foreach (string s in words) /// MAIN PARSE LOOP
                     {
@@ -166,12 +169,18 @@ namespace IR_Engine
                         termQueue.Enqueue(term);
                         while (termQueue.Count > 0)
                         {
-                         if (termQueue.Count > 1)
+                            term = termQueue.Dequeue();
+                            if (termQueue.Count > 1)
                             {
 
                             }
 
-                            term = termQueue.Dequeue();
+                         if (addNextTermToLongTerm)
+                            {
+                                addTermToLongTerm = true;
+                                addNextTermToLongTerm = false;
+                            }
+                     
 
 
 
@@ -228,7 +237,6 @@ namespace IR_Engine
                             }
 
 
-
                             char firstChar;
                             //discard symbol in the beginning
                             while (term.Length > 1 && !char.IsLetterOrDigit(firstChar = term[0]) && type == termType.Term)
@@ -265,6 +273,28 @@ namespace IR_Engine
                                     //          save and restart
                                     stopLongTerm = true;
                                 }
+                                else if(firstChar== '$')
+                                {
+                               //     type = termType.Currency;
+                                }
+                                else if (firstChar == '%')
+                                {
+                              //      type = termType.Percent;
+                                }
+
+
+                                ///"the \"media chiefs\" had just attended a meeting of the Russian"
+                                ///"\"elitist\" and \"bourgeoi\"  journalists' club on returning from the"
+                                ///"selected according to \"CPSU principles,\" came to enjoy \"expensive"
+                                ///
+                                else if (firstChar == 34)
+                                {
+                                    ///"assuring viewers that, \"as soon as we learn,\" Vesti would inform"
+                                    ///add bool quotes? = true; false on new string line?
+                                    ///"viewers \"whom the government will help and how.\""
+                                    ///
+                                    addTermToLongTerm = true;
+                                }
                                 else
                                 {
 
@@ -295,6 +325,7 @@ namespace IR_Engine
 
                                     if (term.Length < 2)
                                     {//"T. GURBADAM -- Previous:  MPRP CC member and director of MPRP CC"
+                                        //"U.S."
 
                                     }
                                     else
@@ -309,7 +340,7 @@ namespace IR_Engine
                                 else
                                 if (lastChar == ',') // dump partial date
                                 {
-
+                                    stopDate = true;
                                 }
                                 else
                                 if (lastChar == '(')
@@ -322,6 +353,38 @@ namespace IR_Engine
                                 {
                                     //maybe stop long term
                                     stopLongTerm = true;
+                                }
+
+                                ///"address topics such as research and innovation in small and medium-"
+                                ///"sized enterprises, competitiveness-oriented research and the private"
+                                ///
+                                else if (lastChar == '-')
+                                {//add to long term?
+
+                                }
+
+
+                                ///"the \"media chiefs\" had just attended a meeting of the Russian"
+                                ///"\"elitist\" and \"bourgeoi\"  journalists' club on returning from the"
+                                ///"selected according to \"CPSU principles,\" came to enjoy \"expensive"
+                                ///
+                                else if (lastChar == 34)
+                                {
+                                    addTermToLongTerm = true;
+                                    stopLongTerm = true;
+
+                                }
+
+                                else if (lastChar == '\"')
+                                {
+
+                                }
+
+                                else
+                                {
+                                    /// ':'
+                                    ///"(AUTHOR:  CRIMMINS.  QUESTIONS AND/OR COMMENTS, PLEASE CALL"
+                                    ///"FEATURE:"
                                 }
                                 Symboled = true;
                                 upperSymbol = lastChar;
@@ -348,49 +411,135 @@ namespace IR_Engine
 
                             int j = index;
                             bool stopWhile = false;
+                            /// TERM-TERM
+                            /// TERM-NUMBER
+                            /// NUMBER-TERM
+                            /// NUMBER-NUMBER
+                            /// '-'
+                            /// '/'
+                            /// '.'
+                            /// 
+
+                            if (term == "R&amp;D")
+                            {
+                                ///term = R&D ?
+                                ///&amp = &
+                                continue;
+                            }
+
+
+                            ///check for complex term
                             while (!stopWhile && j < term.Length - 2)
                             {
                                 if (!char.IsLetterOrDigit(term[j])) //foun devider "-"
                                 {//"Markovic--Milosevic's"
+                                    ///"1991-95"
+                                    ///"the Mid-Term Defense Plan (1991-95) with then-JDA Director-General"
+                                    ///"AND/OR"
+                                    ///"strip-tease"
+                                    ///"ENEAG/BLOUGH"
+                                    ///"ENEAG/BLOUGH  cka 23/0145z  mar"
+                                    if (term[j] == '&')
+                                    {
+                                        break;
+                                    }
+                                    
+                                    //"199O-92" - fix
+                                    //"1988-9O"
 
+                                    if (char.IsDigit(term[j - 1]) && char.IsDigit(term[j + 1]))
+                                    {///num - num
+                                     ///"22/1916z"
+                                     ///"733-6070"
+                                     ///"23/0145z"
+                                     ///"1991-95"
+                                        if (term[j] == '-' || term[j] == '/')
+                                        {
+                                            
+                                        }
+                                        else
+                                        {
+                                            ///"30,000"
 
-                                    if (char.GetUnicodeCategory(term[index]) != char.GetUnicodeCategory(term[j + 1])) //"term-number"
-                                    {//"U.S.-Russian"
-                                     //"hand-in-hand"
-                                     //"day-to-day"
-                                     //"tug-of-war"
-                                     //"Lebanon (for example, Damascus radio, 27 February)--the"
-                                     //"talks\"--which"
-                                     //"DOP--must"
-                                     //"state-of-the-art"
-                                     //"See entry under Belgrade RTB Television Network,page 28."
-                                     //"are the \"first batch\" of a 2,000-person contingent of"
+                                        }
 
+                                    }
+                                    else
+                                    {
+                                        //"Lebanon (for example, Damascus radio, 27 February)--the"
+                                        //"talks\"--which"
+                                        //"DOP--must"
                                         if (term[j] == term[j + 1])// "--"
                                         {
                                             stopDate = true;
                                             stopLongTerm = true;
                                             j++;
                                         }
-                                        ///"3-III,"
-                                        //add to queue
-                                        string toQueue = term.Substring(j + 1);
-                                        if (toQueue == "")
-                                        {
+                                        else
+                                        {//"199O-92"
 
-                                        }
-                                        termQueue.Enqueue(toQueue);
 
-                                        //continue with trimmed term1
+                                            ///TERM-TERM
+                                            ///
+                                            //"U.S.-Russian"
+                                            //"hand-in-hand"
+                                            //"day-to-day"
+                                            //"tug-of-war"
+                                            ///"then-JDA"
+                                            ///
 
-                                        
+                                            //"state-of-the-art"
+                                            //"See entry under Belgrade RTB Television Network,page 28."
+                                            //"are the \"first batch\" of a 2,000-person contingent of"
 
-                                        term = term.Substring(0, term.Length - j + 1);
-                                        addTermToLongTerm = true;
 
-                                        stopWhile = true;
+                                            ///"3-III,"
+                                            //add to queue
+                                            //"100-mark"
+                                            string toQueue = term.Substring(j + 1);
+                                            if (toQueue == "")
+                                            {
+
+                                            }
+                                            termQueue.Enqueue(toQueue);
+
+                                            //continue with trimmed term1
+
+
+
+                                            term = term.Substring(0, j);
+                                            addTermToLongTerm = true;
+
+                                            addNextTermToLongTerm = true;
+                                            stopWhile = true;
                                             continue;
 
+
+                                        }
+
+
+
+
+
+
+
+                                        ///term-term
+                                        ///"ENEAG/BLOUGH"
+
+
+                                        ///term-num
+                                        ///"60-page"
+                                        /// 
+
+                                        ///num-term
+                                        ///"60-page" -> "60-pag+page"
+
+
+
+                                    }
+
+                                    if (char.GetUnicodeCategory(term[index]) != char.GetUnicodeCategory(term[j + 1])) //"term-number"
+                                    {
                                     }
 
                                     index = j;
@@ -479,6 +628,7 @@ namespace IR_Engine
 
                             }
 
+                            ///check if term is number
                             if (char.IsNumber(termToLower[0]) || type == termType.Number)
                             {   //  TERM IS NUMBER
                                 type = termType.Number;
@@ -489,8 +639,39 @@ namespace IR_Engine
                                 isValidInteger = int.TryParse(stringTerm, out i);
 
                                 //true integer -> true decimal
-                                if (isValidNumber)
+                                if (!isValidNumber)
                                 {
+
+                                    ///"1991-95"
+                                    ///"733-6346"
+                                    ///"21mar/techtf/milf/ti"
+                                    ///"22/1916z"
+                                    ///"7's"
+                                    ///"21st"
+                                    ///"70-percen"
+                                    ///"50-year-ol"
+                                    ///180-million-lira
+                                    Console.WriteLine("Unable to parse '{0}'.", stringTerm);
+                                    string fixedNum;
+                                    /*
+                                    if (stringTerm.Contains("o"))
+                                    {
+                                       fixedNum = stringTerm.Replace('o', '0');
+                                        termQueue.Enqueue(fixedNum);
+                                        continue;
+                                    }
+                                    */
+
+
+
+                                    }
+                                else {
+                                    ///TERM IS NUMBER
+                                    ///
+                                    type = termType.Number;
+
+
+
                                     if (!stopLongTerm) //only if not full stop
                                                        // 1993.
                                     {
@@ -498,7 +679,7 @@ namespace IR_Engine
                                         casualNumberBool = true;
                                     }
 
-                                    stringTerm = i.ToString();
+                                //    stringTerm = i.ToString();
                                     if (isValidInteger && i > 0 && i < 32)  //possible partial day
                                     {
                                         if (possibleDay)//"The 22-23 January edition of the Skopje newspaper VECER in"
@@ -536,14 +717,13 @@ namespace IR_Engine
                                     {
 
                                     }
+                                    else
+                                    {
+
+                                    }
                                 }
 
-                                else
-                                {
-                                    Console.WriteLine("Unable to parse '{0}'.", stringTerm);
-
-
-                                }
+       
 
                                 termToLower = stringTerm;
                             }
@@ -768,13 +948,35 @@ namespace IR_Engine
                                 myMiniPostingListDict.Add(stemTerm, "{" + wordPositionWithSW);
 
 
-                            if (stopLongTerm || (longTermSize > 0 && !addTermToLongTerm)) //restart long terms
+
+                            if (addNextTermToLongTerm)
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+
+                            ///"association's annual New Year's party, for example, have been then-"
+                            ///"JDA Director-General Koichi Kato (NIKKEI SANGYO SHIMBUN 10 Jan 86)."
+                            if (stopLongTerm || (longTermSize > 0 && !addTermToLongTerm && !addTermToLongTerm)) //restart long terms
                             {
 
                                 //ADD SAVE DATE
 
+                                if (addNextTermToLongTerm)
+                                {
+
+                                }
+                                else
+                                {
+
+                                }
+
                                 if (longTermSize > 1)
                                 {
+                                    ///"association chairman Kosaka Inaba and JDA Equipment Bureau Director-" -> "equipment+bureau+director+general+masaji+yamamoto" no JDA
                                     if (myMiniPostingListDict.ContainsKey(longTerm))
                                         myMiniPostingListDict[longTerm] += "," + (wordPositionWithSW - longTermSize);
                                     else
