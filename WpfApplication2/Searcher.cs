@@ -540,7 +540,7 @@ namespace IR_Engine
                     SortedList<int, int>  termDocList = tup.Item2;
                     termFreq = tup.Item3;
                     docFreq = tup.Item4;
-                    int ri = tup.Item2.Count;
+                    int ni = tup.Item2.Count;
                     int qfi = tup.Item5;
                     //every document
                     foreach (KeyValuePair<int,int> docAndTf in tup.Item2)
@@ -567,7 +567,7 @@ namespace IR_Engine
 
 
 
-                        double score = rank.BM25(totalInDocIncludingSW, ri, 0, R, tf, qfi);
+                        double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
                     if (term.Contains('+'))
                     {
 
