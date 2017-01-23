@@ -51,7 +51,7 @@ namespace IR_Engine
                 while ((s = sr.ReadLine()) != null && s != "SYNONYMS AND ANTONYMS")
                 {
 
-                    
+
 
 
                     //remove blank lines
@@ -61,7 +61,7 @@ namespace IR_Engine
                 string txt = "";
                 while ((s = sr.ReadLine()) != null && s != "SYNONYMS AND ANTONYMS")
                 {
-                  //  txt = s;
+                    //  txt = s;
                     //remove blank lines
                     if (s == "")
                     {
@@ -83,22 +83,22 @@ namespace IR_Engine
                     }
                     else
                     {
-                     
+
                         if (s[s.Length - 2] == '-')
                             s = s.Substring(0, s.Length - 2);
                         txt += s;
                     }
                 }
-                }
-
-
-
-
             }
+
+
+
+
+        }
 
         public void openQueryFile(string path)
         {
-      //      SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
+            //      SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
 
             using (StreamReader sr = File.OpenText(path))
             {
@@ -122,7 +122,7 @@ namespace IR_Engine
                     string query = s.Substring(space + 1);
 
                     //first query in file
-                    SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+                    SortedDictionary<string, double> docRankRes =   processFullTermQuery(query);
 
 
                     var orderByVal = docRankRes.OrderBy(v => v.Value);
@@ -162,7 +162,7 @@ namespace IR_Engine
                 }
             }
         }
-
+    
         /// MVVM
 
         //https://www.dotnetperls.com/tuple
@@ -351,37 +351,38 @@ namespace IR_Engine
                     //freq
                 }
 
-
+                /*
                 if (document == 3800)
                     {
 
                     }
+                    */
                 }
 
-             
-
-                //termresult
-                //return list of docs + termFrequency + documentFreq
 
 
-
-
-                ///language
-                ///
-                //retrieve final document
-
-                //use postingList??
-                //https://www.youtube.com/watch?v=IZTJgMjE5jw -- recommended
+            //termresult
+            //return list of docs + termFrequency + documentFreq
 
 
 
 
-                //return document list
+            ///language
+            ///
+            //retrieve final document
+
+            //use postingList??
+            //https://www.youtube.com/watch?v=IZTJgMjE5jw -- recommended
 
 
-            }
+
+
+            //return document list
+
             return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency, documentFrequenct, qfi);
+
         }
+    
 
         public void sortDocList(SortedList<int, int> termResult)
         {
