@@ -32,7 +32,11 @@ namespace IR_Engine
             set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
-
+        
+        /// <summary>
+        /// gil gil
+        /// </summary>
+        /// <param name="queryInput"></param>
         public void runSingleQuery(string queryInput)
         {
             //remove blank lines
