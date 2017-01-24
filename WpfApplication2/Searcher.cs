@@ -11,7 +11,7 @@ namespace IR_Engine
     public class Searcher : ISearcher
     {
 
-
+        public static Dictionary<string, string> SYNONYMS_AND_ANTONYMS_Dictionary = new Dictionary<string, string>();
         public event PropertyChangedEventHandler PropertyChanged;
         public static string pathForResult;
 
@@ -32,7 +32,136 @@ namespace IR_Engine
             set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
-        
+        public Searcher()
+        {
+            ///load SYNONYMS_AND_ANTONYMS
+            ///
+           LoadSYNONYMS_AND_ANTONYMS();
+        }
+
+      
+
+            public string[] getSYNONYMS(string term)
+        {
+
+            var keys = SYNONYMS_AND_ANTONYMS_Dictionary.Keys.Where(x => x.Contains(term ));
+            List<string> MatchingTerms = keys.ToList();
+
+
+            foreach(string str in MatchingTerms)
+            {
+
+            }
+
+
+            return null;
+        }
+
+        public void LoadSYNONYMS_AND_ANTONYMS()
+        {
+            //open file
+
+            //parse to dictionary
+
+           
+            string ANTONYMS = "";
+            string SYNONYMS = "";
+            using (StreamReader sr = File.OpenText(@"C:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
+            {
+                string s = String.Empty;
+                
+                string txt = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+                    if (SYNONYMS_AND_ANTONYMS_Dictionary.Count > 534)
+                    {
+
+                    }
+                    //remove blank lines
+                    if (s == "SYNONYMS AND ANTONYMS" || s.Any(char.IsDigit))
+                        continue;
+                    //  txt = s;
+                    //remove blank lines
+                    if (s == "")
+                    {
+                        if (txt != "" && SYNONYMS_AND_ANTONYMS_Dictionary.ContainsKey(txt))
+                        {
+
+                        }
+                        else
+                        {
+                            ///http://stackoverflow.com/questions/18251875/in-c-how-to-check-whether-a-string-contains-an-integer
+                            if (txt != "" && !txt.Contains('[') && !txt.Contains(']') && !txt.Any(char.IsDigit) && txt != "SYNONYMS AND ANTONYMS ")
+                            {
+                                if (txt.Contains("ANT."))
+                                {
+                                    ANTONYMS = txt.Substring(5);
+                                    if (SYNONYMS_AND_ANTONYMS_Dictionary.ContainsKey(SYNONYMS))
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        SYNONYMS_AND_ANTONYMS_Dictionary.Add(SYNONYMS, ANTONYMS);
+                                    }
+                                    SYNONYMS = "";
+                                    ANTONYMS = "";
+                                }
+                                else
+                                {
+                                    if (SYNONYMS == "")
+                                    {
+                                        SYNONYMS = txt;
+                                    }
+                                    else
+                                    {
+                                        if (SYNONYMS_AND_ANTONYMS_Dictionary.ContainsKey(SYNONYMS))
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            SYNONYMS_AND_ANTONYMS_Dictionary.Add(SYNONYMS, "");
+
+                                        }
+                                        SYNONYMS = txt;
+                                    }
+                                }
+                               
+                            }
+                            else
+                            {
+                                if (txt == "")
+                                {
+
+                                }
+                                else
+                                {
+
+                                }
+
+                            }
+                        }
+                        txt = "";
+                        continue;
+
+                    }
+                    else
+                    {
+
+                        if (s[s.Length - 2] == '-')
+                            s = s.Substring(0, s.Length - 2);
+                        txt += s;
+                    }
+                }
+            }
+
+
+
+
+        }
+
+
         /// <summary>
         /// gil gil
         /// </summary>

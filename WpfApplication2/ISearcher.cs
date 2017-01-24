@@ -22,8 +22,8 @@ namespace IR_Engine
         void runSingleQuery(string query);
 
 
-   //     Tuple<string, string, int, string, int, int, int, int> getDocData(int doc);
+        //     Tuple<string, string, int, string, int, int, int, int> getDocData(int doc);
 
-
+        string[] getSYNONYMS(string term);
     }
 }
