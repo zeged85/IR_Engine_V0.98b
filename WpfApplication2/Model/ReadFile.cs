@@ -167,16 +167,20 @@ namespace IR_Engine
 
             _myFilePostings.WaitOne();
             Console.WriteLine("Saving File postings on ReadFile-temp-RAM");
+
             foreach (SortedDictionary<string, string> dic in DicList)
             {
                 //     SortedDictionary<string, string> dic2 = new SortedDictionary<string, string>(dic);
                 foreach (KeyValuePair<string, string> entry in dic)
                     if (myFilePostings.ContainsKey(entry.Key))
+                    {
                         myFilePostings[entry.Key] += " " + entry.Value;
+                        Console.WriteLine("Term Conflict:" + entry.Key.ToString());
+                    }
                     else
                     {
                         myFilePostings.Add(entry.Key.ToString(), entry.Value);
-                        Console.WriteLine("Term Conflict:" + entry.Key.ToString());
+                      
                     }
 
             }
@@ -202,10 +206,11 @@ namespace IR_Engine
 
 
 
-            _DictionaryListMutex.WaitOne();
+         
             SortedDictionary<string, string> newDict = Parse.parseString(str, num);
             //add to main memory first
             //  return newDict;
+            _DictionaryListMutex.WaitOne();
             DicList.Add(newDict);
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
          //   counter++;

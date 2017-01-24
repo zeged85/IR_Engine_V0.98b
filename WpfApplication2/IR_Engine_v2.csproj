@@ -57,32 +57,32 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AlphanumComparatorFast.cs" />
-    <Compile Include="DictionaryWindow.xaml.cs">
+    <Compile Include="Model\AlphanumComparatorFast.cs" />
+    <Compile Include="View\DictionaryWindow.xaml.cs">
       <DependentUpon>DictionaryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Document.cs" />
-    <Compile Include="IModel.cs" />
-    <Compile Include="ISearcher.cs" />
-    <Compile Include="Language.xaml.cs">
+    <Compile Include="Model\Document.cs" />
+    <Compile Include="Model\IModel.cs" />
+    <Compile Include="Model\ISearcher.cs" />
+    <Compile Include="View\Language.xaml.cs">
       <DependentUpon>Language.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Indexer.cs" />
-    <Compile Include="Query.cs" />
-    <Compile Include="Ranker.cs" />
-    <Compile Include="ReadFile.cs" />
-    <Compile Include="Searcher.cs" />
-    <Compile Include="Stemmer.cs" />
-    <Compile Include="ViewModel.cs" />
-    <Page Include="DictionaryWindow.xaml">
+    <Compile Include="Model\Indexer.cs" />
+    <Compile Include="Model\Query.cs" />
+    <Compile Include="Model\Ranker.cs" />
+    <Compile Include="Model\ReadFile.cs" />
+    <Compile Include="Model\Searcher.cs" />
+    <Compile Include="Model\Stemmer.cs" />
+    <Compile Include="ViewModel\ViewModel.cs" />
+    <Page Include="View\DictionaryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Language.xaml">
+    <Page Include="View\Language.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -90,13 +90,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parse.cs" />
+    <Compile Include="Model\Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -123,6 +123,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -29,6 +29,13 @@ namespace WpfApplication2
             InitializeComponent();
         }
 
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+
         private void l_combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listBox = sender as ListBox;
@@ -42,7 +49,9 @@ namespace WpfApplication2
 
 
             //  foreach (string s in ml)
-            //   Console.WriteLine(s);           
+            //   Console.WriteLine(s);  
+            
+                     
         }
 
         public string l { get; set; }
