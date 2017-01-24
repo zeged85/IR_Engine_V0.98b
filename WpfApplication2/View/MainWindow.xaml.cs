@@ -266,10 +266,7 @@ namespace WpfApplication2
         private void languageChoose_Pressed(object sender, RoutedEventArgs e)
         {
             Language m_Language = new Language();
-
             m_Language.Show();
-            // languageChosen = 
-
         }
 
         private void loadDictionaryPressed(object sender, RoutedEventArgs e)
@@ -338,22 +335,23 @@ namespace WpfApplication2
             }
             if (e.Key == Key.Enter)
             {
-                System.Windows.Forms.MessageBox.Show("Query Activated");
+                if (isDictionaryLoaded == true && !string.IsNullOrEmpty(Searcher.pathForResult))
+                {
 
-                Searcher.singleQueryInput = QueryInputTextBox.Text;
-                //string[] split = Searcher.singleQueryInput.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                    Searcher.singleQueryInput = QueryInputTextBox.Text;
+                    //string[] split = Searcher.singleQueryInput.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
+                    vm.runSingleQuery(Searcher.singleQueryInput);
+                    System.Windows.Forms.MessageBox.Show("Query Activated");
 
-              //  foreach (string s in split)
-              //  {
-              //      Console.WriteLine(s);
-              //  }
-
-                vm.runSingleQuery(Searcher.singleQueryInput);
-                
-                QueryInputTextBox.IsReadOnly = true;
-                System.Threading.Thread.Sleep(5000);
-                QueryInputTextBox.IsReadOnly = false;
+                    QueryInputTextBox.IsReadOnly = true;
+                    System.Threading.Thread.Sleep(5000);
+                    QueryInputTextBox.IsReadOnly = false;
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd choose a path for result file.");
+                }
             }
         }
 
@@ -394,7 +392,12 @@ namespace WpfApplication2
                 if (!string.IsNullOrEmpty(queriesFile.FileName))
                 {
                     vm.openQueryFile(queriesFile.FileName);
+                    System.Windows.Forms.MessageBox.Show("Process ended.\nResult File is in your chosen folder.");
                 }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Please Choose A Valid Queries File.");
+                }    
             }
             else
             {
