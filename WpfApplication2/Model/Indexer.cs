@@ -396,6 +396,7 @@ namespace IR_Engine
                 // myPostings[term] = "f:" + freqInAllCorpus;
                 file2.Write(t.ToString() + "^#"/*tf*/ + freqInAllCorpus + "#" /*df*/ + amountOfDocs);
 
+                ////redo
                 foreach (Tuple<string, int> tup in shortDocAndFreq)
                 {
                     file2.Write("#" + tup.Item1 + "#" + tup.Item2);
