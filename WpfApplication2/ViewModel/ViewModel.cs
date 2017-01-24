@@ -127,7 +127,7 @@ namespace IR_Engine
 
                    
 
-                SortedDictionary<string,double> docRankRes = VMsearchQuery(queryInput);
+                SortedDictionary<string,double> docRankRes = VMsearchQueryFromBinding(queryInput);
 
 
                 string[] SYNONYMS = search.getSYNONYMS(queryInput);
@@ -252,7 +252,7 @@ namespace IR_Engine
             search.runSingleQuery(query);
         }
 
-        public SortedDictionary<string,double> VMsearchQuery(string query)
+        public SortedDictionary<string,double> VMsearchQueryFromBinding(string query)
         {
             SortedDictionary<string, double> DocRankRes = search.processFullTermQuery(query);
             if (DocRankRes.Count > 1)

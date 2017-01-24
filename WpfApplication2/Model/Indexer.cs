@@ -302,6 +302,7 @@ namespace IR_Engine
                 file6.WriteLine(docMetadata.Key + "$" + docMetadata.Value);
             }
 
+        
             file6.Close();
 
             DocumentMetadata.Clear();
