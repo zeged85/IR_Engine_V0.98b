@@ -50,20 +50,20 @@ namespace IR_Engine
         {
             ///load SYNONYMS_AND_ANTONYMS
             ///
-            
-           LoadSYNONYMS_AND_ANTONYMS();
+
+            LoadSYNONYMS_AND_ANTONYMS();
         }
 
-      
 
-            public string[] getSYNONYMS(string term)
+
+        public string[] getSYNONYMS(string term)
         {
 
-            var keys = SYNONYMS_AND_ANTONYMS_Dictionary.Keys.Where(x => x.Contains(term ));
+            var keys = SYNONYMS_AND_ANTONYMS_Dictionary.Keys.Where(x => x.Contains(term));
             List<string> MatchingTerms = keys.ToList();
 
 
-            foreach(string str in MatchingTerms)
+            foreach (string str in MatchingTerms)
             {
 
             }
@@ -78,13 +78,13 @@ namespace IR_Engine
 
             //parse to dictionary
 
-           
+
             string ANTONYMS = "";
             string SYNONYMS = "";
             using (StreamReader sr = File.OpenText(@"C:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
             {
                 string s = String.Empty;
-                
+
                 string txt = "";
                 while ((s = sr.ReadLine()) != null)
                 {
@@ -142,7 +142,7 @@ namespace IR_Engine
                                         SYNONYMS = txt;
                                     }
                                 }
-                               
+
                             }
                             else
                             {
@@ -190,11 +190,11 @@ namespace IR_Engine
                 int space = queryInput.IndexOf(' ');
                 Random rand = new Random();
                 int query_id = rand.Next(0, 1000);
-              //  bool isValidInteger = int.TryParse(queryInput.Substring(0, space), out query_id);
-              //  if (!isValidInteger)
-              //  {
-                    ////
-              //  }
+                //  bool isValidInteger = int.TryParse(queryInput.Substring(0, space), out query_id);
+                //  if (!isValidInteger)
+                //  {
+                ////
+                //  }
 
                 string query = queryInput.Substring(space + 1);
                 //first query in file
@@ -268,7 +268,7 @@ namespace IR_Engine
                     //reverse descending
                     //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
 
-                //    orderByVal.Reverse();
+                    //    orderByVal.Reverse();
                     var desc = orderByVal.Reverse();
 
                     //better just change comperer
@@ -276,7 +276,7 @@ namespace IR_Engine
 
                     //sort by val double
                     //append results to file
-                    
+
                     StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
                     /// 351   0  FR940104-0-00001  1   42.38   mt
                     int limiter = 0;
@@ -353,12 +353,12 @@ namespace IR_Engine
 
 
             string outFolder = getOutputFolder() + @"PostingFiles\";
-                    char c = term[0];
+            char c = term[0];
             if (char.IsLetter(c))
             {
                 outFolder += c.ToString() + ".txt";
 
-                
+
             }
             else
             {
@@ -369,7 +369,7 @@ namespace IR_Engine
             using (StreamReader sr = File.OpenText(outFolder))
             {
                 string s = String.Empty;
-                
+
                 while ((s = sr.ReadLine()) != null)
                 {
                     //remove blank lines
@@ -423,7 +423,7 @@ namespace IR_Engine
                 }
             }
 
-          
+
 
 
             foreach (string match in MatchingTerms)
@@ -440,7 +440,7 @@ namespace IR_Engine
                 //count docs
                 char[] delimiterCharsLang = { '#' };
                 string[] termData = val.Split(delimiterCharsLang);
-                
+
                 int.TryParse(termData[1], out TMPtermFrequency);
                 int.TryParse(termData[2], out TMPdocumentFrequenct);
 
@@ -609,7 +609,7 @@ namespace IR_Engine
                 queryFullTermArrayPlus += "+" + queryFullTermArray[i];
             }
 
-       
+
 
             string termStr = "";
 
@@ -789,24 +789,45 @@ namespace IR_Engine
 
 
 
-
-
-                    double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
-                    if (term.Contains('+'))
+                    if (languageChosen.Count != 0)
                     {
+                        if (languageChosen.Contains(DocData.language))
+                        {
+                            double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
+                            if (term.Contains('+'))
+                            {
 
-                    }
+                            }
 
-                    if (DocRankingList.ContainsKey(DOCNO))
-                    {
-                        DocRankingList[DOCNO] += +score;
+                            if (DocRankingList.ContainsKey(DOCNO))
+                            {
+                                DocRankingList[DOCNO] += +score;
+                            }
+                            else
+                            {
+                                DocRankingList.Add(DOCNO, score);
+                            }
+                            ///save to docResultList
+                            ///if contains sum score
+                        }
                     }
                     else
                     {
-                        DocRankingList.Add(DOCNO, score);
+                        double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
+                        if (term.Contains('+'))
+                        {
+
+                        }
+
+                        if (DocRankingList.ContainsKey(DOCNO))
+                        {
+                            DocRankingList[DOCNO] += +score;
+                        }
+                        else
+                        {
+                            DocRankingList.Add(DOCNO, score);
+                        }
                     }
-                    ///save to docResultList
-                    ///if contains sum score
                 }
 
 
@@ -858,8 +879,8 @@ namespace IR_Engine
 
 
 
-           var keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + '+'));
-           List<string> termList = keys.ToList();
+            var keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + '+'));
+            List<string> termList = keys.ToList();
 
 
             SortedDictionary<string, int> termAndPop = new SortedDictionary<string, int>();
@@ -867,24 +888,24 @@ namespace IR_Engine
             foreach (string FTerm in termList)
             {
 
-              
-              //  int.TryParse(termData[1], out TMPtermFrequency);
+
+                //  int.TryParse(termData[1], out TMPtermFrequency);
 
                 int termFreq;
-                 int.TryParse(Indexer.myDictionary[FTerm].Split('#')[1], out termFreq);
+                int.TryParse(Indexer.myDictionary[FTerm].Split('#')[1], out termFreq);
 
                 //
                 int idx = FTerm.IndexOf(querySingleTerm);
 
                 string[] slimTermArr = FTerm.Substring(idx).Split('+');
                 string slimTerm = slimTermArr[0];
-                for (int i = 1; i <= size+1; i++)
+                for (int i = 1; i <= size + 1; i++)
                 {
 
                     slimTerm += " " + slimTermArr[i];
 
                 }
-                    //FTerm.Split(querySingleTerm  + '+')[1];
+                //FTerm.Split(querySingleTerm  + '+')[1];
 
                 if (termAndPop.ContainsKey(slimTerm))
                 {
@@ -899,7 +920,7 @@ namespace IR_Engine
 
             var orderByVal = termAndPop.OrderBy(v => v.Value);
 
-     
+
             var desc = orderByVal.Reverse();
 
             List<string> orderByValList = new List<string>();
@@ -913,7 +934,7 @@ namespace IR_Engine
                     break;
                 }
 
-                    }
+            }
             //GET NEXT ELEMT
             //QUERY TERM-TERM
 

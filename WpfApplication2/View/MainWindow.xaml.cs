@@ -315,7 +315,8 @@ namespace WpfApplication2
                     {
                         listBoxSuggestion.Items.Add(obj);
                     }
-                }
+                }//
+               // listBoxSuggestion.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -350,10 +351,12 @@ namespace WpfApplication2
                     QueryInputTextBox.IsReadOnly = true;
                     System.Threading.Thread.Sleep(5000);
                     QueryInputTextBox.IsReadOnly = false;
+                    Searcher.languageChosen.Clear();
+
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd choose a path for result file.");
+                    System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd/Or choose a path for result file.");
                 }
             }
         }
@@ -396,6 +399,7 @@ namespace WpfApplication2
                 {
                     vm.openQueryFile(queriesFile.FileName);
                     System.Windows.Forms.MessageBox.Show("Process ended.\nResult File is in your chosen folder.");
+                    Searcher.languageChosen.Clear();
                 }
                 else
                 {
@@ -404,7 +408,7 @@ namespace WpfApplication2
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd choose a path for result file.");
+                System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd/Or choose a path for result file.");
             }
 
 
