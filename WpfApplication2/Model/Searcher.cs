@@ -10,7 +10,7 @@ namespace IR_Engine
 {
     public class Searcher : ISearcher
     {
-
+        /// </summary>
         public static Dictionary<string, string> SYNONYMS_AND_ANTONYMS_Dictionary = new Dictionary<string, string>();
         public event PropertyChangedEventHandler PropertyChanged;
         public static string pathForResult;
