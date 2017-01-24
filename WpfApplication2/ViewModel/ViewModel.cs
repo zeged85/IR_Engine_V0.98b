@@ -267,10 +267,25 @@ namespace IR_Engine
         {
             if (queryInput.Substring(querySingleTerm.Length-1)==" ")
             {
-                return search.autoComplete(querySingleTerm.Substring(0, querySingleTerm.Length - 1));
+                string res = querySingleTerm.TrimEnd();
+
+                string plus = res.Replace(' ', '+');
+                return search.autoComplete(plus);
             }
 
             return new List<string>();
+        }
+
+        public string getOutputFolder()
+        {
+            return model_indexer.getOutputFolder();
+        }
+
+        public void setOutputFolder(string path)
+        {
+
+            model_indexer.setOutputFolder(path);
+            search.setOutputFolder(path);
         }
 
         public void loadDictionary()

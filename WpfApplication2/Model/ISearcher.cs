@@ -25,5 +25,8 @@ namespace IR_Engine
         //     Tuple<string, string, int, string, int, int, int, int> getDocData(int doc);
 
         string[] getSYNONYMS(string term);
+
+        void setOutputFolder(string path);
+        string getOutputFolder();
     }
 }

@@ -53,7 +53,7 @@ namespace IR_Engine
     
         private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
-        public static string postingFilesPath/* = @"c:\IR_Engine\"*/;
+        public string postingFilesPath/* = @"c:\IR_Engine\"*/;
 
         public static Mutex _DocNumber;
         public static volatile int docNumber /*= 0*/;
@@ -520,6 +520,16 @@ namespace IR_Engine
 
         }
 
+        public void setOutputFolder(string path)
+        {
+            this.postingFilesPath = path;
+        }
+
+        public string getOutputFolder()
+        {
+            return this.postingFilesPath;
+        }
+
         public void loadDictionary()
         {
             Console.WriteLine("Loading File '{0}'.", postingFilesPath + @"\Dictionary.txt");
@@ -577,7 +587,9 @@ namespace IR_Engine
                 {
                    
                     myPostings[entry.Key] += entry.Value;
-                    Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":" + myPostings[entry.Key]);
+                    Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":" );
+                    Console.WriteLine("Already in doc:" + myPostings[entry.Key] );
+                    Console.WriteLine("New to be added:" + entry.Value);
                 }
             Console.WriteLine("File loaded.");
             return 0;

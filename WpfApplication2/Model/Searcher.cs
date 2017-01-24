@@ -32,10 +32,22 @@ namespace IR_Engine
             set { docResult = value; NotifyPropertyChanged("Searcher_DocResult"); }
         }
 
+        string OutputFolder = "";
+
+        public void setOutputFolder(string path)
+        {
+            OutputFolder = path;
+        }
+        public string getOutputFolder()
+        {
+            return OutputFolder;
+        }
+
         public Searcher()
         {
             ///load SYNONYMS_AND_ANTONYMS
             ///
+            
            LoadSYNONYMS_AND_ANTONYMS();
         }
 
@@ -251,7 +263,7 @@ namespace IR_Engine
                     //reverse descending
                     //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
 
-                    orderByVal.Reverse();
+                //    orderByVal.Reverse();
                     var desc = orderByVal.Reverse();
 
                     //better just change comperer
@@ -323,6 +335,58 @@ namespace IR_Engine
             }
         }
 
+        public string getTermValue(string term)
+        {
+            string val = "";// = Indexer.myDictionary[term];
+
+
+
+            // string line = File.ReadLines(FileName).Skip(14).Take(1).First();
+
+
+
+
+
+            string outFolder = getOutputFolder() + @"PostingFiles\";
+                    char c = term[0];
+            if (char.IsLetter(c))
+            {
+                outFolder += c.ToString() + ".txt";
+
+                
+            }
+            else
+            {
+                outFolder += "misc.txt";
+            }
+
+
+            using (StreamReader sr = File.OpenText(outFolder))
+            {
+                string s = String.Empty;
+                
+                while ((s = sr.ReadLine()) != null)
+                {
+                    //remove blank lines
+                    // if (s == "")
+                    //     continue;
+                    string[] words = s.Split('^');
+                    string comp = words[0];
+
+                    if (comp == term)
+                    {
+                        val = words[1];
+                        continue;
+                    }
+
+
+                }
+            }
+
+            // if ()
+
+            return val;
+        }
 
         public Tuple<string, SortedList<int, int>, int, int, int> getReleventDocumentsOfSingleTerm(string querySingleTerm, int qfi)
         {
@@ -354,47 +418,29 @@ namespace IR_Engine
                 }
             }
 
-            //   keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm));
-            //    superSearch = true;
-            /*
-                if (keys.Count() > 0 && !Indexer.myDictionary.ContainsKey(querySingleTerm))
-                {
-
-                }
-          */
-
-            /*
-                        if (!Indexer.myDictionary.ContainsKey(querySingleTerm))
-                        {
-                            if (superSearch)
-                            {
-
-
-                            }
-                            return new Tuple<string, SortedList<int, int>, int, int, int>(querySingleTerm, termResult, termFrequency,documentFrequenct, 0);
-
-                        }
-
-                       */
-            // keys = new List<string>();
-            // keys.Add( querySingleTerm);
-
+          
 
 
             foreach (string match in MatchingTerms)
             {
-                string val = Indexer.myDictionary[match];
+
+
+
+                ///retrieve term data from HDD
+                string val = Indexer.myDictionary[match]; // getTermValue(match);
+
+
                 int TMPtermFrequency;
                 int TMPdocumentFrequenct;
                 //count docs
                 char[] delimiterCharsLang = { '#' };
                 string[] termData = val.Split(delimiterCharsLang);
-
+                
                 int.TryParse(termData[1], out TMPtermFrequency);
                 int.TryParse(termData[2], out TMPdocumentFrequenct);
 
-                termFrequency += TMPtermFrequency;
-                documentFrequenct += TMPdocumentFrequenct;
+                termFrequency = TMPtermFrequency;
+                documentFrequenct = TMPdocumentFrequenct;
 
 
 
@@ -558,12 +604,7 @@ namespace IR_Engine
                 queryFullTermArrayPlus += "+" + queryFullTermArray[i];
             }
 
-            /*
-            if (size > 1)
-            {
-                var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(queryFullTermArrayPlus));
-            }
-            */
+       
 
             string termStr = "";
 
@@ -639,8 +680,6 @@ namespace IR_Engine
                     // DocResult += System.Environment.NewLine;
                     //MVVM
 
-
-                    // if (Indexer.myDictionary.ContainsKey(querySingleTerm)) //single term
 
 
 
@@ -807,14 +846,74 @@ namespace IR_Engine
         /// <param name="querySingleTerm"></param>
         public List<string> autoComplete(string querySingleTerm)
         {
-            // var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + "+"));
             //    //AUTO COMPLETE
 
+
+            int size = querySingleTerm.Count(c => c == '+');
+
+
+
+           var keys = Indexer.myDictionary.Keys.Where(x => x.Contains(querySingleTerm + '+'));
+           List<string> termList = keys.ToList();
+
+
+            SortedDictionary<string, int> termAndPop = new SortedDictionary<string, int>();
+
+            foreach (string FTerm in termList)
+            {
+
+              
+              //  int.TryParse(termData[1], out TMPtermFrequency);
+
+                int termFreq;
+                 int.TryParse(Indexer.myDictionary[FTerm].Split('#')[1], out termFreq);
+
+                //
+                int idx = FTerm.IndexOf(querySingleTerm);
+
+                string[] slimTermArr = FTerm.Substring(idx).Split('+');
+                string slimTerm = slimTermArr[0];
+                for (int i = 1; i <= size+1; i++)
+                {
+
+                    slimTerm += " " + slimTermArr[i];
+
+                }
+                    //FTerm.Split(querySingleTerm  + '+')[1];
+
+                if (termAndPop.ContainsKey(slimTerm))
+                {
+                    termAndPop[slimTerm] += termFreq;
+                }
+                else
+                {
+                    termAndPop.Add(slimTerm, termFreq);
+                }
+            }
+
+
+            var orderByVal = termAndPop.OrderBy(v => v.Value);
+
+     
+            var desc = orderByVal.Reverse();
+
+            List<string> orderByValList = new List<string>();
+            int limiter = 0; //TOP 5
+            foreach (KeyValuePair<string, int> termResult in desc)
+            {
+                limiter++;
+                orderByValList.Add(termResult.Key);
+                if (limiter == 5)
+                {
+                    break;
+                }
+
+                    }
             //GET NEXT ELEMT
             //QUERY TERM-TERM
 
             //GET INDEX-KEY OF TERM IN DATABASE
-            var IndexOfKey = Indexer.myDictionary.IndexOfKey(querySingleTerm);
+            /*var IndexOfKey = Indexer.myDictionary.IndexOfKey(querySingleTerm);
 
 
             //GET NEXT TERM
@@ -826,6 +925,8 @@ namespace IR_Engine
             char[] delimiterDocs = { '+', '-' };
 
             string nextTermValue = Indexer.myDictionary.Values[IndexOfKey];
+
+
             string nextTermFullKey = Indexer.myDictionary.Keys[IndexOfKey];
 
             string nextTerm1stKey = nextTermFullKey.Split(delimiterDocs)[0];
@@ -870,8 +971,8 @@ namespace IR_Engine
 
 
             }
-
-            return termList;
+            */
+            return orderByValList;
         }
 
 

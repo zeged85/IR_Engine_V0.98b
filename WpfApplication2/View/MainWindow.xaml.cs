@@ -51,6 +51,7 @@ namespace WpfApplication2
             DataContext = vm;
             vm.VM_Progress = 0;
             // DataContext = this;
+
             this.PropertyChanged +=
                      delegate(Object sender, PropertyChangedEventArgs e)
                      {
@@ -68,24 +69,13 @@ namespace WpfApplication2
         private void Start(object sender, RoutedEventArgs e)
         {
             DateTime m_start = DateTime.Now;
-
+            isStemming(this, null);
             string error = "";
-            Indexer.documentsPath = m_documentsPath + "\\";
+      //      Indexer.documentsPath = m_documentsPath + "\\";
 
-            tmpForNoStemming = m_postingFilesPath + "\\";
+       //     tmpForNoStemming = m_postingFilesPath + "\\";
 
-            if (/*Indexer.ifStemming == true*/ Stemming.IsChecked == true)
-            {
-                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
-                Indexer.ifStemming = true;
-            }
-            else if (Stemming.IsChecked != true)
-            {
-                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "UnStemming" + "\\";
-                Indexer.ifStemming = false;
-            }
-
-
+           
 
             if (!Directory.Exists(m_documentsPath))
             {
@@ -146,12 +136,14 @@ namespace WpfApplication2
             Dialog.ShowDialog();
             m_documentsPath = Dialog.SelectedPath;
             documentsFolder_Text.Text = m_documentsPath;
+            Indexer.documentsPath = m_documentsPath;
         }
 
 
         private void documentsFolderSelected(object sender, RoutedEventArgs e)
         {
             m_documentsPath = documentsFolder_Text.Text;
+            Indexer.documentsPath = m_documentsPath;
             // System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
         }
 
@@ -169,6 +161,7 @@ namespace WpfApplication2
         private void postingFilesFolderSelected(object sender, RoutedEventArgs e)
         {
             m_postingFilesPath = postingFilesFolder_Text.Text;
+            isStemming(this, null);
         }
 
         private void isStemming(object sender, RoutedEventArgs e)
@@ -176,12 +169,12 @@ namespace WpfApplication2
             if (Stemming.IsChecked == true)
             {
                 Indexer.ifStemming = true;
-                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "Stemming" + "\\";
+                vm.setOutputFolder(m_postingFilesPath + "\\" + "Stemming" + "\\");
 
             }
             else
             {
-                Indexer.postingFilesPath = m_postingFilesPath + "\\" + "UnStemming" + "\\";
+                vm.setOutputFolder(  m_postingFilesPath + "\\" + "UnStemming" + "\\");
 
                 Indexer.ifStemming = false;
             }
@@ -240,12 +233,12 @@ namespace WpfApplication2
             {
                 isStemming(this, null);
 
-                if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
+                if (File.Exists(vm.getOutputFolder() + "\\Dictionary.txt"))
                 {
                     DictionaryWindow m_Dictionary = new DictionaryWindow();
                     string str;
                     string[] split;
-                    StreamReader s = new StreamReader(Indexer.postingFilesPath + "\\Dictionary.txt");
+                    StreamReader s = new StreamReader(vm.getOutputFolder() + "\\Dictionary.txt");
                     while ((str = s.ReadLine()) != null)
                     {
                         split = str.Split(new string[] { "^", "#" }, StringSplitOptions.RemoveEmptyEntries);
@@ -281,8 +274,9 @@ namespace WpfApplication2
             else
             {
                 isStemming(this, null);
+                string folder = vm.getOutputFolder();
 
-                if (File.Exists(Indexer.postingFilesPath + "\\Dictionary.txt"))
+                if (File.Exists(folder + "Dictionary.txt"))
                 {
                     //test
 

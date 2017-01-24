@@ -30,5 +30,7 @@ namespace IR_Engine
         void createDictionary();
 
         void loadDictionary();
+        void setOutputFolder(string path);
+        string getOutputFolder();
     }
 }

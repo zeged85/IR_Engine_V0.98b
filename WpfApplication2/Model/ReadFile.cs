@@ -175,7 +175,7 @@ namespace IR_Engine
                     if (myFilePostings.ContainsKey(entry.Key))
                     {
                         myFilePostings[entry.Key] += " " + entry.Value;
-                        Console.WriteLine("Term Conflict:" + entry.Key.ToString());
+                     //   Console.WriteLine("Term Conflict:" + entry.Key.ToString());
                     }
                     else
                     {
