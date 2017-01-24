@@ -15,6 +15,9 @@ namespace IR_Engine
         public event PropertyChangedEventHandler PropertyChanged;
         public static string pathForResult;
 
+        public static List<string> languageChosen = new List<string>();
+
+
         public static string singleQueryInput;
 
         public void NotifyPropertyChanged(string PropName)
@@ -180,16 +183,18 @@ namespace IR_Engine
         /// <param name="queryInput"></param>
         public void runSingleQuery(string queryInput)
         {
+            //niros
             //remove blank lines
             if (!string.IsNullOrEmpty(queryInput))
             {
                 int space = queryInput.IndexOf(' ');
-                int query_id;
-                bool isValidInteger = int.TryParse(queryInput.Substring(0, space), out query_id);
-                if (!isValidInteger)
-                {
+                Random rand = new Random();
+                int query_id = rand.Next(0, 1000);
+              //  bool isValidInteger = int.TryParse(queryInput.Substring(0, space), out query_id);
+              //  if (!isValidInteger)
+              //  {
                     ////
-                }
+              //  }
 
                 string query = queryInput.Substring(space + 1);
                 //first query in file
