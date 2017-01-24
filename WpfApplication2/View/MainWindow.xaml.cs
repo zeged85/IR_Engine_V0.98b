@@ -224,6 +224,11 @@ namespace WpfApplication2
             {
                 File.Delete(Searcher.pathForResult + "\\result.txt");
             }
+            if (!string.IsNullOrEmpty(QueryInputTextBox.Text))
+            {
+                QueryInputTextBox.Text = string.Empty;
+                QueryInputTextBox.IsReadOnly = false;
+            }
         }
 
         private void showDictionaryPressed(object sender, RoutedEventArgs e)
