@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using IR_Engine;
-using IR_Engine_TRD;
 using WpfApplication2;
 
 namespace WpfApplication2

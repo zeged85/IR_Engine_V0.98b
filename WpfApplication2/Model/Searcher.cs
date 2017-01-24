@@ -81,7 +81,7 @@ namespace IR_Engine
 
             string ANTONYMS = "";
             string SYNONYMS = "";
-            using (StreamReader sr = File.OpenText(@"C:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
+            using (StreamReader sr = File.OpenText(@"D:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
             {
                 string s = String.Empty;
 
