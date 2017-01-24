@@ -220,6 +220,10 @@ namespace WpfApplication2
                     isDictionaryLoaded = false;
                 }
             }
+            if (!string.IsNullOrEmpty(Searcher.pathForResult) && File.Exists(Searcher.pathForResult + "\\result.txt"))
+            {
+                File.Delete(Searcher.pathForResult + "\\result.txt");
+            }
         }
 
         private void showDictionaryPressed(object sender, RoutedEventArgs e)
