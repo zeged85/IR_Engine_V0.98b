@@ -88,10 +88,7 @@ namespace IR_Engine
                 string txt = "";
                 while ((s = sr.ReadLine()) != null)
                 {
-                    if (SYNONYMS_AND_ANTONYMS_Dictionary.Count > 534)
-                    {
-
-                    }
+             
                     //remove blank lines
                     if (s == "SYNONYMS AND ANTONYMS" || s.Any(char.IsDigit))
                         continue;
@@ -181,7 +178,7 @@ namespace IR_Engine
         /// gil gil
         /// </summary>
         /// <param name="queryInput"></param>
-        public void runSingleQuery(string queryInput)
+        public void runSingleQuery(string queryInput, string[] SYNONYMS)
         {
             //niros
             //remove blank lines
@@ -199,6 +196,26 @@ namespace IR_Engine
                 string query = queryInput.Substring(space + 1);
                 //first query in file
                 SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+
+
+               // SortedDictionary<string, double> SYNONYMSdocRankRes = new SortedDictionary<string, double>();
+
+                foreach (string syn in SYNONYMS)
+                {
+                    SortedDictionary<string, double> SYNONYMSdocRankRes = processFullTermQuery(syn);
+                    foreach (KeyValuePair<string, double> pair in SYNONYMSdocRankRes)
+                    {
+                        if (docRankRes.ContainsKey(pair.Key))
+                        {
+                            docRankRes[pair.Key] += pair.Value;
+                        }
+                        else
+                        {
+                            docRankRes.Add(pair.Key, pair.Value);
+                        }
+                    }
+                }
+
 
                 var orderByVal = docRankRes.OrderBy(v => v.Value);
 

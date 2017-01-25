@@ -236,7 +236,7 @@ namespace IR_Engine
             Indexer.myPostings.Clear();
 
 
-            model_indexer.loadDictionary(); //from dict.txt
+            loadDictionary(); //from dict.txt
 
 
             model_indexer.Progress = 100;
@@ -244,16 +244,19 @@ namespace IR_Engine
             VM_DocResult = "done.";
         }
 
+        public string[] getSYNONYMS(string queryInput){
 
+           return search.getSYNONYMS(queryInput);
+        }
 
         public void openQueryFile(string path)
         {
             search.openQueryFile(path);
         }
 
-        public void runSingleQuery(string query)
+        public void runSingleQuery(string query, string[] SYNONYMS)
         {
-            search.runSingleQuery(query);
+            search.runSingleQuery(query, SYNONYMS);
         }
 
         public SortedDictionary<string,double> VMsearchQuery(string query)

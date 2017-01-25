@@ -362,33 +362,58 @@ namespace WpfApplication2
                     query = query.Replace(' ', '+');
                     }
 
+                    
+                    string[] allTerms = query.Split('+');
+                    List<string> syn = new List<string>();
+
+                    foreach (string term in allTerms)
+                    {
+                        string[] SYNOms = vm.getSYNONYMS(term);
+                        foreach (string str in SYNOms)
+                        {
+                            if (!syn.Contains(str))
+                            {
+                                syn.Add(str);
+                            }
+                        }
+                    }
+
+                    
+                    string[] SYNONYMS  = syn.ToArray();
+
+
+
                     if (Indexer.ifStemming == true)
                     {
                         Stemmer stem = new Stemmer();
-                        
 
-                        if (query.Contains('+'))
+                        for (int i = 0; i < SYNONYMS.Length - 1; i++)
                         {
-                            string[] str = query.Split('+');
+                            SYNONYMS[i] = stem.stemTerm(SYNONYMS[i]);
+                        }
 
-                            query = stem.stemTerm(str[0]);
-
-                            foreach (string s in str)
+                            if (query.Contains('+'))
                             {
-                                if (s == str[0])
-                                    continue;
-                                query += "+" + stem.stemTerm(s);
+                                string[] str = query.Split('+');
+
+                                query = stem.stemTerm(str[0]);
+
+                                foreach (string s in str)
+                                {
+                                    if (s == str[0])
+                                        continue;
+                                    query += "+" + stem.stemTerm(s);
+                                }
                             }
-                        }
-                        else
-                        {
-                            query = stem.stemTerm(query);
-                        }
+                            else
+                            {
+                                query = stem.stemTerm(query);
+                            }
 
                     }
-             
 
-                    vm.runSingleQuery(query);
+
+                    vm.runSingleQuery(query, SYNONYMS);
                     System.Windows.Forms.MessageBox.Show("Query Activated");
 
                     QueryInputTextBox.IsReadOnly = true;
