@@ -261,6 +261,56 @@ namespace IR_Engine
 
                     string query = s.Substring(space + 1);
                     //first query in file
+
+
+
+
+                    query = query.Trim();
+
+                    if (query.Last().ToString() == ".")
+                    {
+                        query = query.Substring(0, query.Length - 2);
+                    }
+                    if (query.Contains(','))
+                    {
+                        query = query.Remove(',');
+                    }
+
+                    if (query.Contains(' '))
+                    {
+                        query = query.Replace(' ', '+');
+                    }
+
+                    if (Indexer.ifStemming == true)
+                    {
+                        Stemmer stem = new Stemmer();
+
+
+                        if (query.Contains('+'))
+                        {
+                            string[] str = query.Split('+');
+
+                            query = stem.stemTerm(str[0]);
+
+                            foreach (string tri in str)
+                            {
+                                if (tri == str[0])
+                                    continue;
+                                query += "+" + stem.stemTerm(tri);
+                            }
+                        }
+                        else
+                        {
+                            query = stem.stemTerm(query);
+                        }
+
+                    }
+             
+
+
+
+
+
                     SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
 
                     var orderByVal = docRankRes.OrderBy(v => v.Value);

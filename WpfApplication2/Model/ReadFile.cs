@@ -85,7 +85,7 @@ namespace IR_Engine
                        
                             Indexer._DocNumber.ReleaseMutex();
 
-                            Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
+                          //  Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
 
 
 
@@ -356,7 +356,7 @@ namespace IR_Engine
                     if (words.Length == 2) { 
                         value = words[1];
                 }
-                    Console.WriteLine("Term Num:" + newDic.Count);
+                   // Console.WriteLine("Term Num:" + newDic.Count);
 
                         newDic.Add(key, value);
               

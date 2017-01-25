@@ -343,10 +343,52 @@ namespace WpfApplication2
                 if (isDictionaryLoaded == true && !string.IsNullOrEmpty(Searcher.pathForResult))
                 {
 
-                    Searcher.singleQueryInput = QueryInputTextBox.Text;
+                   // Searcher.singleQueryInput = QueryInputTextBox.Text;
                     //string[] split = Searcher.singleQueryInput.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                    string query = QueryInputTextBox.Text;
 
-                    vm.runSingleQuery(Searcher.singleQueryInput);
+
+                    query = query.Trim();
+                    
+                    if (query.Last().ToString()=="."){
+                        query = query.Substring(0,query.Length-2);
+                    }
+                    if (query.Contains(','))
+                    {
+                        query = query.Remove(',');
+                    }
+  
+                    if (query.Contains(' ')){
+                    query = query.Replace(' ', '+');
+                    }
+
+                    if (Indexer.ifStemming == true)
+                    {
+                        Stemmer stem = new Stemmer();
+                        
+
+                        if (query.Contains('+'))
+                        {
+                            string[] str = query.Split('+');
+
+                            query = stem.stemTerm(str[0]);
+
+                            foreach (string s in str)
+                            {
+                                if (s == str[0])
+                                    continue;
+                                query += "+" + stem.stemTerm(s);
+                            }
+                        }
+                        else
+                        {
+                            query = stem.stemTerm(query);
+                        }
+
+                    }
+             
+
+                    vm.runSingleQuery(query);
                     System.Windows.Forms.MessageBox.Show("Query Activated");
 
                     QueryInputTextBox.IsReadOnly = true;

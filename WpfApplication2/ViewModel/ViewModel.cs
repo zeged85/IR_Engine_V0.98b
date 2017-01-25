@@ -127,10 +127,10 @@ namespace IR_Engine
 
                    
 
-                SortedDictionary<string,double> docRankRes = VMsearchQuery(queryInput);
+        //        SortedDictionary<string,double> docRankRes = VMsearchQuery(queryInput);
 
 
-                string[] SYNONYMS = search.getSYNONYMS(queryInput);
+          //      string[] SYNONYMS = search.getSYNONYMS(queryInput);
                 //sort
 
                 //show results on screen
