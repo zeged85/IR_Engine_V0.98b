@@ -273,7 +273,7 @@ namespace IR_Engine
                     }
                     if (query.Contains(','))
                     {
-                        query = query.Remove(',');
+                        query = query.Remove(query.IndexOf(','));
                     }
 
                     if (query.Contains(' '))
@@ -456,6 +456,7 @@ namespace IR_Engine
             //  var matchingKeys = Indexer.myDictionary.Keys.Where(x => x.Contains(queryFullTerm));
             //bool superSearch = false;
             List<string> MatchingTerms = new List<string>();
+            querySingleTerm = querySingleTerm.ToLower();
             string[] str = querySingleTerm.Split('+');
             IEnumerable<string> keys;
 
