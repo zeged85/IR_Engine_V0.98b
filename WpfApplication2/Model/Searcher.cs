@@ -59,17 +59,91 @@ namespace IR_Engine
         public string[] getSYNONYMS(string term)
         {
 
-            var keys = SYNONYMS_AND_ANTONYMS_Dictionary.Keys.Where(x => x.Contains(term));
+            var keys = SYNONYMS_AND_ANTONYMS_Dictionary.Keys.Where(x => x.ToLower().Contains(term.ToLower()));
             List<string> MatchingTerms = keys.ToList();
 
-
+            List<string> res = new List<string>();
+            SortedDictionary<string, int> synRank = new SortedDictionary<string, int>();
             foreach (string str in MatchingTerms)
             {
 
+                string[] possibleSyn = str.Split(',', '.', ';', ' ');
+
+                foreach (string termSyn in possibleSyn)
+                {
+                    if (termSyn != "" && termSyn.ToLower() != term.ToLower() && termSyn != "ABBREVIATIONS")
+                    {
+                        if (synRank.ContainsKey(termSyn) )
+                        {
+                            synRank[termSyn] += 1;
+                        }
+                        else
+                        {
+                            synRank.Add(termSyn, 1);
+                        }
+                    }
+                }
+
+                var orderByVal = synRank.OrderBy(v => v.Value);
+
+
+                var desc = orderByVal.Reverse();
+
+                int limiter = 0; //TOP 5
+                foreach (KeyValuePair<string, int> termResult in desc)
+                {
+                    limiter++;
+                    if (!res.Contains(termResult.Key))
+                    {
+                        res.Add(termResult.Key);
+                    }
+                    if (limiter == 2)
+                    {
+                        break;
+                    }
+
+                }
+
+
+                //res.Add("");
+            }
+            int limiter2 = 0;
+            string[] ans = null;
+            if (res.Count != 0)
+            {
+                foreach (string s in res)
+                {
+                    limiter2++;
+                    if (!res.Contains(s))
+                    {
+                        res.Add(s);
+                    }
+                    if (limiter2 == 2)
+                    {
+                        break;
+                    }
+                }
+                ans = res.ToArray();
+
             }
 
+            string[] finalTwo = null;
+            
+            if (ans != null && ans.Count() == 1)
+            {
+                finalTwo = new string[1];
+                finalTwo[0] = res[0];
 
-            return null;
+            }
+
+            if (ans != null && ans.Count() > 1)
+            {
+                finalTwo = new string[2];
+                finalTwo[0] = res[0];
+                finalTwo[1] = res[1];
+            }
+
+            return finalTwo;
         }
 
         public void LoadSYNONYMS_AND_ANTONYMS()
@@ -81,7 +155,7 @@ namespace IR_Engine
 
             string ANTONYMS = "";
             string SYNONYMS = "";
-            using (StreamReader sr = File.OpenText(@"D:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
+            using (StreamReader sr = File.OpenText(@"C:\treceval\SYNONYMS_AND_ANTONYMS.txt"))
             {
                 string s = String.Empty;
 
@@ -298,6 +372,57 @@ namespace IR_Engine
                         query = query.Replace(' ', '+');
                     }
 
+
+
+
+
+
+
+                    string[] allTerms = query.Split('+');
+                    List<string> syn = new List<string>();
+
+                    foreach (string term in allTerms)
+                    {
+                        string[] SYNOms = getSYNONYMS(term);
+
+                        if (SYNOms != null)
+                        {
+                            foreach (string str in SYNOms)
+                            {
+                                if (!syn.Contains(str))
+                                {
+                                    syn.Add(str);
+                                }
+                            }
+                       
+                        }
+                     
+
+                    }
+                    string[] SYNONYMS = syn.ToArray();
+
+
+                    /*
+                    foreach (string syn2 in SYNONYMS)
+                    {
+                        SortedDictionary<string, double> SYNONYMSdocRankRes = processFullTermQuery(syn2);
+                        foreach (KeyValuePair<string, double> pair in SYNONYMSdocRankRes)
+                        {
+                            if (SYNONYMSdocRankRes.ContainsKey(pair.Key))
+                            {
+                                docRankRes[pair.Key] += pair.Value;
+                            }
+                            else
+                            {
+                                docRankRes.Add(pair.Key, pair.Value);
+                            }
+                        }
+                    }
+                    */
+
+
+
+
                     if (Indexer.ifStemming == true)
                     {
                         Stemmer stem = new Stemmer();
@@ -322,12 +447,14 @@ namespace IR_Engine
                         }
 
                     }
-             
 
 
 
 
+                    runSingleQuery(query, SYNONYMS);
 
+                    
+                    /*
                     SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
 
                     var orderByVal = docRankRes.OrderBy(v => v.Value);
@@ -344,7 +471,7 @@ namespace IR_Engine
                     //sort by val double
                     //append results to file
 
-                    StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
+                    StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt", true);
                     /// 351   0  FR940104-0-00001  1   42.38   mt
                     int limiter = 0;
                     foreach (KeyValuePair<string, double> docResult in desc)
@@ -358,8 +485,10 @@ namespace IR_Engine
                         }
                     }
                     file6.Close();
-                }
+            
+                    */}
             }
+            
         }
 
         /// MVVM
