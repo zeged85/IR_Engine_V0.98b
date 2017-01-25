@@ -151,7 +151,7 @@
 			Height="38"/>
 
         <Button Content="Show Dictionary" 
-			Margin="74,309,662,250.5" 
+			Margin="37,306,699,253.5" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="showDictionaryPressed"/>
@@ -160,14 +160,14 @@
 			Content="Load Dictionary"
 			Click="loadDictionaryPressed"
 			VerticalAlignment="center"
-			Margin="194,309,549,250.5" 
+			Margin="143,306,592,253.5" 
 			RenderTransformOrigin="0.5,0.5" 
 			FontWeight="Bold" 
 			Background="White" 
 			Height="36"/>
 
         <Button Content="Choose Language" 
-			Margin="303,309,412,249.5" 
+			Margin="250,306,465,251.5" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="languageChoose_Pressed"/>
@@ -218,12 +218,24 @@
 
             </ProgressBar>
         </StatusBar>
-        <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" Margin="179,532,607,39.5" RenderTransformOrigin="0.333,2.085" />
+        <TextBlock Text="{Binding Value , ElementName=progressBar1, StringFormat=\{0:0\}%}" 
+                   Margin="179,532,607,39.5" 
+                   RenderTransformOrigin="0.333,2.085" />
 
 
 
-        <TextBox Name="QueryInputTextBox" Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="520,309,73,253.5"  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown" TextChanged="txtAutoSuggestName_TextChanged" />
-        <ListBox Name="listBoxSuggestion" Visibility="Hidden"  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyDown="listBoxSuggestion_KeyDown" Margin="476,262,23,225" />
+        <TextBox Name="QueryInputTextBox" 
+                 Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Margin="520,309,73,253.5"  
+                 PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown" 
+                 TextChanged="txtAutoSuggestName_TextChanged" />
+        
+        <ListBox Name="listBoxSuggestion" 
+                 Visibility="Hidden"  
+                 PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" 
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                 KeyDown="listBoxSuggestion_KeyDown" 
+                 Margin="476,262,23,225" VerticalAlignment="Bottom" />
 
         <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,371,23,39.5"     />
 

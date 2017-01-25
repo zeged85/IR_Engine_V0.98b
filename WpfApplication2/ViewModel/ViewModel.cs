@@ -127,10 +127,10 @@ namespace IR_Engine
 
                    
 
-                SortedDictionary<string,double> docRankRes = VMsearchQueryFromBinding(queryInput);
+        //        SortedDictionary<string,double> docRankRes = VMsearchQuery(queryInput);
 
 
-                string[] SYNONYMS = search.getSYNONYMS(queryInput);
+          //      string[] SYNONYMS = search.getSYNONYMS(queryInput);
                 //sort
 
                 //show results on screen
@@ -223,7 +223,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 97;
 
-            model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
+           // model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
 
             model_indexer.Progress = 99;
 
@@ -232,7 +232,11 @@ namespace IR_Engine
 
             //
             //check is indexer full
-            model_indexer.loadDictionary(); //from dict.txt
+
+            Indexer.myPostings.Clear();
+
+
+            loadDictionary(); //from dict.txt
 
 
             model_indexer.Progress = 100;
@@ -240,19 +244,22 @@ namespace IR_Engine
             VM_DocResult = "done.";
         }
 
+        public string[] getSYNONYMS(string queryInput){
 
+           return search.getSYNONYMS(queryInput);
+        }
 
         public void openQueryFile(string path)
         {
             search.openQueryFile(path);
         }
 
-        public void runSingleQuery(string query)
+        public void runSingleQuery(string query, string[] SYNONYMS)
         {
-            search.runSingleQuery(query);
+            search.runSingleQuery(query, SYNONYMS);
         }
 
-        public SortedDictionary<string,double> VMsearchQueryFromBinding(string query)
+        public SortedDictionary<string,double> VMsearchQuery(string query)
         {
             SortedDictionary<string, double> DocRankRes = search.processFullTermQuery(query);
             if (DocRankRes.Count > 1)

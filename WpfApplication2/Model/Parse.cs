@@ -651,7 +651,7 @@ namespace IR_Engine
                                     ///"70-percen"
                                     ///"50-year-ol"
                                     ///180-million-lira
-                                    Console.WriteLine("Unable to parse '{0}'.", stringTerm);
+                                 //   Console.WriteLine("Unable to parse '{0}'.", stringTerm);
                                     string fixedNum;
                                     /*
                                     if (stringTerm.Contains("o"))
@@ -1158,7 +1158,7 @@ namespace IR_Engine
                 myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber + '|', METADATA_SECURE);
 
 
-                Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
+              //  Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
                 return myMiniPostingListDict;
             }
         }

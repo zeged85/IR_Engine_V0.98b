@@ -40,7 +40,7 @@ namespace IR_Engine
         /// </summary>
 
         //RESPECT
-        public static SortedDictionary<string, string> myPostings;
+        public static volatile SortedDictionary<string, string> myPostings;
 
         public static SortedList<string, string> myDictionary;
 
@@ -197,9 +197,11 @@ namespace IR_Engine
             Console.WriteLine("Main thread exits.");
 
             stopMemoryHandler = true;
+            memoryHandler.Join();
+
             Thread lastRefresh = new Thread(freeMemory);
             lastRefresh.Start();
-            memoryHandler.Join();
+            
             lastRefresh.Join();
             threads.Clear();
 
@@ -491,20 +493,7 @@ namespace IR_Engine
 
         }
 
-        public void PrintfreqInAllCorpusList()
-        {
-            //  using System.Linq;
-            //http://stackoverflow.com/questions/21411384/sort-dictionary-string-int-by-value
-
-            var top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10);
-            var bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10);
-
-            top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10)
-                  .ToDictionary(pair => pair.Key, pair => pair.Value);
-
-            bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10)
-                .ToDictionary(pair => pair.Key, pair => pair.Value);
-        }
+    
 
         public void mmm()
         {
@@ -535,7 +524,7 @@ namespace IR_Engine
         {
             Console.WriteLine("Loading File '{0}'.", postingFilesPath + @"\Dictionary.txt");
 
-
+            //myDictionary.Clear();
             myDictionary = ReadFile.fileToSortedList(postingFilesPath + @"\Dictionary.txt");
             
           
@@ -669,9 +658,10 @@ namespace IR_Engine
         {
             while (!stopMemoryHandler)
             {
+                _mainMemory.WaitOne();
                 if (myPostings.Count > 30000)
                 {
-                    _mainMemory.WaitOne();
+                    
 
 
 
@@ -685,7 +675,7 @@ namespace IR_Engine
 
 
                     myPostings.Clear();
-                    _mainMemory.ReleaseMutex();
+                    
                     Console.WriteLine("Refreshing Memory...");
 
 
@@ -695,7 +685,7 @@ namespace IR_Engine
 
                    // freeDic.Clear();
                 }
-                
+                _mainMemory.ReleaseMutex();
 
 //                Progress = docNumber / 1400;
 
