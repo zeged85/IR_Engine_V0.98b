@@ -68,6 +68,7 @@ namespace WpfApplication2
 
         private void Start(object sender, RoutedEventArgs e)
         {
+            QueryInputTextBox.IsReadOnly = true;
             DateTime m_start = DateTime.Now;
             isStemming(this, null);
             string error = "";

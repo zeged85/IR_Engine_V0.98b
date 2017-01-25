@@ -21,7 +21,7 @@ namespace IR_Engine
         void deleteGarbage();
         void loadMetadata();
         void UniqueWordsQuery();
-        void PrintfreqInAllCorpusList(); 
+      //  void PrintfreqInAllCorpusList(); 
         void mmm();
 
 

@@ -338,7 +338,7 @@ namespace IR_Engine
             SortedList<string, string> newDic = new SortedList<string, string>(StringComparer.OrdinalIgnoreCase);
 
 
-
+            string[] words;
             ///
             using (StreamReader sr = File.OpenText(path))
             {
@@ -349,13 +349,14 @@ namespace IR_Engine
                     if (s == "")
                         continue;
 
-                    string[] words = s.Split('^');
+                    words = s.Split('^');
                     string value = string.Empty;
                     string key = words[0];
                     //maybe waseful
-                    if (words.Length == 2)
+                    if (words.Length == 2) { 
                         value = words[1];
-                 
+                }
+                    Console.WriteLine("Term Num:" + newDic.Count);
 
                         newDic.Add(key, value);
               

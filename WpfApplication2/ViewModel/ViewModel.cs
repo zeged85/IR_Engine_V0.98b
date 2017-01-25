@@ -223,7 +223,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 97;
 
-            model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
+           // model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
 
             model_indexer.Progress = 99;
 
@@ -232,6 +232,10 @@ namespace IR_Engine
 
             //
             //check is indexer full
+
+            Indexer.myPostings.Clear();
+
+
             model_indexer.loadDictionary(); //from dict.txt
 
 
