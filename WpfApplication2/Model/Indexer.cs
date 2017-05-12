@@ -42,6 +42,12 @@ namespace IR_Engine
         //RESPECT
         public static volatile SortedDictionary<string, string> myPostings;
 
+        //Movies Dictionary
+        //movieId,title,genres
+        public static volatile SortedDictionary<int, string> myMovies;
+
+
+
         public static SortedList<string, string> myDictionary;
 
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
@@ -55,7 +61,7 @@ namespace IR_Engine
         public static string documentsPath;
         public string postingFilesPath/* = @"c:\IR_Engine\"*/;
 
-        public static Mutex _TitleNumber;
+        public static Mutex _TitleNumberMutex;
         public static volatile int titleNumber /*= 0*/;
 
         public static volatile int postingFolderCounter = 0;
@@ -149,8 +155,8 @@ namespace IR_Engine
         public void initiate()
         {
             _DocumentMetadata = new Mutex();
-            _TitleNumber = new Mutex();
-            _semaphoreIndexer = new Semaphore(4, 4);
+            _TitleNumberMutex = new Mutex();
+            _semaphoreIndexer = new Semaphore(1, 1);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))

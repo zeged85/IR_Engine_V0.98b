@@ -72,11 +72,11 @@ namespace IR_Engine
 
 
                             //update docnumbr
-                            Indexer._TitleNumber.WaitOne();
+                            Indexer._TitleNumberMutex.WaitOne();
 
                             int freshNum = Interlocked.Increment(ref Indexer.titleNumber);
 
-                            Indexer._TitleNumber.ReleaseMutex();
+                            Indexer._TitleNumberMutex.ReleaseMutex();
 
                             //countAmountOfUniqueInDoc = 0;
 
