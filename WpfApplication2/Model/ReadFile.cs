@@ -28,15 +28,15 @@ namespace IR_Engine
        // private static List<Thread> ReadFileThreads;
         
        // private static Semaphore _ReadFileSemaphore;
-        static int counter;
+        
         
 
-        int gil = 0;
+       
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
             Semaphore _ReadFileSemaphore = new Semaphore(12, 12) ; //one for every file
-            counter = 10;
+          
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
             List<SortedDictionary<string, string>> DicList = new List<SortedDictionary<string, string>>();
@@ -44,11 +44,11 @@ namespace IR_Engine
             // Reference 1:
             //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
 
-            int docNumberInFile = 0;
+            int titleNumberInFile = 0;
             int linesInDoc = 0;
             string newDocument = String.Empty;
             //https://msdn.microsoft.com/en-us/library/system.text.stringbuilder(v=vs.110).aspx#StringAndSB
-            StringBuilder bufferDocument = new StringBuilder();
+            StringBuilder bufferTitle = new StringBuilder();
 
             using (StreamReader sr = File.OpenText(path))
             {
@@ -58,7 +58,7 @@ namespace IR_Engine
                     //remove blank lines
                     if (s == "")
                         continue;
-                    string term = "<DOC>";
+                    string term = "<DOC>"; //SEPERATOR WITHIN A FILE
                     int docidx = NaiveSearch(s, term);
 
                     if (docidx != -1) //new term found in line!
@@ -68,22 +68,24 @@ namespace IR_Engine
                      
                             //      System.Console.WriteLine(newDocument);
                             
-                            docNumberInFile++;
-                           
+                            titleNumberInFile++;
+
+
+                            //update docnumbr
+                            Indexer._TitleNumber.WaitOne();
+
+                            int freshNum = Interlocked.Increment(ref Indexer.titleNumber);
+
+                            Indexer._TitleNumber.ReleaseMutex();
+
                             //countAmountOfUniqueInDoc = 0;
 
-                           // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
-                           // Console.WriteLine("File Document #: " + docNumber);
+                            Console.WriteLine("Total titles #: " + Indexer.titleNumber);
+                            Console.WriteLine("Titles in file #: " + titleNumberInFile);
                           
                            // System.Console.WriteLine("Lines in document:" + linesInDoc);
 
 
-                            //update docnumbr
-                            Indexer._DocNumber.WaitOne();
-
-                           int freshNum = Interlocked.Increment(ref Indexer.docNumber);
-                       
-                            Indexer._DocNumber.ReleaseMutex();
 
                           //  Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
 
@@ -91,7 +93,7 @@ namespace IR_Engine
 
 
                             //the document in string
-                            string str = bufferDocument.ToString();
+                            string str = bufferTitle.ToString();
 
 
 
@@ -115,7 +117,7 @@ namespace IR_Engine
                             //merge dic
                             //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
             
-                            bufferDocument.Clear();
+                            bufferTitle.Clear();
                  
                         }
                         linesInDoc = 1;
@@ -123,7 +125,7 @@ namespace IR_Engine
                     else
                     {
                         linesInDoc++;
-                        bufferDocument.Append(s.Trim() + System.Environment.NewLine);
+                        bufferTitle.Append(s.Trim() + System.Environment.NewLine);
                     }
                     //save the new document, line by line
                     // newDocument += s + System.Environment.NewLine;
@@ -133,8 +135,8 @@ namespace IR_Engine
             Console.WriteLine("File add to threadpool!");
             long fileSize = new System.IO.FileInfo(path).Length;
             Console.WriteLine("File size: " + GetBytesReadable(fileSize));
-            Console.WriteLine("Total amount:" + Indexer.docNumber + " Documents.");
-            Console.WriteLine("Documents in file:" + docNumberInFile + " Documents.");
+            Console.WriteLine("Total amount:" + Indexer.titleNumber + " Documents.");
+            Console.WriteLine("Documents in file:" + titleNumberInFile + " Documents.");
             Console.WriteLine("-----------------------");
 
         

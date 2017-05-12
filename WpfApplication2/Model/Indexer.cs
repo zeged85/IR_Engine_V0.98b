@@ -55,8 +55,8 @@ namespace IR_Engine
         public static string documentsPath;
         public string postingFilesPath/* = @"c:\IR_Engine\"*/;
 
-        public static Mutex _DocNumber;
-        public static volatile int docNumber /*= 0*/;
+        public static Mutex _TitleNumber;
+        public static volatile int titleNumber /*= 0*/;
 
         public static volatile int postingFolderCounter = 0;
         private static bool stopMemoryHandler = false;
@@ -149,7 +149,7 @@ namespace IR_Engine
         public void initiate()
         {
             _DocumentMetadata = new Mutex();
-            _DocNumber = new Mutex();
+            _TitleNumber = new Mutex();
             _semaphoreIndexer = new Semaphore(4, 4);
             _mainMemory = new Mutex();
 
@@ -422,7 +422,7 @@ namespace IR_Engine
             //add list
             System.Console.WriteLine("malloc array");
 
-            int[] UniqueWordsDictionaryCounterForQuery = new int[docNumber + 1];
+            int[] UniqueWordsDictionaryCounterForQuery = new int[titleNumber + 1];
 
             //1.compute tf and df
             //2. list of document 

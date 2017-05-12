@@ -68,6 +68,7 @@ namespace WpfApplication2
 
         private void Start(object sender, RoutedEventArgs e)
         {
+            isValid = true;
             QueryInputTextBox.IsReadOnly = true;
             DateTime m_start = DateTime.Now;
             isStemming(this, null);
@@ -82,6 +83,12 @@ namespace WpfApplication2
             {
                 isValid = false;
                 error = "Path for dataset is missing. Please choose a folder.\n";
+            }
+
+            if (!Directory.EnumerateFileSystemEntries(m_documentsPath).Any())
+            {
+                isValid = false;
+                error = "No Data Files found on folder.\n";
             }
 
             if (!Directory.Exists(m_postingFilesPath))
@@ -101,7 +108,7 @@ namespace WpfApplication2
 
             else
             {
-                Indexer.docNumber = 0;
+                Indexer.titleNumber = 0;
                 Indexer.amountOfUnique = 0;
                 isDictionaryLoaded = true;
 
@@ -123,7 +130,7 @@ namespace WpfApplication2
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
-                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.docNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.titleNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
 
                 });
                 t2.Start();
