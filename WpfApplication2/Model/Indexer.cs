@@ -158,7 +158,7 @@ namespace IR_Engine
                 // This path is a directory
                 //http://stackoverflow.com/questions/16193126/counting-the-number-of-files-in-a-folder-in-c-sharp
                 FileCountInFolder = Directory.GetFiles(documentsPath).Length;
-                stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
+             //   stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
                 ProcessDirectory(documentsPath, FileToParse);
             }
             else

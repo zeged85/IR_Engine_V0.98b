@@ -90,12 +90,12 @@ namespace WpfApplication2
                 error += "Path for posting files is missing. Please choose a folder\n";
             }
 
-            if (!File.Exists(m_documentsPath + @"\stop_words.txt"))
+           /* if (!File.Exists(m_documentsPath + @"\stop_words.txt"))
             {
                 isValid = false;
                 error += "Stop words file is missing in the folder.\n";
-
             }
+            */
             if (!isValid)
                 System.Windows.Forms.MessageBox.Show(error);
 

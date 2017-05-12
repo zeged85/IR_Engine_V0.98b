@@ -172,7 +172,7 @@ namespace IR_Engine
 
             VM_DocResult = "loading files...";
 
-            model_indexer.loadMonths();
+          //  model_indexer.loadMonths();
 
             model_indexer.initiate(); //
 
