@@ -42,7 +42,7 @@ namespace WpfApplication2
 
             string[] split = strselecteditems.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            Searcher.languageChosen.Add(split[1]);
+          //  Searcher.languageChosen.Add(split[1]);
 
           //  foreach (string s in Searcher.languageChosen)
           //      Console.WriteLine(s);

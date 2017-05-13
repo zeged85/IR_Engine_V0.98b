@@ -10,26 +10,27 @@ namespace IR_Engine
     interface IModel : INotifyPropertyChanged
     {
         int Progress { set; get; }
-        void move(double speed, int angle);
+        string DocResult { set; get; }
+    //    void move(double speed, int angle);
 
 
-        void loadMonths();
+     //   void loadMonths();
         void initiate(); 
-        void freeMemory(); // create las
-        void MergeAllToSingleUnSorted();
-        void sort();
-        void deleteGarbage();
-        void loadMetadata();
-        void UniqueWordsQuery();
+   //     void freeMemory(); // create las
+   //     void MergeAllToSingleUnSorted();
+   //     void sort();
+   //     void deleteGarbage();
+   //     void loadMetadata();
+   //     void UniqueWordsQuery();
       //  void PrintfreqInAllCorpusList(); 
         void mmm();
 
-
-        void dumpDocumentMetadata();
-        void loadPostingFiles();
-        void createDictionary();
-
-        void loadDictionary();
+        void ProgressTest();
+  //      void dumpDocumentMetadata();
+  //      void loadPostingFiles();
+  //      void createDictionary();
+  //
+  //      void loadDictionary();
         void setOutputFolder(string path);
         string getOutputFolder();
     }

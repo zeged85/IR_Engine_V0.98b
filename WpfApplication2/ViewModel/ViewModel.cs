@@ -12,17 +12,13 @@ namespace IR_Engine
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private IModel model_indexer;
-        private ISearcher search;
-        public ViewModel(IModel index, ISearcher searcher)
+       // private ISearcher search;
+        public ViewModel(IModel index)
         {
             this.model_indexer = index;
-            this.search = searcher;
+       //     this.search = searcher;
 
-            search.PropertyChanged +=
-                          delegate (Object sender, PropertyChangedEventArgs e)
-                          {
-                              this.NotifyPropertyChanged("VM_" + e.PropertyName);
-                          };
+     
 
             model_indexer.PropertyChanged +=
                           delegate(Object sender, PropertyChangedEventArgs e)
@@ -40,9 +36,9 @@ namespace IR_Engine
           //  progress = model_indexer.Progress;
 
 
-            if (PropName == "VM_Searcher_DocResult")
+            if (PropName == "VM_DocResult")
             {
-                docResult = search.DocResult;
+                docResult = model_indexer.DocResult;
                 PropName = "VM_DocResult";
             }
 
@@ -168,29 +164,31 @@ namespace IR_Engine
 
         public void startEngine()
         {
-            Indexer.clearAllData();
+          //  Indexer.clearAllData();
 
             VM_DocResult = "loading files...";
 
-          //  model_indexer.loadMonths();
+            //  model_indexer.loadMonths();
+
+            model_indexer.ProgressTest();
 
             model_indexer.initiate(); //
 
            // model_indexer.Progress = 55;
 
-            model_indexer.freeMemory(); // create last folder
+     //       model_indexer.freeMemory(); // create last folder
 
             model_indexer.Progress = 50;
             VM_DocResult = "merging...";
-            model_indexer.MergeAllToSingleUnSorted();
+    //        model_indexer.MergeAllToSingleUnSorted();
 
             model_indexer.Progress = 65;
             VM_DocResult = "sorting...";
-            model_indexer.sort();
+    //        model_indexer.sort();
 
             model_indexer.Progress = 70;
 
-            model_indexer.deleteGarbage();
+//            model_indexer.deleteGarbage();
 
             model_indexer.Progress = 75;
 
@@ -198,7 +196,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 80;
             VM_DocResult = "loading Posting Files...";
-            model_indexer.loadPostingFiles();
+     //       model_indexer.loadPostingFiles();
 
             model_indexer.Progress = 85;
 
@@ -206,7 +204,7 @@ namespace IR_Engine
 
             model_indexer.Progress = 90;
             VM_DocResult = "createing Dictionary...";
-            model_indexer.createDictionary(); // and save to file dict.txt
+    //        model_indexer.createDictionary(); // and save to file dict.txt
 
             //
 
@@ -219,7 +217,7 @@ namespace IR_Engine
             //
 
 
-            model_indexer.UniqueWordsQuery(); //CREATE METADATA
+  //          model_indexer.UniqueWordsQuery(); //CREATE METADATA
 
             model_indexer.Progress = 97;
 
@@ -233,7 +231,7 @@ namespace IR_Engine
             //
             //check is indexer full
 
-            Indexer.myPostings.Clear();
+    //        Indexer.myPostings.Clear();
 
 
             loadDictionary(); //from dict.txt
@@ -244,30 +242,17 @@ namespace IR_Engine
             VM_DocResult = "done.";
         }
 
-        public string[] getSYNONYMS(string queryInput){
-
-           return search.getSYNONYMS(queryInput);
-        }
-
-        public void openQueryFile(string path)
-        {
-            search.openQueryFile(path);
-        }
-
-        public void runSingleQuery(string query, string[] SYNONYMS)
-        {
-            search.runSingleQuery(query, SYNONYMS);
-        }
+     
 
         public SortedDictionary<string,double> VMsearchQuery(string query)
         {
-            SortedDictionary<string, double> DocRankRes = search.processFullTermQuery(query);
+       /*     SortedDictionary<string, double> DocRankRes = search.processFullTermQuery(query);
             if (DocRankRes.Count > 1)
                 Console.WriteLine("Word exists in memory");
             else
                 Console.WriteLine("Word does not exist in memory");
 
-            return DocRankRes;
+         */   return null;
         }
 
         public List<string> autoComplete(string querySingleTerm)
@@ -277,7 +262,7 @@ namespace IR_Engine
                 string res = querySingleTerm.TrimEnd();
 
                 string plus = res.Replace(' ', '+');
-                return search.autoComplete(plus);
+             //   return search.autoComplete(plus);
             }
 
             return new List<string>();
@@ -292,7 +277,7 @@ namespace IR_Engine
         {
 
             model_indexer.setOutputFolder(path);
-            search.setOutputFolder(path);
+            //search.setOutputFolder(path);
         }
 
         public void loadDictionary()
@@ -300,11 +285,11 @@ namespace IR_Engine
 
             //make dict singleton
             VM_DocResult = "Loading Dictionary...";
-            model_indexer.loadDictionary();
+       //     model_indexer.loadDictionary();
 
             //load metadata also
 
-            model_indexer.loadMetadata();
+        //    model_indexer.loadMetadata();
             VM_DocResult = "Ready.";
             //get dictionary size
 

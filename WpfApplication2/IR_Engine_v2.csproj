@@ -76,17 +76,12 @@
     <Compile Include="View\DictionaryWindow.xaml.cs">
       <DependentUpon>DictionaryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Document.cs" />
     <Compile Include="Model\IModel.cs" />
-    <Compile Include="Model\ISearcher.cs" />
     <Compile Include="View\Language.xaml.cs">
       <DependentUpon>Language.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Indexer.cs" />
-    <Compile Include="Model\Query.cs" />
-    <Compile Include="Model\Ranker.cs" />
     <Compile Include="Model\ReadFile.cs" />
-    <Compile Include="Model\Searcher.cs" />
     <Compile Include="Model\Stemmer.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Page Include="View\DictionaryWindow.xaml">
@@ -111,7 +106,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Parse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

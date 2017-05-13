@@ -24,201 +24,16 @@ namespace IR_Engine
       //  public static int wordPosition = 0;
         //UTF!!!
         public string filesPathToDelete;
-       // public static volatile int totalDocs = 0;
-       // private static List<Thread> ReadFileThreads;
-        
-       // private static Semaphore _ReadFileSemaphore;
-        
-        
+        // public static volatile int totalDocs = 0;
+        // private static List<Thread> ReadFileThreads;
 
-       
-
-        public static SortedDictionary<string, string> OpenFileForParsing(string path)
-        {
-            Semaphore _ReadFileSemaphore = new Semaphore(12, 12) ; //one for every file
-          
-            Mutex _myFilePostings = new Mutex();
-            List<Thread> ReadFileThreads = new List<Thread>();
-            List<SortedDictionary<string, string>> DicList = new List<SortedDictionary<string, string>>();
-            SortedDictionary<string, string> myFilePostings = new SortedDictionary<string, string>();
-            // Reference 1:
-            //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
-
-            int titleNumberInFile = 0;
-            int linesInDoc = 0;
-            string newDocument = String.Empty;
-            //https://msdn.microsoft.com/en-us/library/system.text.stringbuilder(v=vs.110).aspx#StringAndSB
-            StringBuilder bufferTitle = new StringBuilder();
-
-            using (StreamReader sr = File.OpenText(path))
-            {
-                string s = String.Empty;
-                while ((s = sr.ReadLine()) != null)
-                {
-                    //remove blank lines
-                    if (s == "")
-                        continue;
-                    string term = "<DOC>"; //SEPERATOR WITHIN A FILE
-                    int docidx = NaiveSearch(s, term);
-
-                    if (docidx != -1) //new term found in line!
-                    {
-                        if (linesInDoc != 0) //end of document before
-                        {
-                     
-                            //      System.Console.WriteLine(newDocument);
-                            
-                            titleNumberInFile++;
-
-
-                            //update docnumbr
-                            Indexer._TitleNumberMutex.WaitOne();
-
-                            int freshNum = Interlocked.Increment(ref Indexer.titleNumber);
-
-                            Indexer._TitleNumberMutex.ReleaseMutex();
-
-                            //countAmountOfUniqueInDoc = 0;
-
-                            Console.WriteLine("Total titles #: " + Indexer.titleNumber);
-                            Console.WriteLine("Titles in file #: " + titleNumberInFile);
-                          
-                           // System.Console.WriteLine("Lines in document:" + linesInDoc);
+        // private static Semaphore _ReadFileSemaphore;
 
 
 
-                          //  Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
-
-
-
-
-                            //the document in string
-                            string str = bufferTitle.ToString();
-
-
-
-
-
-                           // DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList);
-                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList));
-                            // Start the thread, passing the number.
-
-
-
-
-
-                            ReadFileThreads.Add(thread);
-
-
-
-
-                            //remove metadata
-
-                            //merge dic
-                            //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
-            
-                            bufferTitle.Clear();
-                 
-                        }
-                        linesInDoc = 1;
-                    }
-                    else
-                    {
-                        linesInDoc++;
-                        bufferTitle.Append(s.Trim() + System.Environment.NewLine);
-                    }
-                    //save the new document, line by line
-                    // newDocument += s + System.Environment.NewLine;
-                }
-            }
-
-            Console.WriteLine("File add to threadpool!");
-            long fileSize = new System.IO.FileInfo(path).Length;
-            Console.WriteLine("File size: " + GetBytesReadable(fileSize));
-            Console.WriteLine("Total amount:" + Indexer.titleNumber + " Documents.");
-            Console.WriteLine("Documents in file:" + titleNumberInFile + " Documents.");
-            Console.WriteLine("-----------------------");
 
         
-            //   System.Console.WriteLine("Press any key to exit.");
-            //   System.Console.ReadKey();
 
-            //save doclist
-
-            //DocumentFileToID
-
-            // _pool.Release(4);
-
-            Console.WriteLine("starting " + ReadFileThreads.Count + " threads...");
-            foreach (Thread thred in ReadFileThreads)
-            {
-
-                //semaphore
-                _ReadFileSemaphore.WaitOne();
-                thred.Start();
-            
-            }
-
-           
-            
-            foreach (Thread tread in ReadFileThreads)
-            {
-                tread.Join();
-            }
-            
-
-            _myFilePostings.WaitOne();
-            Console.WriteLine("Saving File postings on ReadFile-temp-RAM");
-
-            foreach (SortedDictionary<string, string> dic in DicList)
-            {
-                //     SortedDictionary<string, string> dic2 = new SortedDictionary<string, string>(dic);
-                foreach (KeyValuePair<string, string> entry in dic)
-                    if (myFilePostings.ContainsKey(entry.Key))
-                    {
-                        myFilePostings[entry.Key] += " " + entry.Value;
-                     //   Console.WriteLine("Term Conflict:" + entry.Key.ToString());
-                    }
-                    else
-                    {
-                        myFilePostings.Add(entry.Key.ToString(), entry.Value);
-                      
-                    }
-
-            }
-
-            Console.WriteLine("postings saved");
-            _myFilePostings.ReleaseMutex();
-
-
-
-
-            return myFilePostings;
-            //    System.Console.Clear();
-        }
-
-
-        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex _DictionaryListMutex, object path,  int num, ref List<SortedDictionary<string, string>> DicList)
-        {
-            string str = path.ToString();
-         //   counter--;
-
-    ///late edition
-         //   _ReadFileSemaphore.WaitOne(); //limit threads
-
-
-
-         
-            SortedDictionary<string, string> newDict = Parse.parseString(str, num);
-            //add to main memory first
-            //  return newDict;
-            _DictionaryListMutex.WaitOne();
-            DicList.Add(newDict);
-            //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
-         //   counter++;
-            _DictionaryListMutex.ReleaseMutex();
-            _ReadFileSemaphore.Release();
-        }
 
 
 
@@ -257,11 +72,11 @@ namespace IR_Engine
                 {
                     int docnumber = Int32.Parse( term.Split(new char[] { '>', '|' })[1]) ;
              
-                    Indexer._DocumentMetadata.WaitOne();
+             //       Indexer._DocumentMetadata.WaitOne();
                     //  Console.WriteLine()
                     // char[] delimiterCharsLang = { '<', '>' };
-                    Indexer.DocumentMetadata.Add(docnumber , key.Value);
-                   Indexer._DocumentMetadata.ReleaseMutex();
+             //       Indexer.DocumentMetadata.Add(docnumber , key.Value);
+            //       Indexer._DocumentMetadata.ReleaseMutex();
                     continue;
 
                 }
@@ -296,12 +111,14 @@ namespace IR_Engine
             file2.Close();
         }
 
-        public static SortedDictionary<String, String> fileToDictionary(string path)
+        public static List<string> loadMoviesFile(string path)
         {
-            SortedDictionary<string, string> newDic = new SortedDictionary<string, string>();
-
+            List<string> newList = new List<string>();
+            int lineCount = File.ReadLines(@"C:\file.txt").Count();
             using (StreamReader sr = File.OpenText(path))
             {
+                
+                newList.Add(sr.ReadLine());
                 string s = String.Empty;
                 while ((s = sr.ReadLine()) != null)
                 {
@@ -309,23 +126,47 @@ namespace IR_Engine
                     if (s == "")
                         continue;
 
-                    string[] words = s.Split('^');
-                    string value = string.Empty;
+                    string[] words = s.Split(',');
+                    string value = s.Substring(words[0].Length+1);
                     string key = words[0];
-                    if (words.Length == 2)
-                        value = words[1];
-                    if (!newDic.ContainsKey(key))
-                        newDic.Add(key, value);
-                    else
-                    {
-                        newDic[key] += " " + value;
-                    }
+
+
+                    newList.Add(value);
+                   
 
                 }
             }
-            return newDic;
+            return newList;
         }
 
+
+        public static Dictionary<KeyValuePair<int, int>, string> loadRatingsFile(string path)
+        {
+            Dictionary<KeyValuePair<int, int>, string> newList = new Dictionary<KeyValuePair<int, int>, string>();
+
+            using (StreamReader sr = File.OpenText(path))
+            {
+                newList.Add(new KeyValuePair<int,int>(0,0) , sr.ReadLine() );
+                string s = String.Empty;
+                while ((s = sr.ReadLine()) != null)
+                {
+                    //remove blank lines
+                    if (s == "")
+                        continue;
+
+                    string[] words = s.Split(',');
+                    KeyValuePair<int, int> key = new KeyValuePair<int, int>(Int32.Parse(words[0]),Int32.Parse( words[1]) );
+                    string value = s.Substring(words[0].Length + words[1].Length + 2);
+                   // string key = words[0];
+
+
+                    newList.Add(key,value);
+
+
+                }
+            }
+            return newList;
+        }
         /// <summary>
         /// SHOULD USE TEMPLATE
         /// </summary>

@@ -47,7 +47,7 @@ namespace WpfApplication2
         {
             InitializeComponent();
             QueryInputTextBox.IsReadOnly = true;
-            vm = new ViewModel(new Indexer(), new Searcher());
+            vm = new ViewModel(new Indexer());
             DataContext = vm;
             vm.VM_Progress = 0;
             // DataContext = this;
@@ -97,19 +97,19 @@ namespace WpfApplication2
                 error += "Path for posting files is missing. Please choose a folder\n";
             }
 
-           /* if (!File.Exists(m_documentsPath + @"\stop_words.txt"))
+            if (!File.Exists(m_documentsPath + @"\movies.csv"))
             {
                 isValid = false;
-                error += "Stop words file is missing in the folder.\n";
+                error += "movies.csv missing in the folder.\n";
             }
-            */
+            
             if (!isValid)
                 System.Windows.Forms.MessageBox.Show(error);
 
             else
             {
                 Indexer.titleNumber = 0;
-                Indexer.amountOfUnique = 0;
+             //   Indexer.amountOfUnique = 0;
                 isDictionaryLoaded = true;
 
                 Thread t1 = new Thread(vm.startEngine);
@@ -130,7 +130,7 @@ namespace WpfApplication2
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
-                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.titleNumber + "\n" + "Number of unique terms: " + Indexer.amountOfUnique, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.titleNumber + "\n" + "Number of unique terms: " + 0, "Output", MessageBoxButton.OK, MessageBoxImage.None);
 
                 });
                 t2.Start();
@@ -221,15 +221,7 @@ namespace WpfApplication2
                     isDictionaryLoaded = false;
                 }
             }
-            if (!string.IsNullOrEmpty(Searcher.pathForResult) && File.Exists(Searcher.pathForResult + "\\result.txt"))
-            {
-                File.Delete(Searcher.pathForResult + "\\result.txt");
-            }
-            if (!string.IsNullOrEmpty(QueryInputTextBox.Text))
-            {
-                QueryInputTextBox.Text = string.Empty;
-                QueryInputTextBox.IsReadOnly = false;
-            }
+        
         }
 
         private void showDictionaryPressed(object sender, RoutedEventArgs e)
@@ -337,6 +329,7 @@ namespace WpfApplication2
 
         private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            /*
             if (e.Key == Key.Down)
             {
 
@@ -433,7 +426,7 @@ namespace WpfApplication2
                 {
                     System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd/Or choose a path for result file.");
                 }
-            }
+            }*/
         }
 
 
@@ -460,7 +453,7 @@ namespace WpfApplication2
 
         private void queriesFile_Browser(object sender, RoutedEventArgs e)
         {
-            
+            /*
             if (isDictionaryLoaded == true && !string.IsNullOrEmpty(Searcher.pathForResult))
             {
                 System.Windows.Forms.OpenFileDialog queriesFile = new System.Windows.Forms.OpenFileDialog();
@@ -486,14 +479,14 @@ namespace WpfApplication2
                 System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd/Or choose a path for result file.");
             }
 
-
+    */
         }
 
         private void pathForResult_Browser(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog Dialog = new FolderBrowserDialog();
             Dialog.ShowDialog();
-            Searcher.pathForResult = Dialog.SelectedPath;
+       //     Searcher.pathForResult = Dialog.SelectedPath;
             resultFolder_Text.Text = Dialog.SelectedPath;
         }
 
