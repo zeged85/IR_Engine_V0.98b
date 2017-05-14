@@ -144,10 +144,13 @@ namespace IR_Engine
         public void createMovieDictionary()
         {
             myMoviesDictionary = new Dictionary<string, int>();
+            Progress = 0;
+            int size = myMovies.Count;
+            int counter = 0;
 
-            
            foreach (string s in myMovies)
             {
+                Progress = (counter / size) * 100;
                 //http://stackoverflow.com/questions/2245442/c-sharp-split-a-string-by-another-string
                 string title = s.Split(new string[] { ")," }, StringSplitOptions.None)[0] + ')';
                 if (!myMoviesDictionary.ContainsKey(title))
@@ -169,14 +172,14 @@ namespace IR_Engine
                 FileCountInFolder = Directory.GetFiles(documentsPath).Length;
                 //   stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
 
-                
 
+                Progress = 0;
                 DocResult = "loading Movies.csv";
                 myMovies = loadMoviesFile(documentsPath + @"\movies.csv");
                 titleNumber = myMovies.Count - 1;
 
 
-
+                Progress = 0;
                 DocResult = "loading ratings.csv";
                 myRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
 
@@ -205,7 +208,17 @@ namespace IR_Engine
             return termList;
         }
 
+        public void selectMovie(string title)
+        {
 
+            int movieID = myMoviesDictionary[title];
+
+
+       //     string value = myRatings
+            
+
+
+        }
 
 
         public void mmm()

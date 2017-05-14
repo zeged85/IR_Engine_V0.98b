@@ -14,6 +14,10 @@ namespace IR_Engine
         //    void move(double speed, int angle);
         List<string> autocomplete(string query);
 
+
+        void selectMovie(string title);
+      
+
         void createMovieDictionary();
      //   void loadMonths();
         void initiate(); 
@@ -25,6 +29,9 @@ namespace IR_Engine
    //     void UniqueWordsQuery();
       //  void PrintfreqInAllCorpusList(); 
         void mmm();
+
+
+        
 
         void ProgressTest();
   //      void dumpDocumentMetadata();

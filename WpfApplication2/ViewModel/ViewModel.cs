@@ -60,6 +60,8 @@ namespace IR_Engine
             
         }
 
+        
+
         private int progress;
         public int VM_Progress
         {
@@ -90,6 +92,7 @@ namespace IR_Engine
             set
             {
                 docResult = value;
+                model_indexer.DocResult = docResult;
                 this.NotifyPropertyChanged("VM_DocResult");
             }
         }
@@ -161,6 +164,10 @@ namespace IR_Engine
         }
         */
       
+            public void VM_selectMovie(string title)
+        {
+            model_indexer.selectMovie(title);
+        }
 
         public void startEngine()
         {
@@ -179,6 +186,7 @@ namespace IR_Engine
             //       model_indexer.freeMemory(); // create last folder
 
             model_indexer.Progress = 0;
+
             VM_DocResult = "creating dictionary...";
             model_indexer.createMovieDictionary();
 

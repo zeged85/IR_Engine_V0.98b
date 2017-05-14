@@ -130,7 +130,7 @@ namespace WpfApplication2
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
-                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed documents: " + Indexer.titleNumber + "\n" + "Number of unique terms: " + 0, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed movies: " + Indexer.titleNumber + "\n" + "Number of unique movie-id ratings: " + Indexer.myRatings.Count, "Output", MessageBoxButton.OK, MessageBoxImage.None);
 
                 });
                 t2.Start();
@@ -324,14 +324,26 @@ namespace WpfApplication2
             }
         }
 
+       // http://www.wpf-tutorial.com/dialogs/creating-a-custom-input-dialog/
+        private void btnEnterName_Click(object sender, RoutedEventArgs e)
+        {
+        //    InputDialogSample inputDialog = new InputDialogSample("Please enter your name:", "John Doe");
+       //     if (inputDialog.ShowDialog() == true)
+        //        lblName.Text = inputDialog.Answer;
+        }
 
-       
-
-            private void Suggest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Suggest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //if (e.ClickCount == 2)
             listBoxMyMovies.Items.Add(e.OriginalSource);
-            System.Windows.Forms.MessageBox.Show("Double Click");
+            string title = string.Copy( listBoxSuggestion.SelectedItem.ToString());
+
+
+            vm.VM_DocResult = title;
+            vm.VM_selectMovie(title);
+
+
+          //  System.Windows.Forms.MessageBox.Show("Double Click");
         }
 
         private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
