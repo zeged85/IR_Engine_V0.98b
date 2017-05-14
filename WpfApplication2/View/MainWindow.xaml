@@ -122,8 +122,8 @@
 
 
         <CheckBox x:Name="Stemming" 
-                  Content="Stemming" 
-                  Margin="365,164,385,402" 
+                  Content="Limit Low Memory" 
+                  Margin="612,119,86,447" 
                   RenderTransformOrigin="2.112,-6.75"  
                   Checked="isStemming" 
                   FontWeight="Bold">
@@ -234,10 +234,12 @@
 
         <ListBox 
             Margin="552,215,21,127"
-            Name="listBoxMyMovies"
+            x:Name="listBoxMyMovies"
+             Grid.Row="1" BorderThickness="0" 
+   
             />
 
-
+       
 
         <ListBox Name="listBoxSuggestion" 
                     Visibility="Hidden" 

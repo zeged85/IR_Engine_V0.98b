@@ -343,19 +343,25 @@ namespace WpfApplication2
 
             //http://www.wpf-tutorial.com/dialogs/the-messagebox/
             MessageBoxResult result = System.Windows. MessageBox.Show("Did you like the movie \"" + title + "\"?", "My App", System.Windows.MessageBoxButton.YesNoCancel);
+
+            int rating = 0;
             switch (result)
             {
                 case MessageBoxResult.Yes:
                     System.Windows.MessageBox.Show("Hello to you too!", "My App");
+                    rating = 5;
                     break;
                 case MessageBoxResult.No:
                     System.Windows.MessageBox.Show("Oh well, too bad!", "My App");
+                    rating = 0;
                     break;
                 case MessageBoxResult.Cancel:
                     System.Windows.MessageBox.Show("Nevermind then...", "My App");
+                    rating = -1;
                     break;
             }
-            vm.VM_selectMovie(title);
+
+            vm.VM_selectMovie(title,rating);
 
 
           //  System.Windows.Forms.MessageBox.Show("Double Click");
@@ -379,89 +385,14 @@ namespace WpfApplication2
             }
             if (e.Key == Key.Enter)
             {
+                
+               // listBoxMyMovies.Items.Add(listBoxSuggestion.Items.CurrentPosition);
 
-                listBoxMyMovies.Items.Add(listBoxSuggestion.Items.CurrentPosition);
-
-                if (isDictionaryLoaded == true /* && !string.IsNullOrEmpty(Searcher.pathForResult)*/)
+                if (isDictionaryLoaded == true )
                 {
 
-                   // Searcher.singleQueryInput = QueryInputTextBox.Text;
-                    //string[] split = Searcher.singleQueryInput.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
-                    string query = QueryInputTextBox.Text;
+                  
 
-
-                    query = query.Trim();
-                    
-                    if (query.Last().ToString()=="."){
-                        query = query.Substring(0,query.Length-2);
-                    }
-                    if (query.Contains(','))
-                    {
-                        query = query.Remove(',');
-                    }
-  
-                    if (query.Contains(' ')){
-                    query = query.Replace(' ', '+');
-                    }
-
-                    
-                    string[] allTerms = query.Split('+');
-                    List<string> syn = new List<string>();
-                    /*
-                    foreach (string term in allTerms)
-                    {
-                        string[] SYNOms = vm.getSYNONYMS(term);
-                        foreach (string str in SYNOms)
-                        {
-                            if (!syn.Contains(str))
-                            {
-                                syn.Add(str);
-                            }
-                        }
-                    }
-
-                    */
-                    string[] SYNONYMS  = syn.ToArray();
-
-
-
-                    if (Indexer.ifStemming == true)
-                    {
-                        Stemmer stem = new Stemmer();
-
-                        for (int i = 0; i < SYNONYMS.Length - 1; i++)
-                        {
-                            SYNONYMS[i] = stem.stemTerm(SYNONYMS[i]);
-                        }
-
-                            if (query.Contains('+'))
-                            {
-                                string[] str = query.Split('+');
-
-                                query = stem.stemTerm(str[0]);
-
-                                foreach (string s in str)
-                                {
-                                    if (s == str[0])
-                                        continue;
-                                    query += "+" + stem.stemTerm(s);
-                                }
-                            }
-                            else
-                            {
-                                query = stem.stemTerm(query);
-                            }
-
-                    }
-
-
-                  //  vm.runSingleQuery(query, SYNONYMS);
-                    System.Windows.Forms.MessageBox.Show("Query Activated");
-
-                    QueryInputTextBox.IsReadOnly = true;
-                    System.Threading.Thread.Sleep(5000);
-                    QueryInputTextBox.IsReadOnly = false;
-                   // Searcher.languageChosen.Clear();
 
                 }
                 else

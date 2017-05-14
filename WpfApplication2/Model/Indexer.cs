@@ -19,7 +19,24 @@ namespace IR_Engine
 
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
-           
+
+
+        }
+
+        
+
+        private int _listBoxMyMovies;
+        public int listBoxMyMovies
+        {
+            get { return _listBoxMyMovies; }
+            set
+            {
+                if (_listBoxMyMovies != value)
+                {
+                    _listBoxMyMovies = value;
+                    NotifyPropertyChanged("listBoxMyMovies");
+                }
+            }
         }
 
         private int progress;
@@ -208,12 +225,12 @@ namespace IR_Engine
             return termList;
         }
 
-        public void selectMovie(string title)
+        public void selectMovie(string title, int rating)
         {
 
             int movieID = myMoviesDictionary[title];
 
-
+            DocResult = "I suggest you the movie: \"The Matrix\"";
        //     string value = myRatings
             
 
@@ -297,19 +314,31 @@ namespace IR_Engine
         public  Dictionary<KeyValuePair<int, int>, string> loadRatingsFile(string path)
         {
             Dictionary<KeyValuePair<int, int>, string> newList = new Dictionary<KeyValuePair<int, int>, string>();
-            int lineCount = File.ReadLines(path).Count();
-            int count = 0;
+            DocResult = "calculating ranking.csv";
+            decimal lineCount = File.ReadLines(path).Count();
+            decimal count = 0;
+           
             int limiter = 100000;
-            lineCount = limiter;
+            if (ifStemming)
+                    lineCount = limiter;
+            DocResult = "loading ranking.csv";
             using (StreamReader sr = File.OpenText(path))
             {
                 newList.Add(new KeyValuePair<int, int>(0, 0), sr.ReadLine());
                 string s = String.Empty;
+                decimal temp = 0;
+                decimal temp2 = 0;
                 while ((s = sr.ReadLine()) != null && limiter != 0)
                 {
                     count++;
-                    limiter--;
-                    Progress = count*100 / lineCount;
+                    if (ifStemming)
+                    {
+                        limiter--;
+                    }
+                   temp = (decimal)(count / lineCount);
+                    temp2 = temp * 100;
+                    if (temp2 != Progress)
+                        Progress = Convert.ToInt32( temp2);
                     //remove blank lines
                     if (s == "")
                         continue;

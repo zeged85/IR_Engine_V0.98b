@@ -9,13 +9,14 @@ namespace IR_Engine
 {
     interface IModel : INotifyPropertyChanged
     {
+        int listBoxMyMovies { set; get; }
         int Progress { set; get; }
         string DocResult { set; get; }
         //    void move(double speed, int angle);
         List<string> autocomplete(string query);
 
 
-        void selectMovie(string title);
+        void selectMovie(string title, int rating);
       
 
         void createMovieDictionary();

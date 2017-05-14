@@ -51,6 +51,13 @@ namespace IR_Engine
             }
 
 
+            if (PropName == "VM_listBoxMyMovies")
+            {
+                _listBoxMyMovies = model_indexer.listBoxMyMovies;
+                //PropName = "VM_DocResult";
+            }
+            
+
 
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
@@ -61,6 +68,18 @@ namespace IR_Engine
         }
 
         
+
+           private int _listBoxMyMovies;
+        public int VM_listBoxMyMovies
+        {
+            get { return _listBoxMyMovies; }
+            set
+            {
+                _listBoxMyMovies = value;
+                this.NotifyPropertyChanged("VM_listBoxMyMovies");
+            }
+        }
+
 
         private int progress;
         public int VM_Progress
@@ -164,9 +183,9 @@ namespace IR_Engine
         }
         */
       
-            public void VM_selectMovie(string title)
+            public void VM_selectMovie(string title, int rating)
         {
-            model_indexer.selectMovie(title);
+            model_indexer.selectMovie(title, rating);
         }
 
         public void startEngine()
