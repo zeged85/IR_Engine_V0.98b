@@ -324,23 +324,34 @@ namespace WpfApplication2
             }
         }
 
+
        
 
+            private void Suggest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //if (e.ClickCount == 2)
+               System.Windows.Forms.MessageBox.Show("Double Click");
+        }
 
         private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            /*
+            
             if (e.Key == Key.Down)
             {
-
+               
                 //  listBoxSuggestion.Focus();
                 //   listBoxSuggestion.SelectedIndex = 0;
                 ListBoxItem item = (ListBoxItem)listBoxSuggestion.ItemContainerGenerator.ContainerFromIndex(0);
                 FocusManager.SetFocusedElement(this, item);
+                
+                // http://stackoverflow.com/questions/2591259/cancel-key-press-event
+                e.Handled = true;
+
+
             }
             if (e.Key == Key.Enter)
             {
-                if (isDictionaryLoaded == true && !string.IsNullOrEmpty(Searcher.pathForResult))
+                if (isDictionaryLoaded == true /* && !string.IsNullOrEmpty(Searcher.pathForResult)*/)
                 {
 
                    // Searcher.singleQueryInput = QueryInputTextBox.Text;
@@ -365,7 +376,7 @@ namespace WpfApplication2
                     
                     string[] allTerms = query.Split('+');
                     List<string> syn = new List<string>();
-
+                    /*
                     foreach (string term in allTerms)
                     {
                         string[] SYNOms = vm.getSYNONYMS(term);
@@ -378,7 +389,7 @@ namespace WpfApplication2
                         }
                     }
 
-                    
+                    */
                     string[] SYNONYMS  = syn.ToArray();
 
 
@@ -413,20 +424,21 @@ namespace WpfApplication2
                     }
 
 
-                    vm.runSingleQuery(query, SYNONYMS);
+                  //  vm.runSingleQuery(query, SYNONYMS);
                     System.Windows.Forms.MessageBox.Show("Query Activated");
 
                     QueryInputTextBox.IsReadOnly = true;
                     System.Threading.Thread.Sleep(5000);
                     QueryInputTextBox.IsReadOnly = false;
-                    Searcher.languageChosen.Clear();
+                   // Searcher.languageChosen.Clear();
 
                 }
                 else
                 {
                     System.Windows.Forms.MessageBox.Show("Please load dictionary,\nAnd/Or choose a path for result file.");
                 }
-            }*/
+            }
+         
         }
 
 

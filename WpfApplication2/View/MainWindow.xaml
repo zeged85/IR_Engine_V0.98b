@@ -37,7 +37,7 @@
 			BorderBrush="White"/>
 
 
-        <TextBlock Text="Documents Folder:" 
+        <TextBlock Text="Movielens Folder:" 
 			VerticalAlignment="Top" 
 			Margin="70,107,592,0" 
 			FontSize="14" 
@@ -228,14 +228,20 @@
                  Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                  Margin="520,309,73,253.5"  
                  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown" 
-                 TextChanged="txtAutoSuggestName_TextChanged" />
+                 TextChanged="txtAutoSuggestName_TextChanged" 
+              
+                 />
 
         <ListBox Name="listBoxSuggestion" 
                  Visibility="Hidden"  
+                 
                  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
                  KeyDown="listBoxSuggestion_KeyDown" 
-                 Margin="520,0,73,127" VerticalAlignment="Bottom" Height="122" />
+                 Margin="520,0,73,127" VerticalAlignment="Bottom" Height="122" 
+                 ListBoxItem.MouseDoubleClick="Suggest_MouseLeftButtonDown"
+                 
+                 />
 
         <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,485,23,39"     />
 
