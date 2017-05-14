@@ -330,7 +330,8 @@ namespace WpfApplication2
             private void Suggest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //if (e.ClickCount == 2)
-               System.Windows.Forms.MessageBox.Show("Double Click");
+            listBoxMyMovies.Items.Add(e.OriginalSource);
+            System.Windows.Forms.MessageBox.Show("Double Click");
         }
 
         private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -351,6 +352,9 @@ namespace WpfApplication2
             }
             if (e.Key == Key.Enter)
             {
+
+                listBoxMyMovies.Items.Add(listBoxSuggestion.Items.CurrentPosition);
+
                 if (isDictionaryLoaded == true /* && !string.IsNullOrEmpty(Searcher.pathForResult)*/)
                 {
 

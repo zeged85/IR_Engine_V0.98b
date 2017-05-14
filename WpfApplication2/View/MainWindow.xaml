@@ -39,7 +39,7 @@
 
         <TextBlock Text="Movielens Folder:" 
 			VerticalAlignment="Top" 
-			Margin="70,107,592,0" 
+			Margin="37,92,675,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
@@ -47,7 +47,7 @@
 
         <TextBlock Text="Choose Queries File:" 
 			VerticalAlignment="Top" 
-			Margin="70,201,567,0" 
+			Margin="18,170,619,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
@@ -56,14 +56,14 @@
 
         <TextBox x:Name="documentsFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="221,107,437,462.5" 
+			Margin="179,92,479,481" 
 			RenderTransformOrigin="0.458,0.611" 
 			Height="26"/>
 
 
         <Button  Content="OK" 
-			Width="45" 
-			Margin="419,108,0,463.5" 
+			Width="44" 
+			Margin="368,92,0,481" 
 			Click="documentsFolderSelected" 
 			Background="White" 
 			FontWeight="Bold" 
@@ -83,7 +83,7 @@
 			Content="Browse"
 			VerticalAlignment="Center"
 			Click="documents_Browser" 
-			Margin="476,107,238,462.5" 
+			Margin="421,92,293,481" 
 			FontWeight="Bold" 
 			Background="White" 
 			Height="26" 
@@ -91,7 +91,7 @@
 
         <TextBlock Text="Posting Files Folder:" 
 			VerticalAlignment="Center" 
-			Margin="70,160,589,407.5" 
+			Margin="33,133,626,438" 
 			RenderTransformOrigin="-1.059,0.479" 
 			FontWeight="Bold" 
 			FontSize="14" 
@@ -100,12 +100,12 @@
 
         <TextBox x:Name="postingFilesFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="220,160,437,409.5" 
+			Margin="179,132,479,439" 
 			RenderTransformOrigin="0.458,0.611" 
-			Height="26"/>
+			Height="28"/>
 
         <Button Content="OK" 
-			Margin="419,160,376,410.5" 
+			Margin="366,132,429,439" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="postingFilesFolderSelected"/>
@@ -115,15 +115,15 @@
 			VerticalAlignment="Center"
 			Click="postingFiles_Browser" 
 			RenderTransformOrigin="3.459,0.5" 
-			Margin="476,162,238,409.5" 
+			Margin="421,132,293,439" 
 			FontWeight="Bold" 
-			Height="24" 
+			Height="28" 
 			Background="White"/>
 
 
         <CheckBox x:Name="Stemming" 
                   Content="Stemming" 
-                  Margin="612,142,138,423.5" 
+                  Margin="365,164,385,402" 
                   RenderTransformOrigin="2.112,-6.75"  
                   Checked="isStemming" 
                   FontWeight="Bold">
@@ -151,7 +151,7 @@
 			Height="38"/>
 
         <Button Content="Show Dictionary" 
-			Margin="37,306,699,253.5" 
+			Margin="154,299,582,260" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="showDictionaryPressed"/>
@@ -160,14 +160,14 @@
 			Content="Load Dictionary"
 			Click="loadDictionaryPressed"
 			VerticalAlignment="center"
-			Margin="143,306,592,253.5" 
+			Margin="22,299,713,264" 
 			RenderTransformOrigin="0.5,0.5" 
 			FontWeight="Bold" 
 			Background="White" 
 			Height="36"/>
 
         <Button Content="Choose Language" 
-			Margin="250,306,465,251.5" 
+			Margin="74,351,641,206" 
 			FontWeight="Bold" 
 			Background="White" 
 			Click="languageChoose_Pressed"/>
@@ -226,19 +226,26 @@
 
         <TextBox Name="QueryInputTextBox" 
                  Text="{Binding VM_QueryInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                 Margin="520,309,73,253.5"  
+                 Margin="300,287,293,275"  
                  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown" 
                  TextChanged="txtAutoSuggestName_TextChanged" 
               
                  />
 
+        <ListBox 
+            Margin="552,215,21,127"
+            Name="listBoxMyMovies"
+            />
+
+
+
         <ListBox Name="listBoxSuggestion" 
-                 Visibility="Hidden"  
-                 
+                    Visibility="Hidden" 
+               
                  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
                  KeyDown="listBoxSuggestion_KeyDown" 
-                 Margin="520,0,73,127" VerticalAlignment="Bottom" Height="122" 
+                 Margin="300,0,293,149" VerticalAlignment="Bottom" Height="122" 
                  ListBoxItem.MouseDoubleClick="Suggest_MouseLeftButtonDown"
                  
                  />
@@ -247,7 +254,7 @@
 
         <TextBlock Text="Search Movie" 
 			VerticalAlignment="Top" 
-			Margin="564,278,73,0" 
+			Margin="344,256,293,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
@@ -258,7 +265,7 @@
 			VerticalAlignment="Center"
 			Click="queriesFile_Browser" 
 			RenderTransformOrigin="3.459,0.5" 
-			Margin="221,201,478,368.5" 
+			Margin="169,172,530,401" 
 			FontWeight="Bold" 
 			Height="26" 
 			Background="White"/>
@@ -268,20 +275,20 @@
 			VerticalAlignment="Center"
 			Click="pathForResult_Browser" 
 			RenderTransformOrigin="3.459,0.5" 
-			Margin="392,243,339,324.5" 
+			Margin="329,208,402,363" 
 			FontWeight="Bold" 
 			Height="28" 
 			Background="White"/>
 
         <TextBox x:Name="resultFolder_Text"  
 			VerticalAlignment="Center" 
-			Margin="220,245,450,326.5" 
+			Margin="157,210,513,365" 
 			RenderTransformOrigin="0.458,0.611" 
 			Height="24"/>
 
         <TextBlock Text="Choose Result Path:" 
 			VerticalAlignment="Top" 
-			Margin="70,243,567,0" 
+			Margin="7,206,630,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
