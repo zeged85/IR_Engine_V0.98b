@@ -340,6 +340,21 @@ namespace WpfApplication2
 
 
             vm.VM_DocResult = title;
+
+            //http://www.wpf-tutorial.com/dialogs/the-messagebox/
+            MessageBoxResult result = System.Windows. MessageBox.Show("Did you like the movie \"" + title + "\"?", "My App", System.Windows.MessageBoxButton.YesNoCancel);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    System.Windows.MessageBox.Show("Hello to you too!", "My App");
+                    break;
+                case MessageBoxResult.No:
+                    System.Windows.MessageBox.Show("Oh well, too bad!", "My App");
+                    break;
+                case MessageBoxResult.Cancel:
+                    System.Windows.MessageBox.Show("Nevermind then...", "My App");
+                    break;
+            }
             vm.VM_selectMovie(title);
 
 
