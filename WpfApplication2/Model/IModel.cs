@@ -11,9 +11,10 @@ namespace IR_Engine
     {
         int Progress { set; get; }
         string DocResult { set; get; }
-    //    void move(double speed, int angle);
+        //    void move(double speed, int angle);
+        List<string> autocomplete(string query);
 
-
+        void createMovieDictionary();
      //   void loadMonths();
         void initiate(); 
    //     void freeMemory(); // create las

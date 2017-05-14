@@ -67,6 +67,8 @@ namespace IR_Engine
         public static volatile Dictionary<KeyValuePair<int,int>, string> myRatings;
 
 
+        public static Dictionary<string, int> myMoviesDictionary;
+
         public static string documentsPath; //input folder
         public string postingFilesPath; //output folder
 
@@ -122,7 +124,7 @@ namespace IR_Engine
             while (progress != 100)
             {
                 Progress++;
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
 
         }
@@ -139,6 +141,21 @@ namespace IR_Engine
         }
 
      
+        public void createMovieDictionary()
+        {
+            myMoviesDictionary = new Dictionary<string, int>();
+
+            
+           foreach (string s in myMovies)
+            {
+                string title = s.Split(new string[] { ")," }, StringSplitOptions.None)[0] + ')';
+                if (!myMoviesDictionary.ContainsKey(title))
+                {
+                    myMoviesDictionary.Add(title, 0);
+                }
+            }
+
+        }
 
         public void initiate()
         {
@@ -151,10 +168,14 @@ namespace IR_Engine
                 FileCountInFolder = Directory.GetFiles(documentsPath).Length;
                 //   stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
 
-
+                
 
                 DocResult = "loading Movies.csv";
                 myMovies = loadMoviesFile(documentsPath + @"\movies.csv");
+                titleNumber = myMovies.Count - 1;
+
+
+
                 DocResult = "loading ratings.csv";
                 myRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
 
@@ -174,10 +195,18 @@ namespace IR_Engine
         }
 
     
-       
+      public  List<string> autocomplete(string query)
+        {
+
+            var keys = Indexer.myMoviesDictionary.Keys.Where(x => x.Contains(query));
+            List<string> termList = keys.ToList();
+
+            return termList;
+        }
 
 
-     
+
+
         public void mmm()
         {
 
@@ -256,13 +285,16 @@ namespace IR_Engine
             Dictionary<KeyValuePair<int, int>, string> newList = new Dictionary<KeyValuePair<int, int>, string>();
             int lineCount = File.ReadLines(path).Count();
             int count = 0;
+            int limiter = 100000;
+            lineCount = limiter;
             using (StreamReader sr = File.OpenText(path))
             {
                 newList.Add(new KeyValuePair<int, int>(0, 0), sr.ReadLine());
                 string s = String.Empty;
-                while ((s = sr.ReadLine()) != null)
+                while ((s = sr.ReadLine()) != null && limiter != 0)
                 {
                     count++;
+                    limiter--;
                     Progress = count*100 / lineCount;
                     //remove blank lines
                     if (s == "")

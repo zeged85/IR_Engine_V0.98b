@@ -174,12 +174,15 @@ namespace IR_Engine
 
             model_indexer.initiate(); //
 
-           // model_indexer.Progress = 55;
+            // model_indexer.Progress = 55;
 
-     //       model_indexer.freeMemory(); // create last folder
+            //       model_indexer.freeMemory(); // create last folder
 
-            model_indexer.Progress = 50;
-            VM_DocResult = "merging...";
+            model_indexer.Progress = 0;
+            VM_DocResult = "creating dictionary...";
+            model_indexer.createMovieDictionary();
+
+            
     //        model_indexer.MergeAllToSingleUnSorted();
 
             model_indexer.Progress = 65;
@@ -257,15 +260,15 @@ namespace IR_Engine
 
         public List<string> autoComplete(string querySingleTerm)
         {
-            if (queryInput.Substring(querySingleTerm.Length-1)==" ")
-            {
+           // if (queryInput.Substring(querySingleTerm.Length-1)==" ")
+          //  {
                 string res = querySingleTerm.TrimEnd();
 
-                string plus = res.Replace(' ', '+');
-             //   return search.autoComplete(plus);
-            }
+               // string plus = res.Replace(' ', '+');
+              // return search.autoComplete(plus);
+         //   }
 
-            return new List<string>();
+            return model_indexer.autocomplete(querySingleTerm);
         }
 
         public string getOutputFolder()
