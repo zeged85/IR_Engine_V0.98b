@@ -229,24 +229,24 @@
                  Margin="520,309,73,253.5"  
                  PreviewKeyDown="txtAutoSuggestName_PreviewKeyDown" 
                  TextChanged="txtAutoSuggestName_TextChanged" />
-        
+
         <ListBox Name="listBoxSuggestion" 
                  Visibility="Hidden"  
                  PreviewKeyDown="listBoxSuggestion_PreviewKeyDown" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
                  KeyDown="listBoxSuggestion_KeyDown" 
-                 Margin="476,262,23,225" VerticalAlignment="Bottom" />
+                 Margin="520,0,73,127" VerticalAlignment="Bottom" Height="122" />
 
-        <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,371,23,39.5"     />
+        <TextBox  ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Text="{Binding VM_DocResult}" Margin="476,485,23,39"     />
 
-        <TextBlock Text="Enter Single Query:" 
+        <TextBlock Text="Search Movie" 
 			VerticalAlignment="Top" 
 			Margin="564,278,73,0" 
 			FontSize="14" 
 			FontWeight="Bold" 
 			Height="26" 
 			RenderTransformOrigin="0.36,-0.139"/>
-        
+
         <Button x:Name="queriesFile_Button"
 			Content="Browse File"
 			VerticalAlignment="Center"

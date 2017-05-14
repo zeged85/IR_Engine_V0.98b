@@ -148,6 +148,7 @@ namespace IR_Engine
             
            foreach (string s in myMovies)
             {
+                //http://stackoverflow.com/questions/2245442/c-sharp-split-a-string-by-another-string
                 string title = s.Split(new string[] { ")," }, StringSplitOptions.None)[0] + ')';
                 if (!myMoviesDictionary.ContainsKey(title))
                 {
@@ -198,7 +199,7 @@ namespace IR_Engine
       public  List<string> autocomplete(string query)
         {
 
-            var keys = Indexer.myMoviesDictionary.Keys.Where(x => x.Contains(query));
+            var keys = Indexer.myMoviesDictionary.Keys.Where(x => x.ToLower().Contains(query));
             List<string> termList = keys.ToList();
 
             return termList;
