@@ -25,7 +25,7 @@
 
 
         <Button x:Name="start_Button"
-			Content="Start"
+			Content="Load"
 			VerticalAlignment="Center"
 			Click="Start"
 			Margin="74,418,621,125.5" 
@@ -46,6 +46,7 @@
 			RenderTransformOrigin="0.36,-0.139"/>
 
         <TextBlock Text="Choose Queries File:" 
+                        Visibility="Hidden" 
 			VerticalAlignment="Top" 
 			Margin="18,170,619,0" 
 			FontSize="14" 
@@ -89,7 +90,7 @@
 			Height="26" 
 			RenderTransformOrigin="0.621,2.231"/>
 
-        <TextBlock Text="Posting Files Folder:" 
+        <TextBlock Text="Empty new Folder:" 
 			VerticalAlignment="Center" 
 			Margin="33,133,626,438" 
 			RenderTransformOrigin="-1.059,0.479" 
@@ -151,6 +152,7 @@
 			Height="38"/>
 
         <Button Content="Show Dictionary" 
+                 Visibility="Hidden" 
 			Margin="154,299,582,260" 
 			FontWeight="Bold" 
 			Background="White" 
@@ -158,6 +160,7 @@
 
         <Button
 			Content="Load Dictionary"
+             Visibility="Hidden" 
 			Click="loadDictionaryPressed"
 			VerticalAlignment="center"
 			Margin="22,299,713,264" 
@@ -166,7 +169,8 @@
 			Background="White" 
 			Height="36"/>
 
-        <Button Content="Choose Language" 
+        <Button Content="Choose Genre" 
+                IsEnabled="False"
 			Margin="74,351,641,206" 
 			FontWeight="Bold" 
 			Background="White" 
@@ -263,6 +267,7 @@
 			RenderTransformOrigin="0.36,-0.139"/>
 
         <Button x:Name="queriesFile_Button"
+                     Visibility="Hidden" 
 			Content="Browse File"
 			VerticalAlignment="Center"
 			Click="queriesFile_Browser" 
@@ -273,6 +278,7 @@
 			Background="White"/>
 
         <Button x:Name="savrResult_Button"
+                     Visibility="Hidden" 
 			Content="Browse Path"
 			VerticalAlignment="Center"
 			Click="pathForResult_Browser" 
@@ -282,13 +288,15 @@
 			Height="28" 
 			Background="White"/>
 
-        <TextBox x:Name="resultFolder_Text"  
+        <TextBox x:Name="resultFolder_Text" 
+                      Visibility="Hidden" 
 			VerticalAlignment="Center" 
 			Margin="157,210,513,365" 
 			RenderTransformOrigin="0.458,0.611" 
 			Height="24"/>
 
         <TextBlock Text="Choose Result Path:" 
+                        Visibility="Hidden" 
 			VerticalAlignment="Top" 
 			Margin="7,206,630,0" 
 			FontSize="14" 
