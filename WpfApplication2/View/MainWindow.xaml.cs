@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Threading;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 
 namespace WpfApplication2
@@ -27,6 +28,8 @@ namespace WpfApplication2
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private ObservableCollection<string> myMovies = new ObservableCollection<string>();
+     
         //essential fields
         ViewModel vm;
 
@@ -46,6 +49,7 @@ namespace WpfApplication2
         public MainWindow()
         {
             InitializeComponent();
+            listBoxMyMovies.ItemsSource = myMovies;
             QueryInputTextBox.IsReadOnly = true;
             vm = new ViewModel(new Indexer());
             DataContext = vm;
@@ -332,12 +336,14 @@ namespace WpfApplication2
         //        lblName.Text = inputDialog.Answer;
         }
 
+        
+
         private void Suggest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //if (e.ClickCount == 2)
-            listBoxMyMovies.Items.Add(e.OriginalSource);
+          
             string title = string.Copy( listBoxSuggestion.SelectedItem.ToString());
-
+            myMovies.Add(title);
 
             vm.VM_DocResult = title;
 
