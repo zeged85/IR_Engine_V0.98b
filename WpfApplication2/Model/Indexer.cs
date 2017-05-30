@@ -77,7 +77,7 @@ namespace IR_Engine
 
         //Movies Dictionary
         //movieId,title,genres
-        public static volatile List<string> Dic_IdxMovieTitle;
+        public static volatile Dictionary<int,string> Dic_IdxMovieTitle;
 
         Dictionary<int, double> YmeanDictionary = new Dictionary<int, double>();
 
@@ -167,15 +167,17 @@ namespace IR_Engine
             int size = Dic_IdxMovieTitle.Count;
             int counter = 0;
 
-           foreach (string s in Dic_IdxMovieTitle)
+           foreach (KeyValuePair<int,string> pair in Dic_IdxMovieTitle)
             {
+                string s = pair.Value;
+                int idx = pair.Key;
                 Progress = (counter / size) * 100;
                
                 //http://stackoverflow.com/questions/2245442/c-sharp-split-a-string-by-another-string
                 string title = s.Split(new string[] { ")," }, StringSplitOptions.None)[0] + ')';
                 if (!Dic_movieTitleIdx.ContainsKey(title))
                 {
-                    Dic_movieTitleIdx.Add(title, counter++);
+                    Dic_movieTitleIdx.Add(title, idx);
                 }
                
             }
@@ -366,9 +368,9 @@ namespace IR_Engine
 
                 Dictionary<int, double> similaruserList = Dic_UsersRatings[maxGuid];
                // similaruserList.Add(0, 0);
-                DocResult = "UserID similar =" + maxGuid;
+                DocResult = "UserID similar =" + maxGuid + Environment.NewLine;
                 Dictionary<int, double> Dic_RecommendedMovies = new Dictionary<int, double>();
-                DocResult = Environment.NewLine;
+              
                 foreach (KeyValuePair<int,double> pair in similaruserList)
                 {
                     // double myRank = pair.Value;
@@ -443,15 +445,15 @@ namespace IR_Engine
         }
 
 
-        public  List<string> loadMoviesFile(string path)
+        public  Dictionary<int, string> loadMoviesFile(string path)
         {
-            List<string> newList = new List<string>();
+            Dictionary<int, string> newList = new Dictionary<int, string>();
             int lineCount = File.ReadLines(path).Count();
             int count = 0;
             using (StreamReader sr = File.OpenText(path))
             {
-        
-                newList.Add(sr.ReadLine());
+
+                sr.ReadLine();
                 string s = String.Empty;
                 while ((s = sr.ReadLine()) != null)
                 {
@@ -464,10 +466,10 @@ namespace IR_Engine
 
                     string[] words = s.Split(',');
                     string value = s.Substring(words[0].Length + 1);
-                    string key = words[0];
+                    int key =  Int32.Parse ( words[0]);
 
 
-                    newList.Add(value);
+                    newList.Add(key,value);
 
 
                 }

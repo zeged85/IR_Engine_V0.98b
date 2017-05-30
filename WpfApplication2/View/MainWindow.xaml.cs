@@ -341,41 +341,46 @@ namespace WpfApplication2
         //        lblName.Text = inputDialog.Answer;
         }
 
-        
+
 
         private void Suggest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //if (e.ClickCount == 2)
-          
-            string title = string.Copy( listBoxSuggestion.SelectedItem.ToString());
-            myMovies.Add(title);
 
-            vm.VM_DocResult = title;
-
-            //http://www.wpf-tutorial.com/dialogs/the-messagebox/
-            MessageBoxResult result = System.Windows. MessageBox.Show("Did you like the movie \"" + title + "\"?", "My App", System.Windows.MessageBoxButton.YesNoCancel);
-
-            double rating = 0;
-            switch (result)
+            if (listBoxSuggestion.SelectedItem != null)
             {
-                case MessageBoxResult.Yes:
-                    System.Windows.MessageBox.Show("Hello to you too!", "My App");
-                    rating = 5;
-                    break;
-                case MessageBoxResult.No:
-                    System.Windows.MessageBox.Show("Oh well, too bad!", "My App");
-                    rating = 0.5;
-                    break;
-                case MessageBoxResult.Cancel:
-                    System.Windows.MessageBox.Show("Nevermind then...", "My App");
-                    rating = -1;
-                    break;
+                string title = string.Copy(listBoxSuggestion.SelectedItem.ToString());
+                if (!myMovies.Contains(title))
+                {
+                    myMovies.Add(title);
+
+                    vm.VM_DocResult = title;
+
+                    //http://www.wpf-tutorial.com/dialogs/the-messagebox/
+                    MessageBoxResult result = System.Windows.MessageBox.Show("Did you like the movie \"" + title + "\"?", "My App", System.Windows.MessageBoxButton.YesNoCancel);
+
+                    double rating = 0;
+                    switch (result)
+                    {
+                        case MessageBoxResult.Yes:
+                            System.Windows.MessageBox.Show("Hello to you too!", "My App");
+                            rating = 5;
+                            break;
+                        case MessageBoxResult.No:
+                            System.Windows.MessageBox.Show("Oh well, too bad!", "My App");
+                            rating = 0.5;
+                            break;
+                        case MessageBoxResult.Cancel:
+                            System.Windows.MessageBox.Show("Nevermind then...", "My App");
+                            rating = -1;
+                            break;
+                    }
+
+                    vm.VM_selectMovie(title, rating);
+
+                }
+                //  System.Windows.Forms.MessageBox.Show("Double Click");
             }
-
-            vm.VM_selectMovie(title,rating);
-
-
-          //  System.Windows.Forms.MessageBox.Show("Double Click");
         }
 
         private void txtAutoSuggestName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
