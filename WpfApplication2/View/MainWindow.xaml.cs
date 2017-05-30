@@ -180,7 +180,7 @@ namespace WpfApplication2
         {
             if (Stemming.IsChecked == true)
             {
-                Indexer.ifStemming = true;
+                Indexer.limitMemory = true;
                 vm.setOutputFolder(m_postingFilesPath + "\\" + "Stemming" + "\\");
 
             }
@@ -188,7 +188,7 @@ namespace WpfApplication2
             {
                 vm.setOutputFolder(  m_postingFilesPath + "\\" + "UnStemming" + "\\");
 
-                Indexer.ifStemming = false;
+                Indexer.limitMemory = false;
             }
         }
 

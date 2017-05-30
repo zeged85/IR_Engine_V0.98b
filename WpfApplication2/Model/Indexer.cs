@@ -91,27 +91,14 @@ namespace IR_Engine
         public static string documentsPath; //input folder
         public string postingFilesPath; //output folder
 
-   //     public static Mutex _TitleNumberMutex;
+   
         public static volatile int titleNumber /*= 0*/;
 
         public static volatile int postingFolderCounter = 0;
-   //     private static bool stopMemoryHandler = false;
+  
+        public static bool limitMemory;
 
-        //public static string postingFilesPath = @"c:\IR_Engine\";
-     //   public static List<string> PostingFileTermList = new List<string>();
-        
-    //    public static int amountOfUnique/* = 0*/;
-    //    public static int wordNum = 0;
-        public static bool ifStemming;
-
-   //     public static SortedDictionary<string, string> stopWords;
-
-   //     public static List<string> uniqueTerms = new List<string>();
-
-     //   public static SortedDictionary<string, int> freqInAllCorpusList = new SortedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
-     //  public static SortedDictionary<string, int> Months = new SortedDictionary<string, int>();
-        //  public static List<string> UniqueList = new List<string>();
+   
 
         int FileCountInFolder;
       
@@ -120,21 +107,8 @@ namespace IR_Engine
         public static int NumOfWordsInCorpus = 0;
 
         public Indexer()
-        {//added comparer
-         ///for case
-         ///al-sharq^#4#4(Doc#:45-1)(Doc#:4-1)(Doc#:93-1)(Doc#:52-1)
-            // al - sharq + al - awsat ^#2#2(Doc#:45-1)(Doc#:93-1)
-            ///altai ^#2#2(Doc#:46-1)(Doc#:94-1)
-            ///altanbulag ^#2#2(Doc#:18-1)(Doc#:66-1)
-            ///altanbulag + customhous ^#2#2(Doc#:18-1)(Doc#:66-1)
-            ///alter ^#6#6(Doc#:23-1)(Doc#:36-1)(Doc#:46-1)(Doc#:71-1)(Doc#:84-1)(Doc#:94-1)
-            ///altern ^#16#12(Doc#:23-1)(Doc#:26-1)(Doc#:29-1)(Doc#:35-3)(Doc#:27-1)(Doc#:42-1)(Doc#:71-1)(Doc#:74-1)(Doc#:75-1)(Doc#:77-1)(Doc#:83-3)(Doc#:90-1)
-            ///al - thawrah ^#6#6(Doc#:7-1)(Doc#:34-1)(Doc#:48-1)(Doc#:55-1)(Doc#:82-1)(Doc#:96-1)
-            ///al - thaw...
-            ///http://stackoverflow.com/questions/19370734/sortedlist-sorteddictionary-weird-behavior
-            ///https://www.dotnetperls.com/dictionary-stringcomparer
-            ///
-          //  myMovies = new SortedDictionary<string, string>();
+        {
+
         }
 
      public void ProgressTest()
@@ -152,11 +126,7 @@ namespace IR_Engine
         {
 
             Dic_IdxMovieTitle.Clear();
-           // Months.Clear();
-   
-            //stopWords.Clear();
-          
-         //   threads.Clear();
+       
         }
 
      
@@ -408,13 +378,7 @@ namespace IR_Engine
         public void mmm()
         {
 
-            //http://stackoverflow.com/questions/10391481/number-of-occurrences-of-a-character-in-a-string
-
-            //1 go over every letter in DB Folder
-            //2 add term and ...
-            // Value??
-            /// count number of occurrences in document
-            /// get document number
+        
             System.Console.WriteLine("Job Done.");
 
 
@@ -486,7 +450,7 @@ namespace IR_Engine
             decimal count = 0;
            
             int limiter = 100000;
-            if (ifStemming)
+            if (limitMemory)
                     lineCount = limiter;
             DocResult = "loading ranking.csv";
             using (StreamReader sr = File.OpenText(path))
@@ -499,7 +463,7 @@ namespace IR_Engine
                 while ((s = sr.ReadLine()) != null && limiter != 0)
                 {
                     count++;
-                    if (ifStemming)
+                    if (limitMemory)
                     {
                         limiter--;
                     }
