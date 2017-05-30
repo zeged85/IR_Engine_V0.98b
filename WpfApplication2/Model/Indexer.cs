@@ -368,6 +368,7 @@ namespace IR_Engine
                // similaruserList.Add(0, 0);
                 DocResult = "UserID similar =" + maxGuid;
                 Dictionary<int, double> Dic_RecommendedMovies = new Dictionary<int, double>();
+                DocResult = Environment.NewLine;
                 foreach (KeyValuePair<int,double> pair in similaruserList)
                 {
                     // double myRank = pair.Value;
@@ -386,7 +387,7 @@ namespace IR_Engine
                     {
 
                         Dic_RecommendedMovies.Add(movieIDX, userRank);
-                        DocResult += ", " + movieTitle + " :" + userRank;
+                        DocResult += movieTitle + " :" + userRank + Environment.NewLine;
 
                     }
                 }
