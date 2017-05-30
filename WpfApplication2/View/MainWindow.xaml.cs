@@ -195,7 +195,7 @@ namespace WpfApplication2
 
         private void Reset(object sender, RoutedEventArgs e)
         {
-
+            /*
             if (string.IsNullOrEmpty(m_postingFilesPath))
             {
                 System.Windows.MessageBox.Show("Please choose a path for posting files to erase.");
@@ -225,7 +225,12 @@ namespace WpfApplication2
                     isDictionaryLoaded = false;
                 }
             }
-        
+        */
+        if (isDictionaryLoaded)
+            {
+                vm.reset();
+                myMovies.Clear();
+            }
         }
 
         private void showDictionaryPressed(object sender, RoutedEventArgs e)

@@ -182,6 +182,11 @@ namespace IR_Engine
             model.createDictionary();
         }
         */
+
+        public void reset()
+        {
+            model_indexer.reset();
+        }
       
             public void VM_selectMovie(string title, double rating)
         {

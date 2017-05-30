@@ -17,6 +17,8 @@ namespace IR_Engine
 
 
         void selectMovie(string title, double rating);
+        void reset();
+
       
 
         void createMovieDictionary();

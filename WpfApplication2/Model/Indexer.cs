@@ -379,6 +379,11 @@ namespace IR_Engine
             return null;
         }
 
+        public void reset()
+        {
+            myRankings.Clear();
+        }
+
         public void mmm()
         {
 
