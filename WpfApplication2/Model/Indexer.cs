@@ -77,16 +77,16 @@ namespace IR_Engine
 
         //Movies Dictionary
         //movieId,title,genres
-        public static volatile List<string> myMovies;
+        public static volatile List<string> Dic_IdxMovieTitle;
 
         Dictionary<int, double> YmeanDictionary = new Dictionary<int, double>();
 
         //Ratings Dictionary
         //userId,movieId,rating,timestamp
-        public static volatile Dictionary<int, Dictionary<int, double>> DBRatings;
+        public static volatile Dictionary<int, Dictionary<int, double>> Dic_UsersRatings;
 
 
-        public static Dictionary<string, int> myMoviesDictionary;
+        public static Dictionary<string, int> Dic_movieTitleIdx;
 
         public static string documentsPath; //input folder
         public string postingFilesPath; //output folder
@@ -114,7 +114,7 @@ namespace IR_Engine
         //  public static List<string> UniqueList = new List<string>();
 
         int FileCountInFolder;
-        int FileCounter;
+      
 
 
         public static int NumOfWordsInCorpus = 0;
@@ -151,7 +151,7 @@ namespace IR_Engine
         public static void clearAllData()
         {
 
-            myMovies.Clear();
+            Dic_IdxMovieTitle.Clear();
            // Months.Clear();
    
             //stopWords.Clear();
@@ -162,20 +162,20 @@ namespace IR_Engine
      
         public void createMovieDictionary()
         {
-            myMoviesDictionary = new Dictionary<string, int>();
+            Dic_movieTitleIdx = new Dictionary<string, int>();
             Progress = 0;
-            int size = myMovies.Count;
+            int size = Dic_IdxMovieTitle.Count;
             int counter = 0;
 
-           foreach (string s in myMovies)
+           foreach (string s in Dic_IdxMovieTitle)
             {
                 Progress = (counter / size) * 100;
                
                 //http://stackoverflow.com/questions/2245442/c-sharp-split-a-string-by-another-string
                 string title = s.Split(new string[] { ")," }, StringSplitOptions.None)[0] + ')';
-                if (!myMoviesDictionary.ContainsKey(title))
+                if (!Dic_movieTitleIdx.ContainsKey(title))
                 {
-                    myMoviesDictionary.Add(title, counter++);
+                    Dic_movieTitleIdx.Add(title, counter++);
                 }
                
             }
@@ -196,13 +196,13 @@ namespace IR_Engine
 
                 Progress = 0;
                 DocResult = "loading Movies.csv";
-                myMovies = loadMoviesFile(documentsPath + @"\movies.csv");
-                titleNumber = myMovies.Count - 1;
+                Dic_IdxMovieTitle = loadMoviesFile(documentsPath + @"\movies.csv");
+                titleNumber = Dic_IdxMovieTitle.Count - 1;
 
 
                 Progress = 0;
                 DocResult = "loading ratings.csv";
-                DBRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
+                Dic_UsersRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
 
             }
             else
@@ -210,7 +210,7 @@ namespace IR_Engine
                 Console.WriteLine("{0} is not a valid file or directory.", documentsPath);
             }
 
-            FileCounter = 0;
+          //  FileCounter = 0;
 
 
 
@@ -223,23 +223,23 @@ namespace IR_Engine
       public  List<string> autocomplete(string query)
         {
 
-            var keys = Indexer.myMoviesDictionary.Keys.Where(x => x.ToLower().Contains(query));
+            var keys = Indexer.Dic_movieTitleIdx.Keys.Where(x => x.ToLower().Contains(query));
             List<string> termList = keys.ToList();
 
             return termList;
         }
 
-        List<KeyValuePair<int, int>> myRankings = new List<KeyValuePair<int, int>>();
+        List<KeyValuePair<int, double>> myRankings = new List<KeyValuePair<int, double>>();
 
-        public void selectMovie(string title, int rating)
+        public void selectMovie(string title, double rating)
         {
 
-            int movieID = myMoviesDictionary[title];
-            myRankings.Add(new KeyValuePair<int, int>(movieID, rating));
+            int movieID = Dic_movieTitleIdx[title];
+            myRankings.Add(new KeyValuePair<int, double>(movieID, rating));
 
             List<int> result =  findKnearestNeighbours(myRankings);
 
-            DocResult = "I suggest you the movie: \"The Matrix\"";
+          //  DocResult = "I suggest you the movie: \"The Matrix\"";
        //     string value = myRatings
             
 
@@ -255,7 +255,7 @@ namespace IR_Engine
             double sumOfX = 0;
             int nX = 0;
 
-            foreach (KeyValuePair<int, int> movieRank in myRankings)
+            foreach (KeyValuePair<int, double> movieRank in myRankings)
             {
                 nX++;
                 sumOfX += movieRank.Value;
@@ -275,8 +275,9 @@ namespace IR_Engine
             int userID;
 
          
-            foreach (KeyValuePair<int, Dictionary<int, double>> pair in DBRatings)
+            foreach (KeyValuePair<int, Dictionary<int, double>> pair in Dic_UsersRatings)
             {
+                sumOfY = 0;
                 userID = pair.Key;
                 Dictionary<int, double> userRanking = pair.Value;
                 nY = pair.Value.Count;
@@ -294,7 +295,7 @@ namespace IR_Engine
         }
 
 
-        List<int> findKnearestNeighbours(List<KeyValuePair<int,int>> myRankings)
+        List<int> findKnearestNeighbours(List<KeyValuePair<int,double>> myRankings)
         {
 
             double Xmean = calcMeanX();
@@ -307,10 +308,10 @@ namespace IR_Engine
 
             Dictionary<int, double> rXY = new Dictionary<int, double>();
 
-
+            rXY.Add(0, 0);
                
 
-                foreach ( KeyValuePair< int , Dictionary<int,double>>  pair in DBRatings)
+                foreach ( KeyValuePair< int , Dictionary<int,double>>  pair in Dic_UsersRatings)
                 {
                 int UserID = pair.Key;
                 Dictionary<int, double> UserRatings = pair.Value;
@@ -322,10 +323,10 @@ namespace IR_Engine
                 double Ymean = YmeanDictionary[UserID];
 
 
-                foreach (KeyValuePair<int, int> movieRank in myRankings)
+                foreach (KeyValuePair<int, double> movieRank in myRankings)
                 {
                     int myMovieID = movieRank.Key;
-                    int myMovieRating = movieRank.Value;
+                    double myMovieRating = movieRank.Value;
 
 
                     if ( UserRatings.ContainsKey( myMovieID))
@@ -353,7 +354,27 @@ namespace IR_Engine
 
             var maxGuid = rXY.OrderByDescending(x => x.Value).FirstOrDefault().Key;
 
+            if (maxGuid != 0)
+            {
+
+                Dictionary<int, double> similaruserList = Dic_UsersRatings[maxGuid];
+
+                DocResult = "UserID similar =" + maxGuid;
+
+                foreach (KeyValuePair<int,double> pair in myRankings)
+                {
+                    if (similaruserList.ContainsKey(pair.Key))
+                    {
+                        double myRank = pair.Value;
+                        double userRank = similaruserList[pair.Key];
+                        string movieTitle = Dic_IdxMovieTitle[pair.Key];
+
+
+                    }
+                }
             
+                
+            }
 
             return null;
         }

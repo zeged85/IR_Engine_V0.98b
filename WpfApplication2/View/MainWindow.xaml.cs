@@ -134,7 +134,7 @@ namespace WpfApplication2
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
-                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed movies: " + Indexer.titleNumber + "\n" + "Number of unique movie-id ratings: " + Indexer.DBRatings.Count, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed movies: " + Indexer.titleNumber + "\n" + "Number of unique movie-id ratings: " + Indexer.Dic_UsersRatings.Count, "Output", MessageBoxButton.OK, MessageBoxImage.None);
 
                 });
                 t2.Start();
@@ -350,7 +350,7 @@ namespace WpfApplication2
             //http://www.wpf-tutorial.com/dialogs/the-messagebox/
             MessageBoxResult result = System.Windows. MessageBox.Show("Did you like the movie \"" + title + "\"?", "My App", System.Windows.MessageBoxButton.YesNoCancel);
 
-            int rating = 0;
+            double rating = 0;
             switch (result)
             {
                 case MessageBoxResult.Yes:
@@ -359,7 +359,7 @@ namespace WpfApplication2
                     break;
                 case MessageBoxResult.No:
                     System.Windows.MessageBox.Show("Oh well, too bad!", "My App");
-                    rating = 0;
+                    rating = 0.5;
                     break;
                 case MessageBoxResult.Cancel:
                     System.Windows.MessageBox.Show("Nevermind then...", "My App");

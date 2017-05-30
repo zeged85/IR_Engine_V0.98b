@@ -16,7 +16,7 @@ namespace IR_Engine
         List<string> autocomplete(string query);
 
 
-        void selectMovie(string title, int rating);
+        void selectMovie(string title, double rating);
       
 
         void createMovieDictionary();

@@ -183,7 +183,7 @@ namespace IR_Engine
         }
         */
       
-            public void VM_selectMovie(string title, int rating)
+            public void VM_selectMovie(string title, double rating)
         {
             model_indexer.selectMovie(title, rating);
         }
