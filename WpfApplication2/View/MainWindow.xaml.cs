@@ -134,7 +134,7 @@ namespace WpfApplication2
                     //   Indexer.stopWords.Clear();
                     DateTime m_end = DateTime.Now;
                     string m_time = (m_end - m_start).ToString();
-                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed movies: " + Indexer.titleNumber + "\n" + "Number of unique movie-id ratings: " + Indexer.myRatings.Count, "Output", MessageBoxButton.OK, MessageBoxImage.None);
+                    MessageBoxResult mbr = System.Windows.MessageBox.Show("Running Time : " + m_time + "\n" + "Number of indexed movies: " + Indexer.titleNumber + "\n" + "Number of unique movie-id ratings: " + Indexer.DBRatings.Count, "Output", MessageBoxButton.OK, MessageBoxImage.None);
 
                 });
                 t2.Start();

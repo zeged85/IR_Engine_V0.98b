@@ -79,9 +79,11 @@ namespace IR_Engine
         //movieId,title,genres
         public static volatile List<string> myMovies;
 
+        Dictionary<int, double> YmeanDictionary = new Dictionary<int, double>();
+
         //Ratings Dictionary
         //userId,movieId,rating,timestamp
-        public static volatile Dictionary<KeyValuePair<int,int>, string> myRatings;
+        public static volatile Dictionary<int, Dictionary<int, double>> DBRatings;
 
 
         public static Dictionary<string, int> myMoviesDictionary;
@@ -168,12 +170,14 @@ namespace IR_Engine
            foreach (string s in myMovies)
             {
                 Progress = (counter / size) * 100;
+               
                 //http://stackoverflow.com/questions/2245442/c-sharp-split-a-string-by-another-string
                 string title = s.Split(new string[] { ")," }, StringSplitOptions.None)[0] + ')';
                 if (!myMoviesDictionary.ContainsKey(title))
                 {
-                    myMoviesDictionary.Add(title, 0);
+                    myMoviesDictionary.Add(title, counter++);
                 }
+               
             }
 
         }
@@ -198,7 +202,7 @@ namespace IR_Engine
 
                 Progress = 0;
                 DocResult = "loading ratings.csv";
-                myRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
+                DBRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
 
             }
             else
@@ -225,10 +229,15 @@ namespace IR_Engine
             return termList;
         }
 
+        List<KeyValuePair<int, int>> myRankings = new List<KeyValuePair<int, int>>();
+
         public void selectMovie(string title, int rating)
         {
 
             int movieID = myMoviesDictionary[title];
+            myRankings.Add(new KeyValuePair<int, int>(movieID, rating));
+
+            List<int> result =  findKnearestNeighbours(myRankings);
 
             DocResult = "I suggest you the movie: \"The Matrix\"";
        //     string value = myRatings
@@ -237,6 +246,117 @@ namespace IR_Engine
 
         }
 
+
+        double calcMeanX()
+        {
+            //calculate mean X
+
+            double Xmean = 0;
+            double sumOfX = 0;
+            int nX = 0;
+
+            foreach (KeyValuePair<int, int> movieRank in myRankings)
+            {
+                nX++;
+                sumOfX += movieRank.Value;
+            }
+
+            Xmean = sumOfX / nX;
+            return Xmean;
+        }
+
+        void calcMeanY()
+        {
+            //calculate mean Y
+
+           
+            double sumOfY = 0;
+            int nY = 0;
+            int userID;
+
+         
+            foreach (KeyValuePair<int, Dictionary<int, double>> pair in DBRatings)
+            {
+                userID = pair.Key;
+                Dictionary<int, double> userRanking = pair.Value;
+                nY = pair.Value.Count;
+                foreach (double d in userRanking.Values)
+                    sumOfY += d;
+
+                YmeanDictionary[userID] = sumOfY / nY;
+
+
+
+            }
+
+
+
+        }
+
+
+        List<int> findKnearestNeighbours(List<KeyValuePair<int,int>> myRankings)
+        {
+
+            double Xmean = calcMeanX();
+
+            calcMeanY();
+         
+
+
+            //calculate r(X,Y)
+
+            Dictionary<int, double> rXY = new Dictionary<int, double>();
+
+
+               
+
+                foreach ( KeyValuePair< int , Dictionary<int,double>>  pair in DBRatings)
+                {
+                int UserID = pair.Key;
+                Dictionary<int, double> UserRatings = pair.Value;
+
+                double Sxy = 0;
+                double Sxx = 0;
+                double Syy = 0;
+
+                double Ymean = YmeanDictionary[UserID];
+
+
+                foreach (KeyValuePair<int, int> movieRank in myRankings)
+                {
+                    int myMovieID = movieRank.Key;
+                    int myMovieRating = movieRank.Value;
+
+
+                    if ( UserRatings.ContainsKey( myMovieID))
+                    {
+                    
+                        Sxy += (myMovieRating - Xmean) * (UserRatings[myMovieID] - YmeanDictionary[UserID]);
+                        Sxx += (myMovieRating - Xmean) * (myMovieRating - Xmean);
+                        Syy += (UserRatings[myMovieID] - YmeanDictionary[UserID]) * (UserRatings[myMovieID] - YmeanDictionary[UserID]);
+                    }
+
+
+                }
+                double top = Sxy;
+                double bot = Sxx * Syy;
+                bot = Math.Sqrt(bot);
+                double r = top / bot;
+                if (!double.IsNaN(r) && r != -1)
+                {
+
+                }
+                rXY.Add(UserID, r);
+
+
+            }
+
+            var maxGuid = rXY.OrderByDescending(x => x.Value).FirstOrDefault().Key;
+
+            
+
+            return null;
+        }
 
         public void mmm()
         {
@@ -311,9 +431,9 @@ namespace IR_Engine
         }
 
 
-        public  Dictionary<KeyValuePair<int, int>, string> loadRatingsFile(string path)
+        public Dictionary<int, Dictionary<int, double>> loadRatingsFile(string path)
         {
-            Dictionary<KeyValuePair<int, int>, string> newList = new Dictionary<KeyValuePair<int, int>, string>();
+            Dictionary<int, Dictionary<int,double>> newList = new Dictionary<int, Dictionary<int,double> >();
             DocResult = "calculating ranking.csv";
             decimal lineCount = File.ReadLines(path).Count();
             decimal count = 0;
@@ -324,7 +444,8 @@ namespace IR_Engine
             DocResult = "loading ranking.csv";
             using (StreamReader sr = File.OpenText(path))
             {
-                newList.Add(new KeyValuePair<int, int>(0, 0), sr.ReadLine());
+                // newList.Add(new KeyValuePair<int, int>(0, 0), sr.ReadLine());
+                sr.ReadLine();
                 string s = String.Empty;
                 decimal temp = 0;
                 decimal temp2 = 0;
@@ -344,12 +465,26 @@ namespace IR_Engine
                         continue;
 
                     string[] words = s.Split(',');
-                    KeyValuePair<int, int> key = new KeyValuePair<int, int>(Int32.Parse(words[0]), Int32.Parse(words[1]));
+                    int userID = Int32.Parse(words[0]);
+                    int movieID = Int32.Parse(words[1]);
+                   // KeyValuePair <int, int> key = new KeyValuePair<int, int>(userID, movieID);
                     string value = s.Substring(words[0].Length + words[1].Length + 2);
+                    string[] splt = value.Split(',');
+                    double rank = Double.Parse(splt[0]);
+                    int time = Int32.Parse(splt[1]);
+                    //  Tuple<double, int> tup = new Tuple<double, int>(rank, time);
                     // string key = words[0];
 
+                    Dictionary<int, double> movieRankDic = new Dictionary<int, double>();
 
-                    newList.Add(key, value);
+
+                    if (!newList.ContainsKey(userID))
+                    {
+                        newList.Add(userID, new Dictionary<int, double>());
+                    }
+                    newList[userID].Add(movieID, rank);
+
+                    // newList.Add(key, tup);
 
 
                 }
