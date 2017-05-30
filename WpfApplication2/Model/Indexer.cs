@@ -354,21 +354,39 @@ namespace IR_Engine
 
             var maxGuid = rXY.OrderByDescending(x => x.Value).FirstOrDefault().Key;
 
+            Dictionary<int, Double> Dic_myRatings = new Dictionary<int, double>();
+            foreach(KeyValuePair<int,Double> pair in myRankings)
+            {
+                Dic_myRatings.Add(pair.Key, pair.Value);
+            }
+
+
             if (maxGuid != 0)
             {
 
                 Dictionary<int, double> similaruserList = Dic_UsersRatings[maxGuid];
-
+               // similaruserList.Add(0, 0);
                 DocResult = "UserID similar =" + maxGuid;
-
-                foreach (KeyValuePair<int,double> pair in myRankings)
+                Dictionary<int, double> Dic_RecommendedMovies = new Dictionary<int, double>();
+                foreach (KeyValuePair<int,double> pair in similaruserList)
                 {
-                    if (similaruserList.ContainsKey(pair.Key))
-                    {
-                        double myRank = pair.Value;
-                        double userRank = similaruserList[pair.Key];
-                        string movieTitle = Dic_IdxMovieTitle[pair.Key];
+                    // double myRank = pair.Value;
+                    double userRank = pair.Value;
+                    int movieIDX = pair.Key;
+                    string movieTitle = Dic_IdxMovieTitle[movieIDX];
 
+                   
+                    if (Dic_myRatings.ContainsKey (movieIDX)) //movie we both seen
+                    {
+                    
+
+
+                    }
+                    else //Movie I didnt see. recommended or not...
+                    {
+
+                        Dic_RecommendedMovies.Add(movieIDX, userRank);
+                        DocResult += ", " + movieTitle + " :" + userRank;
 
                     }
                 }
