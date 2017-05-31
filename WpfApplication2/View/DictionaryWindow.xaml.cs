@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WpfApplication2
+namespace IR_Engine
 {
     /// <summary>
     /// Interaction logic for DictionaryWindow.xaml

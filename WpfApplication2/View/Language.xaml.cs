@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using IR_Engine;
 using WpfApplication2;
 
-namespace WpfApplication2
+namespace IR_Engine
 {
     /// <summary>
     /// Interaction logic for Language.xaml

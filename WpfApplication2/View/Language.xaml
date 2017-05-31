@@ -1,4 +1,4 @@
-﻿<Window x:Class="WpfApplication2.Language"
+﻿<Window x:Class="IR_Engine.Language"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Choose Language" Height="431" Width="291" Background="#FFE0E3F7">

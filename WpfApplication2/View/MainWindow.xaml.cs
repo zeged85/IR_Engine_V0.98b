@@ -21,7 +21,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 
 
-namespace WpfApplication2
+namespace IR_Engine
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -37,10 +37,7 @@ namespace WpfApplication2
         string m_documentsPath, m_postingFilesPath;
 
 
-       // string tmpAddress;
-        string tmpForNoStemming;
-
-       // string languageChosen;
+     
         bool isDictionaryLoaded = false;
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -56,11 +53,17 @@ namespace WpfApplication2
             vm.VM_Progress = 0;
             // DataContext = this;
 
+
+
             this.PropertyChanged +=
                      delegate(Object sender, PropertyChangedEventArgs e)
                      {
                          NotifyPropertyChanged("MW_" + e.PropertyName);
                      };
+
+
+        
+
         }
 
         public void NotifyPropertyChanged(string PropName)
@@ -70,6 +73,11 @@ namespace WpfApplication2
             // Console.WriteLine("test");
         }
 
+        private void Test(object sender, RoutedEventArgs e)
+        {
+            TestSuit.test2();
+        }
+
         private void Start(object sender, RoutedEventArgs e)
         {
             isValid = true;
@@ -77,6 +85,7 @@ namespace WpfApplication2
             DateTime m_start = DateTime.Now;
             isStemming(this, null);
             string error = "";
+            
       //      Indexer.documentsPath = m_documentsPath + "\\";
 
        //     tmpForNoStemming = m_postingFilesPath + "\\";
