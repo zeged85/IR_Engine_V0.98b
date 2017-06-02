@@ -11,16 +11,16 @@ namespace IR_Engine
     class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private IModel model_indexer;
+        private IModel m_indexer;
        // private ISearcher search;
         public ViewModel(IModel index)
         {
-            this.model_indexer = index;
+            this.m_indexer = index;
        //     this.search = searcher;
 
      
 
-            model_indexer.PropertyChanged +=
+            m_indexer.PropertyChanged +=
                           delegate(Object sender, PropertyChangedEventArgs e)
                           {
                               this.NotifyPropertyChanged("VM_" + e.PropertyName);
@@ -38,7 +38,7 @@ namespace IR_Engine
 
             if (PropName == "VM_DocResult")
             {
-                docResult = model_indexer.DocResult;
+                docResult = m_indexer.DocResult;
                 PropName = "VM_DocResult";
             }
 
@@ -46,14 +46,14 @@ namespace IR_Engine
 
             if (PropName == "VM_Progress")
             {
-                progress = model_indexer.Progress;
+                progress = m_indexer.Progress;
                 //PropName = "VM_DocResult";
             }
 
 
             if (PropName == "VM_listBoxMyMovies")
             {
-                _listBoxMyMovies = model_indexer.listBoxMyMovies;
+                _listBoxMyMovies = m_indexer.listBoxMyMovies;
                 //PropName = "VM_DocResult";
             }
             
@@ -111,7 +111,7 @@ namespace IR_Engine
             set
             {
                 docResult = value;
-                model_indexer.DocResult = docResult;
+                m_indexer.DocResult = docResult;
                 this.NotifyPropertyChanged("VM_DocResult");
             }
         }
@@ -185,12 +185,12 @@ namespace IR_Engine
 
         public void reset()
         {
-            model_indexer.reset();
+            m_indexer.reset();
         }
       
             public void VM_selectMovie(string title, double rating)
         {
-            model_indexer.selectMovie(title, rating);
+            m_indexer.selectMovie(title, rating);
         }
 
         public void startEngine()
@@ -201,49 +201,49 @@ namespace IR_Engine
 
             //  model_indexer.loadMonths();
 
-            model_indexer.ProgressTest();
+            m_indexer.ProgressTest();
 
-            model_indexer.initiate(); //
+            m_indexer.initiate(); //
 
             // model_indexer.Progress = 55;
 
             //       model_indexer.freeMemory(); // create last folder
 
-            model_indexer.Progress = 0;
+            m_indexer.Progress = 0;
 
             VM_DocResult = "creating dictionary...";
-            model_indexer.createMovieDictionary();
+            m_indexer.createMovieDictionary();
 
             
     //        model_indexer.MergeAllToSingleUnSorted();
 
-            model_indexer.Progress = 65;
+            m_indexer.Progress = 65;
             VM_DocResult = "sorting...";
     //        model_indexer.sort();
 
-            model_indexer.Progress = 70;
+            m_indexer.Progress = 70;
 
 //            model_indexer.deleteGarbage();
 
-            model_indexer.Progress = 75;
+            m_indexer.Progress = 75;
 
           //  model_indexer.dumpDocumentMetadata(); //create meta.txt
 
-            model_indexer.Progress = 80;
+            m_indexer.Progress = 80;
             VM_DocResult = "loading Posting Files...";
      //       model_indexer.loadPostingFiles();
 
-            model_indexer.Progress = 85;
+            m_indexer.Progress = 85;
 
          //   model_indexer.loadMetadata();
 
-            model_indexer.Progress = 90;
+            m_indexer.Progress = 90;
             VM_DocResult = "createing Dictionary...";
     //        model_indexer.createDictionary(); // and save to file dict.txt
 
             //
 
-            model_indexer.Progress = 95;
+            m_indexer.Progress = 95;
 
             //
 
@@ -254,13 +254,13 @@ namespace IR_Engine
 
   //          model_indexer.UniqueWordsQuery(); //CREATE METADATA
 
-            model_indexer.Progress = 97;
+            m_indexer.Progress = 97;
 
            // model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
 
-            model_indexer.Progress = 99;
+            m_indexer.Progress = 99;
 
-            model_indexer.mmm();
+            m_indexer.mmm();
 
 
             //
@@ -272,7 +272,7 @@ namespace IR_Engine
             loadDictionary(); //from dict.txt
 
 
-            model_indexer.Progress = 100;
+            m_indexer.Progress = 100;
             //
             VM_DocResult = "done.";
         }
@@ -300,18 +300,18 @@ namespace IR_Engine
               // return search.autoComplete(plus);
          //   }
 
-            return model_indexer.autocomplete(querySingleTerm);
+            return m_indexer.autocomplete(querySingleTerm);
         }
 
         public string getOutputFolder()
         {
-            return model_indexer.getOutputFolder();
+            return m_indexer.getOutputFolder();
         }
 
         public void setOutputFolder(string path)
         {
 
-            model_indexer.setOutputFolder(path);
+            m_indexer.setOutputFolder(path);
             //search.setOutputFolder(path);
         }
 

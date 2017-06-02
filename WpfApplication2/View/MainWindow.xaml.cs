@@ -75,7 +75,10 @@ namespace IR_Engine
 
         private void Test(object sender, RoutedEventArgs e)
         {
+            TestSuit.test1();
             TestSuit.test2();
+            TestSuit.test3();
+
         }
 
         private void Start(object sender, RoutedEventArgs e)
@@ -157,14 +160,14 @@ namespace IR_Engine
             Dialog.ShowDialog();
             m_documentsPath = Dialog.SelectedPath;
             documentsFolder_Text.Text = m_documentsPath;
-            Indexer.documentsPath = m_documentsPath;
+            Indexer.s_documentsPath = m_documentsPath;
         }
 
 
         private void documentsFolderSelected(object sender, RoutedEventArgs e)
         {
             m_documentsPath = documentsFolder_Text.Text;
-            Indexer.documentsPath = m_documentsPath;
+            Indexer.s_documentsPath = m_documentsPath;
             // System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
         }
 

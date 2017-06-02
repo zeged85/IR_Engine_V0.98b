@@ -88,7 +88,7 @@ namespace IR_Engine
 
         public static Dictionary<string, int> Dic_movieTitleIdx;
 
-        public static string documentsPath; //input folder
+        public static string s_documentsPath; //input folder
         public string postingFilesPath; //output folder
 
    
@@ -158,28 +158,28 @@ namespace IR_Engine
         {
     
 
-            if (Directory.Exists(documentsPath))
+            if (Directory.Exists(s_documentsPath))
             {
                 // This path is a directory
                 //http://stackoverflow.com/questions/16193126/counting-the-number-of-files-in-a-folder-in-c-sharp
-                FileCountInFolder = Directory.GetFiles(documentsPath).Length;
+                FileCountInFolder = Directory.GetFiles(s_documentsPath).Length;
                 //   stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
 
 
                 Progress = 0;
                 DocResult = "loading Movies.csv";
-                Dic_IdxMovieTitle = loadMoviesFile(documentsPath + @"\movies.csv");
+                Dic_IdxMovieTitle = loadMoviesFile(s_documentsPath + @"\movies.csv");
                 titleNumber = Dic_IdxMovieTitle.Count - 1;
 
 
                 Progress = 0;
                 DocResult = "loading ratings.csv";
-                Dic_UsersRatings = loadRatingsFile(documentsPath + @"\ratings.csv");
+                Dic_UsersRatings = loadRatingsFile(s_documentsPath + @"\ratings.csv");
 
             }
             else
             {
-                Console.WriteLine("{0} is not a valid file or directory.", documentsPath);
+                Console.WriteLine("{0} is not a valid file or directory.", s_documentsPath);
             }
 
           //  FileCounter = 0;
@@ -456,12 +456,13 @@ namespace IR_Engine
             using (StreamReader sr = File.OpenText(path))
             {
                 // newList.Add(new KeyValuePair<int, int>(0, 0), sr.ReadLine());
-                sr.ReadLine();
-                string s = String.Empty;
+               string header = sr.ReadLine();
+                string line = String.Empty;
                 decimal temp = 0;
                 decimal temp2 = 0;
-                while ((s = sr.ReadLine()) != null && limiter != 0)
+                while ((line = sr.ReadLine()) != null && limiter != 0)
                 {
+                    //update progress
                     count++;
                     if (limitMemory)
                     {
@@ -471,15 +472,17 @@ namespace IR_Engine
                     temp2 = temp * 100;
                     if (temp2 != Progress)
                         Progress = Convert.ToInt32( temp2);
+
+
                     //remove blank lines
-                    if (s == "")
+                    if (line == "")
                         continue;
 
-                    string[] words = s.Split(',');
+                    string[] words = line.Split(',');
                     int userID = Int32.Parse(words[0]);
                     int movieID = Int32.Parse(words[1]);
                    // KeyValuePair <int, int> key = new KeyValuePair<int, int>(userID, movieID);
-                    string value = s.Substring(words[0].Length + words[1].Length + 2);
+                    string value = line.Substring(words[0].Length + words[1].Length + 2);
                     string[] splt = value.Split(',');
                     double rank = Double.Parse(splt[0]);
                     int time = Int32.Parse(splt[1]);
