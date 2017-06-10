@@ -34,6 +34,9 @@ namespace IR_Engine
         ViewModel vm;
 
         bool isValid = true;
+        bool inputfolder = false;
+        bool outputfolder = false;
+
         string m_documentsPath, m_postingFilesPath;
 
 
@@ -46,6 +49,9 @@ namespace IR_Engine
         public MainWindow()
         {
             InitializeComponent();
+            TestButtonOnline.IsEnabled = false;
+            start_Button.IsEnabled = false;
+
             listBoxMyMovies.ItemsSource = myMovies;
             QueryInputTextBox.IsReadOnly = true;
             vm = new ViewModel(new Indexer());
@@ -75,23 +81,25 @@ namespace IR_Engine
 
         private void Test(object sender, RoutedEventArgs e)
         {
-            TestSuit.test1();
-            TestSuit.test2();
-            TestSuit.test3();
+            TestSuit.offlineTest();
+
+        }
+
+        private void TestOnline(object sender, RoutedEventArgs e)
+        {
+
+          
 
         }
 
         private void Start(object sender, RoutedEventArgs e)
         {
             isValid = true;
-            QueryInputTextBox.IsReadOnly = true;
+           // QueryInputTextBox.IsReadOnly = true;
             DateTime m_start = DateTime.Now;
-            isStemming(this, null);
+            isLimit(this, null);
             string error = "";
-            
-      //      Indexer.documentsPath = m_documentsPath + "\\";
-
-       //     tmpForNoStemming = m_postingFilesPath + "\\";
+  
 
            
 
@@ -140,6 +148,7 @@ namespace IR_Engine
                     this.Dispatcher.Invoke(() =>
                     {
                         QueryInputTextBox.IsReadOnly = false;
+                        TestButtonOnline.IsEnabled = true;
                     });
 
                     //   Indexer.clearAllData();
@@ -158,17 +167,21 @@ namespace IR_Engine
         {
             FolderBrowserDialog Dialog = new FolderBrowserDialog();
             Dialog.ShowDialog();
-            m_documentsPath = Dialog.SelectedPath;
-            documentsFolder_Text.Text = m_documentsPath;
-            Indexer.s_documentsPath = m_documentsPath;
+            documentsFolder_Text.Text = Dialog.SelectedPath;
+            documentsFolderSelected(this, null);
         }
 
 
         private void documentsFolderSelected(object sender, RoutedEventArgs e)
         {
             m_documentsPath = documentsFolder_Text.Text;
-            Indexer.s_documentsPath = m_documentsPath;
-            // System.Windows.MessageBox.Show("The selected path for dataset: " + m_documentsPath);
+            if (m_documentsPath != "")
+            {
+                
+                Indexer.s_documentsPath = m_documentsPath;
+                inputfolder = true;
+                checkArgs();
+            }
         }
 
 
@@ -176,29 +189,42 @@ namespace IR_Engine
         {
             FolderBrowserDialog Dialog = new FolderBrowserDialog();
             Dialog.ShowDialog();
-            m_postingFilesPath = Dialog.SelectedPath;
+            
+            postingFilesFolder_Text.Text = Dialog.SelectedPath;
+            postingFilesFolderSelected(this, null);
 
-            postingFilesFolder_Text.Text = m_postingFilesPath;
-            isStemming(this, null);
+
+        }
+        private void checkArgs()
+        {
+            if (inputfolder && outputfolder)
+                start_Button.IsEnabled = true;
         }
 
         private void postingFilesFolderSelected(object sender, RoutedEventArgs e)
         {
             m_postingFilesPath = postingFilesFolder_Text.Text;
-            isStemming(this, null);
+            // isLimit(this, null);
+            if (m_postingFilesPath != "")
+            {
+                outputfolder = true;
+                vm.setOutputFolder(m_postingFilesPath);
+                checkArgs();
+            }
+           
         }
 
-        private void isStemming(object sender, RoutedEventArgs e)
+        private void isLimit(object sender, RoutedEventArgs e)
         {
-            if (Stemming.IsChecked == true)
+            if (Limit.IsChecked == true)
             {
                 Indexer.limitMemory = true;
-                vm.setOutputFolder(m_postingFilesPath + "\\" + "Stemming" + "\\");
+              
 
             }
             else
             {
-                vm.setOutputFolder(  m_postingFilesPath + "\\" + "UnStemming" + "\\");
+                
 
                 Indexer.limitMemory = false;
             }
@@ -207,43 +233,14 @@ namespace IR_Engine
 
         private void Reset(object sender, RoutedEventArgs e)
         {
-            /*
-            if (string.IsNullOrEmpty(m_postingFilesPath))
-            {
-                System.Windows.MessageBox.Show("Please choose a path for posting files to erase.");
-            }
-
-            else
-            {
-                if (Directory.GetFiles(m_postingFilesPath).Length == 0 && Directory.GetDirectories(m_postingFilesPath).Length == 0)
-                {
-                    System.Windows.MessageBox.Show("Folder is empty.\n" + "There is no files to erase.");
-                }
-                else
-                {
-                    System.IO.DirectoryInfo di = new DirectoryInfo(m_postingFilesPath);
-
-                    foreach (FileInfo file in di.GetFiles())
-                    {
-                        file.Delete();
-                    }
-                    foreach (DirectoryInfo dir in di.GetDirectories())
-                    {
-                        dir.Delete(true);
-                    }
-
-                    System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
-                    QueryInputTextBox.IsReadOnly = true;
-                    isDictionaryLoaded = false;
-                }
-            }
-        */
+           
         if (isDictionaryLoaded)
             {
                 vm.reset();
                 myMovies.Clear();
             }
         }
+
 
         private void showDictionaryPressed(object sender, RoutedEventArgs e)
         {
@@ -261,7 +258,7 @@ namespace IR_Engine
 
             else
             {
-                isStemming(this, null);
+                isLimit(this, null);
 
                 if (File.Exists(vm.getOutputFolder() + "\\Dictionary.txt"))
                 {
@@ -283,7 +280,7 @@ namespace IR_Engine
                     System.Windows.Forms.MessageBox.Show("The requested Dictionary is not exist in the current folder.");
                 }
             }
-            isStemming(this, null);
+            isLimit(this, null);
         }
 
         private void languageChoose_Pressed(object sender, RoutedEventArgs e)
@@ -300,7 +297,7 @@ namespace IR_Engine
                 System.Windows.Forms.MessageBox.Show("Please Choose Posting Files path.");
             else
             {
-                isStemming(this, null);
+                isLimit(this, null);
                 string folder = vm.getOutputFolder();
 
                 if (File.Exists(folder + "Dictionary.txt"))

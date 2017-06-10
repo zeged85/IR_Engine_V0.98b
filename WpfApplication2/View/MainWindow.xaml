@@ -122,11 +122,11 @@
 			Background="White"/>
 
 
-        <CheckBox x:Name="Stemming" 
+        <CheckBox x:Name="Limit" 
                   Content="Limit Low Memory" 
                   Margin="612,119,86,447" 
                   RenderTransformOrigin="2.112,-6.75"  
-                  Checked="isStemming" 
+                  Checked="isLimit" 
                   FontWeight="Bold">
             <CheckBox.RenderTransform>
                 <TransformGroup>
@@ -309,6 +309,18 @@
         	VerticalAlignment="Center"
         	Click="Test"
         	Margin="184,363,540,206" 
+        	FontFamily="Segoe WP Black" 
+        	FontSize="25" 
+        	Height="30" 
+        	Background="#FFF3F2F1" 
+        	Foreground="Black" 
+        	BorderBrush="White"/>
+
+        <Button x:Name="TestButtonOnline"
+        	Content="Test Online"
+        	VerticalAlignment="Center"
+        	Click="TestOnline"
+        	Margin="184,315,540,254" 
         	FontFamily="Segoe WP Black" 
         	FontSize="25" 
         	Height="30" 

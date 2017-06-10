@@ -11,6 +11,28 @@ namespace IR_Engine
     {
         public static string s_testFolder;
 
+        public static bool onlineTest()
+        {
+
+
+
+            return false;
+        }
+
+
+        public static bool offlineTest()
+        {
+            bool ans;
+            ans = test1();
+            if (ans)
+                ans = test2();
+            if (ans)
+                ans = test3();
+
+            return ans;
+
+        }
+
         public static bool test1()
         {
             try

@@ -411,6 +411,25 @@ namespace IR_Engine
 
         public  Dictionary<int, string> loadMoviesFile(string path)
         {
+
+            try
+            {
+              
+                if (!File.Exists(path))
+                    throw new FileNotFoundException();
+
+                //The reste of the code
+            }
+            catch (FileNotFoundException)
+            {
+   //             MessageBox.Show("The file is not found in the specified location");
+            }
+            catch (Exception ex)
+            {
+    //            MessageBox.Show(ex.Message);
+            }
+
+
             Dictionary<int, string> newList = new Dictionary<int, string>();
             int lineCount = File.ReadLines(path).Count();
             int count = 0;
