@@ -90,7 +90,7 @@ namespace IR_Engine
         {
             double RMSE = 0;
            
-            for (int i = 0; i<10; i++)
+            for (int i = 0; i<100; i++)
             {
                 double temp = TestSuit.onlineTest(model);
                 if (!double.IsNaN(temp))
@@ -99,7 +99,7 @@ namespace IR_Engine
                 vm.VM_Progress = i;
             }
 
-            RMSE = RMSE / 10;
+            RMSE = RMSE / 100;
            // RMSE = Math.Sqrt(RMSE);
             System.Windows.MessageBox.Show("RMSE =" + RMSE);
 
