@@ -16,10 +16,13 @@ namespace IR_Engine
         List<string> autocomplete(string query);
 
 
-        void selectMovie(string title, double rating);
+        void selectMovie(int movieID, double rating);
         void reset();
+        int getUserAmount();
+        void ignoreUser(int userID);
+        Dictionary<int, double> getUserData(int userID);
+        int getMovieID(string str);
 
-      
 
         void createMovieDictionary();
      //   void loadMonths();

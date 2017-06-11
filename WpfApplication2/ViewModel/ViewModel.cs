@@ -190,7 +190,8 @@ namespace IR_Engine
       
             public void VM_selectMovie(string title, double rating)
         {
-            m_indexer.selectMovie(title, rating);
+           int movieID =  m_indexer.getMovieID(title);
+            m_indexer.selectMovie(movieID, rating);
         }
 
         public void startEngine()

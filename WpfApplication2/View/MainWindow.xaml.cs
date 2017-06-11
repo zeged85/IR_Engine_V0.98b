@@ -385,6 +385,7 @@ namespace IR_Engine
                             break;
                     }
 
+                    
                     vm.VM_selectMovie(title, rating);
 
                 }

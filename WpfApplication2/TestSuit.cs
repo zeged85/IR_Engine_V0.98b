@@ -13,9 +13,40 @@ namespace IR_Engine
 
         public static bool onlineTest()
         {
+            Indexer.s_documentsPath = s_testFolder;
+            Indexer m_tester = new Indexer();
+            m_tester.initiate();
+
+            int count = m_tester.getUserAmount();
+           
+            Random rnd = new Random();
+            int i = rnd.Next(1, count);
+
+            Dictionary<int,double> userRating =  m_tester.getUserData(i);
+
+            if (userRating != null)
+            {
+                m_tester.ignoreUser(i);
+
+                int userRatingCount = userRating.Count;
+
+                Dictionary<int, double> train = new Dictionary<int, double>();
+                Dictionary<int, double> test = new Dictionary<int, double>();
+
+
+                foreach (KeyValuePair<int,double> userPair in userRating)
+                {
+                    int movieID = userPair.Key;
+                    double movieRating = userPair.Value;
+
+
+                }
+
+                //m_tester.selectMovie(i);
 
 
 
+            }
             return false;
         }
 

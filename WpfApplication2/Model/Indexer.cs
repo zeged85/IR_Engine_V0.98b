@@ -98,7 +98,7 @@ namespace IR_Engine
   
         public static bool limitMemory;
 
-   
+        int userIgnore = 0;
 
         int FileCountInFolder;
       
@@ -203,13 +203,19 @@ namespace IR_Engine
 
         List<KeyValuePair<int, double>> myRankings = new List<KeyValuePair<int, double>>();
 
-        public void selectMovie(string title, double rating)
+        public int getMovieID(string str)
+        {
+            return Dic_movieTitleIdx[str];
+        }
+
+
+        public void selectMovie(int movieID, double rating)
         {
 
-            int movieID = Dic_movieTitleIdx[title];
+           
             myRankings.Add(new KeyValuePair<int, double>(movieID, rating));
 
-            List<int> result =  findKnearestNeighbours(myRankings);
+            Dictionary<int,double> result =  findKnearestNeighbours(myRankings);
 
           //  DocResult = "I suggest you the movie: \"The Matrix\"";
        //     string value = myRatings
@@ -267,13 +273,35 @@ namespace IR_Engine
         }
 
 
-        List<int> findKnearestNeighbours(List<KeyValuePair<int,double>> myRankings)
+        public Dictionary<int, double> getUserData(int userID)
         {
+           
+            if (Dic_UsersRatings.ContainsKey(userID))
+             return  Dic_UsersRatings[userID];
+
+                return null;
+        }
+
+        public int getUserAmount()
+        {
+
+            int count = Dic_UsersRatings.Count();
+            return count;
+        }
+
+        public void ignoreUser(int userID)
+        {
+            userIgnore = userID;
+        }
+
+        Dictionary<int,double> findKnearestNeighbours(List<KeyValuePair<int, double>> myRankings)
+        {
+            Dictionary<int, double> Dic_RecommendedMovies = new Dictionary<int, double>();
 
             double Xmean = calcMeanX();
 
             calcMeanY();
-         
+
 
 
             //calculate r(X,Y)
@@ -281,49 +309,51 @@ namespace IR_Engine
             Dictionary<int, double> rXY = new Dictionary<int, double>();
 
             rXY.Add(0, 0);
-               
 
-                foreach ( KeyValuePair< int , Dictionary<int,double>>  pair in Dic_UsersRatings)
-                {
+
+            foreach (KeyValuePair<int, Dictionary<int, double>> pair in Dic_UsersRatings)
+            {
                 int UserID = pair.Key;
-                Dictionary<int, double> UserRatings = pair.Value;
+                if (UserID != userIgnore) { 
+                    Dictionary<int, double> UserRatings = pair.Value;
 
-                double Sxy = 0;
-                double Sxx = 0;
-                double Syy = 0;
+                    double Sxy = 0;
+                    double Sxx = 0;
+                    double Syy = 0;
 
-                double Ymean = YmeanDictionary[UserID];
-
-
-                foreach (KeyValuePair<int, double> movieRank in myRankings)
-                {
-                    int myMovieID = movieRank.Key;
-                    double myMovieRating = movieRank.Value;
+                    double Ymean = YmeanDictionary[UserID];
 
 
-                    if ( UserRatings.ContainsKey( myMovieID))
+                    foreach (KeyValuePair<int, double> movieRank in myRankings)
                     {
-                    
-                        Sxy += (myMovieRating - Xmean) * (UserRatings[myMovieID] - YmeanDictionary[UserID]);
-                        Sxx += (myMovieRating - Xmean) * (myMovieRating - Xmean);
-                        Syy += (UserRatings[myMovieID] - YmeanDictionary[UserID]) * (UserRatings[myMovieID] - YmeanDictionary[UserID]);
+                        int myMovieID = movieRank.Key;
+                        double myMovieRating = movieRank.Value;
+
+
+                        if (UserRatings.ContainsKey(myMovieID))
+                        {
+
+                            Sxy += (myMovieRating - Xmean) * (UserRatings[myMovieID] - YmeanDictionary[UserID]);
+                            Sxx += (myMovieRating - Xmean) * (myMovieRating - Xmean);
+                            Syy += (UserRatings[myMovieID] - YmeanDictionary[UserID]) * (UserRatings[myMovieID] - YmeanDictionary[UserID]);
+                        }
+
+
                     }
+                    double top = Sxy;
+                    double bot = Sxx * Syy;
+                    bot = Math.Sqrt(bot);
+                    double r = top / bot;
+                    if (!double.IsNaN(r) && r != -1)
+                    {
 
-
-                }
-                double top = Sxy;
-                double bot = Sxx * Syy;
-                bot = Math.Sqrt(bot);
-                double r = top / bot;
-                if (!double.IsNaN(r) && r != -1)
-                {
-
-                }
-                rXY.Add(UserID, r);
+                    }
+                    rXY.Add(UserID, r);
 
 
             }
 
+        }
             var maxGuid = rXY.OrderByDescending(x => x.Value).FirstOrDefault().Key;
 
             Dictionary<int, Double> Dic_myRatings = new Dictionary<int, double>();
@@ -339,7 +369,7 @@ namespace IR_Engine
                 Dictionary<int, double> similaruserList = Dic_UsersRatings[maxGuid];
                // similaruserList.Add(0, 0);
                 DocResult = "UserID similar =" + maxGuid + Environment.NewLine;
-                Dictionary<int, double> Dic_RecommendedMovies = new Dictionary<int, double>();
+             
               
                 foreach (KeyValuePair<int,double> pair in similaruserList)
                 {
@@ -349,7 +379,7 @@ namespace IR_Engine
                     string movieTitle = Dic_IdxMovieTitle[movieIDX];
 
                    
-                    if (Dic_myRatings.ContainsKey (movieIDX)) //movie we both seen
+                    if (Dic_myRatings.ContainsKey (movieIDX)) //movie we've both seen
                     {
                     
 
@@ -363,11 +393,11 @@ namespace IR_Engine
 
                     }
                 }
-            
-                
+              //  var maxMovieRate = Dic_RecommendedMovies.OrderByDescending(x => x.Value).FirstOrDefault().Key;
+
             }
 
-            return null;
+            return Dic_RecommendedMovies;
         }
 
         public void reset()
