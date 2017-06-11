@@ -43,18 +43,19 @@ namespace IR_Engine
      
         bool isDictionaryLoaded = false;
         public event PropertyChangedEventHandler PropertyChanged;
-
+        Indexer model;
        // public List<string> namelist = new List<string>();
 
         public MainWindow()
         {
             InitializeComponent();
-            TestButtonOnline.IsEnabled = false;
+           // TestButtonOnline.IsEnabled = false;
             start_Button.IsEnabled = false;
 
             listBoxMyMovies.ItemsSource = myMovies;
             QueryInputTextBox.IsReadOnly = true;
-            vm = new ViewModel(new Indexer());
+            model = new Indexer();
+            vm = new ViewModel(model);
             DataContext = vm;
             vm.VM_Progress = 0;
             // DataContext = this;
@@ -87,8 +88,21 @@ namespace IR_Engine
 
         private void TestOnline(object sender, RoutedEventArgs e)
         {
+            double RMSE = 0;
+           
+            for (int i = 0; i<10; i++)
+            {
+                double temp = TestSuit.onlineTest(model);
+                if (!double.IsNaN(temp))
+                    RMSE += temp;
+                Reset(this, null);
+                vm.VM_Progress = i;
+            }
 
-          
+            RMSE = RMSE / 10;
+           // RMSE = Math.Sqrt(RMSE);
+            System.Windows.MessageBox.Show("RMSE =" + RMSE);
+
 
         }
 

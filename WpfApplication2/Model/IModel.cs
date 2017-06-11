@@ -15,7 +15,7 @@ namespace IR_Engine
         //    void move(double speed, int angle);
         List<string> autocomplete(string query);
 
-
+        Dictionary<int, double> findKnearestNeighbours(Dictionary<int, double> myRankings);
         void selectMovie(int movieID, double rating);
         void reset();
         int getUserAmount();

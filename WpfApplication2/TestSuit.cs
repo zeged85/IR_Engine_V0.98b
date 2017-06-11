@@ -11,43 +11,82 @@ namespace IR_Engine
     {
         public static string s_testFolder;
 
-        public static bool onlineTest()
+        public static double onlineTest(Indexer model)
         {
-            Indexer.s_documentsPath = s_testFolder;
-            Indexer m_tester = new Indexer();
-            m_tester.initiate();
-
-            int count = m_tester.getUserAmount();
+            Indexer m_tester = model;
+            double RMSEtop = 0;
+            double RMSEbot = 0;
+            //m_tester.initiate();
+            
+            int userCount = m_tester.getUserAmount();
            
-            Random rnd = new Random();
-            int i = rnd.Next(1, count);
+            Random rnd1 = new Random();
+            int rndUser = rnd1.Next(1, userCount+1);
 
-            Dictionary<int,double> userRating =  m_tester.getUserData(i);
+            Dictionary<int,double> userRating =  m_tester.getUserData(rndUser);
 
             if (userRating != null)
             {
-                m_tester.ignoreUser(i);
+                m_tester.ignoreUser(rndUser);
 
                 int userRatingCount = userRating.Count;
 
                 Dictionary<int, double> train = new Dictionary<int, double>();
                 Dictionary<int, double> test = new Dictionary<int, double>();
 
+                
+
+                Random rnd2 = new Random();
+                int rndRank;
 
                 foreach (KeyValuePair<int,double> userPair in userRating)
                 {
                     int movieID = userPair.Key;
                     double movieRating = userPair.Value;
 
+                    rndRank = rnd2.Next(1, 3);
+
+                    if (rndRank == 1)
+                    {
+                        train.Add(movieID, movieRating);
+                    }
+                    else
+                    {
+                        test.Add(movieID, movieRating);
+                    }
+
 
                 }
 
                 //m_tester.selectMovie(i);
 
+                foreach (KeyValuePair<int, double> trainPair in train)
+                {
+                    m_tester.selectMovie(trainPair.Key, trainPair.Value);
+                }
 
+                Dictionary<int,double> bestResult =  m_tester.findKnearestNeighbours(train);
+
+                foreach (KeyValuePair<int, double> mytestpair in test)
+                {
+                    int movieID = mytestpair.Key;
+                    double rank = mytestpair.Value; //parameter
+
+                    if (bestResult.ContainsKey(movieID))
+                    {
+                       double result = bestResult[movieID]; //expected
+                        double delta = result - rank;
+                        RMSEtop += delta * delta;
+                        RMSEbot++;
+                    }
+                }
 
             }
-            return false;
+
+            double RMSE = Math.Sqrt(RMSEtop / RMSEbot);
+            
+            m_tester.ignoreUser(0);
+            return RMSE;
         }
 
 
@@ -77,7 +116,7 @@ namespace IR_Engine
                 {
                     Directory.CreateDirectory(target);
                 }
-                else return false;
+                else return true;
                 
 
           

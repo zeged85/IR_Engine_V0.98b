@@ -201,7 +201,7 @@ namespace IR_Engine
             return termList;
         }
 
-        List<KeyValuePair<int, double>> myRankings = new List<KeyValuePair<int, double>>();
+        Dictionary<int, double> myRankings = new Dictionary<int, double>();
 
         public int getMovieID(string str)
         {
@@ -213,9 +213,9 @@ namespace IR_Engine
         {
 
            
-            myRankings.Add(new KeyValuePair<int, double>(movieID, rating));
+            myRankings.Add(movieID, rating);
 
-            Dictionary<int,double> result =  findKnearestNeighbours(myRankings);
+         //   Dictionary<int,double> result =  findKnearestNeighbours(myRankings);
 
           //  DocResult = "I suggest you the movie: \"The Matrix\"";
        //     string value = myRatings
@@ -294,7 +294,7 @@ namespace IR_Engine
             userIgnore = userID;
         }
 
-        Dictionary<int,double> findKnearestNeighbours(List<KeyValuePair<int, double>> myRankings)
+        public Dictionary<int,double> findKnearestNeighbours(Dictionary<int, double> myRankings)
         {
             Dictionary<int, double> Dic_RecommendedMovies = new Dictionary<int, double>();
 
