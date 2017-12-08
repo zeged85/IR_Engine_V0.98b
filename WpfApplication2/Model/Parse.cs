@@ -59,6 +59,22 @@ namespace IR_Engine
                 string line; // full line string  
                 line = reader.ReadLine();
 
+                SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                //moving this to static may improve preformence?
+
+
+                if (line == null)
+                {
+
+                }
+
+                Console.WriteLine(line);
+
+                if (line == @"<DOCNO>FT924-11895</DOCNO>")
+                {
+
+                }
+
                 while (ReadFile.NaiveSearch(line, "<DOCNO>") != 0)
                 {
                     line = reader.ReadLine();
@@ -75,13 +91,17 @@ namespace IR_Engine
                 while (ReadFile.NaiveSearch(line, "<TEXT>") != 0)
                 {
                     line = reader.ReadLine();
+                    if (line == null)  //NO TEXT HEADER FOUND!!
+                    {
+                        Console.WriteLine(str);
+                       // Console.ReadKey();
+                        return myMiniPostingListDict;
+                    }
                 }
 
                 //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
 
-                SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                //moving this to static may improve preformence?
-
+              
                 //text parsing - main work
                 int lineIdx = 0; // lines in document
                 // int limiter = 10;
@@ -994,17 +1014,23 @@ namespace IR_Engine
                                 if ((possibleDay && possibleMonth) || (possibleMonth && possibleYear))
                                 {
                                     string longDate = "";
-                                    if (possibleYear)
+
+                                    if (possibleDay)
                                     {
-                                        longDate = year + "-";
+                                        longDate += day + "/";
                                     }
 
                                     longDate += month;
 
-                                    if (possibleDay)
+                                    
+                                    if (possibleYear)
                                     {
-                                        longDate += "-" + day;
+                                        longDate +=  "/" + year;
                                     }
+
+                                    
+
+                                   
                                     //add date
 
                                     //ADD DATE TO MEMORY

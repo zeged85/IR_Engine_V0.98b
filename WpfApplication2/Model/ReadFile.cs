@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(12, 12) ; //one for every file
+            Semaphore _ReadFileSemaphore = new Semaphore(2, 2) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -132,6 +132,7 @@ namespace IR_Engine
 
             Console.WriteLine("File add to threadpool!");
             long fileSize = new System.IO.FileInfo(path).Length;
+            Console.WriteLine("path:" + path);
             Console.WriteLine("File size: " + GetBytesReadable(fileSize));
             Console.WriteLine("Total amount:" + Indexer.docNumber + " Documents.");
             Console.WriteLine("Documents in file:" + docNumberInFile + " Documents.");

@@ -150,14 +150,14 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _semaphoreIndexer = new Semaphore(4, 4);
+            _semaphoreIndexer = new Semaphore(1, 1);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
             {
                 // This path is a directory
                 //http://stackoverflow.com/questions/16193126/counting-the-number-of-files-in-a-folder-in-c-sharp
-                FileCountInFolder = Directory.GetFiles(documentsPath).Length;
+                FileCountInFolder = 1600; //Directory.GetFiles(documentsPath).Length;
                 stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
                 ProcessDirectory(documentsPath, FileToParse);
             }
@@ -181,7 +181,9 @@ namespace IR_Engine
             {
                 _semaphoreIndexer.WaitOne(); //limit threads
                 thread.Start();
-                Progress = (FileCounter++ * 50) / FileCountInFolder;
+                FileCounter++;
+                double tst = (double)FileCounter / (double)FileCountInFolder;
+                Progress = Convert.ToInt32( tst*100);
             }
 
           
@@ -659,7 +661,7 @@ namespace IR_Engine
             while (!stopMemoryHandler)
             {
                 _mainMemory.WaitOne();
-                if (myPostings.Count > 30000)
+                if (myPostings.Count >100000)
                 {
                     
 

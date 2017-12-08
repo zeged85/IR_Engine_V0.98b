@@ -51,7 +51,7 @@ namespace IR_Engine
             ///load SYNONYMS_AND_ANTONYMS
             ///
 
-            LoadSYNONYMS_AND_ANTONYMS();
+            //LoadSYNONYMS_AND_ANTONYMS();
         }
 
 
