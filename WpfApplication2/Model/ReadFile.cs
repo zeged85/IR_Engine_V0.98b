@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(2, 2) ; //one for every file
+            Semaphore _ReadFileSemaphore = new Semaphore(4, 4) ; //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -175,7 +175,7 @@ namespace IR_Engine
                 foreach (KeyValuePair<string, string> entry in dic)
                     if (myFilePostings.ContainsKey(entry.Key))
                     {
-                        myFilePostings[entry.Key] += " " + entry.Value;
+                        myFilePostings[entry.Key] += entry.Value;
                      //   Console.WriteLine("Term Conflict:" + entry.Key.ToString());
                     }
                     else
@@ -317,7 +317,7 @@ namespace IR_Engine
                         newDic.Add(key, value);
                     else
                     {
-                        newDic[key] += " " + value;
+                        newDic[key] += value;
                     }
 
                 }

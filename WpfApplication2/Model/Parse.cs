@@ -473,16 +473,39 @@ namespace IR_Engine
                                      ///"733-6070"
                                      ///"23/0145z"
                                      ///"1991-95"
-                                        if (term[j] == '-' || term[j] == '/')
+                                        if (term[j] == '-')
                                         {
+
                                             
                                         }
-                                        else
+                                        else if (term[j] == '/')
                                         {
-                                            ///"30,000"
+                                            //FRACTIONS. maybe add ',' 1,300
+                                            //"76/15"
+                                            //"78/13"
+                                            term=term.ToLower();
+                                            if (term[term.Length - 1] == 'z')
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                //"vp2100/10"
+                                                //"INTERNATIONAL 22/28 Nov 93) AM"
+                                                //"*BT 1992/93 annual review, 28 pages, in English."
+                                                //"$1/5.8 yuan), would now total 1009 yuan ($115.98 at $1/8.7 yuan)"
+                                                //"Ordinance No. 81/027 of 22 May 1981, which punishes acts of"
+                                                //"plane, an A-300/600 [as heard] Airbus. The Ethiopians were"
+                                                //"02/03/94 to 08/03/94. </H3>" !!!
+                                                //"place at midnight of 13/14 March. Mr Kriel added that the"
+                                                //"areas already approved by the government (decree 18/93)."
+                                                //"complementary tax in 1978/79 was 80 percent. He added: \"I do"
+                                                //"1-12/93"
+
+                                            }
 
                                         }
-
+                                        // else if (//1,212)
                                     }
                                     else
                                     {
@@ -567,30 +590,6 @@ namespace IR_Engine
                                 j++;
                             }
 
-
-                            //     index = term.IndexOf('-', index);
-
-                            /*                        if (index != -1)
-                             {
-                                 if (index == term.Length - 1)
-                                 {//"All-"
-
-                                 }
-                                 else
-                                 {//"22-23"
-                                     //"VMRO-DP"
-
-                                 }
-
-                             }
-                             */
-                            //NUM-NUM
-                            /*
-                            if (char.IsDigit(term[0]) && char.IsDigit(term[term.Length - 1]))
-                            {//6****9
-                                type = termType.Number;
-                            }
-                            */
 
 
 

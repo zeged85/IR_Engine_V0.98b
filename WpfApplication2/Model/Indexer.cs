@@ -150,7 +150,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _semaphoreIndexer = new Semaphore(1, 1);
+            _semaphoreIndexer = new Semaphore(2, 2);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -495,7 +495,20 @@ namespace IR_Engine
 
         }
 
-    
+        public void PrintfreqInAllCorpusList()
+        {
+            //  using System.Linq;
+            //http://stackoverflow.com/questions/21411384/sort-dictionary-string-int-by-value
+
+            var top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10);
+            var bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10);
+
+            top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10)
+                  .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10)
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
 
         public void mmm()
         {
@@ -644,7 +657,7 @@ namespace IR_Engine
             Console.WriteLine("Saving postings on RAM");
             foreach (KeyValuePair<string, string> entry in newDict)
                 if (myPostings.ContainsKey(entry.Key))
-                    myPostings[entry.Key] += " " + entry.Value;
+                    myPostings[entry.Key] += entry.Value;
                 else
                     myPostings.Add(entry.Key.ToString(), entry.Value);
 

@@ -166,7 +166,7 @@
 			Background="White" 
 			Height="36"/>
 
-        <Button Content="Choose Language" 
+        <Button Content="Show Cache" 
 			Margin="250,306,465,251.5" 
 			FontWeight="Bold" 
 			Background="White" 
