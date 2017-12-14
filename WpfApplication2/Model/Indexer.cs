@@ -19,7 +19,7 @@ namespace IR_Engine
 
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(PropName));
-           
+
         }
 
         private int progress;
@@ -29,9 +29,9 @@ namespace IR_Engine
             set { progress = value; NotifyPropertyChanged("Progress"); }
         }
 
-        
+
         /// MVVM
-        
+
 
 
 
@@ -50,7 +50,7 @@ namespace IR_Engine
         public static Mutex _DocumentMetadata;
         public static Mutex _mainMemory;
         private static Semaphore _semaphoreIndexer;
-    
+
         private static List<Thread> threads = new List<Thread>();
         public static string documentsPath;
         public string postingFilesPath/* = @"c:\IR_Engine\"*/;
@@ -63,9 +63,9 @@ namespace IR_Engine
 
         //public static string postingFilesPath = @"c:\IR_Engine\";
         public static List<string> PostingFileTermList = new List<string>();
-        
+
         public static int amountOfUnique/* = 0*/;
-    //    public static int wordNum = 0;
+        //    public static int wordNum = 0;
         public static bool ifStemming;
 
         public static SortedDictionary<string, string> stopWords;
@@ -144,13 +144,13 @@ namespace IR_Engine
             threads.Clear();
         }
 
-     
+
 
         public void initiate()
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _semaphoreIndexer = new Semaphore(2, 2);
+            _semaphoreIndexer = new Semaphore(8, 8);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -183,18 +183,18 @@ namespace IR_Engine
                 thread.Start();
                 FileCounter++;
                 double tst = (double)FileCounter / (double)FileCountInFolder;
-                Progress = Convert.ToInt32( tst*100);
+                Progress = Convert.ToInt32(tst * 100);
             }
 
-          
 
-        
+
+
 
 
             foreach (Thread thread in threads)
             {
                 thread.Join();
-               // Progress = (FileCounter++ * 50) / FileCountInFolder;
+                // Progress = (FileCounter++ * 50) / FileCountInFolder;
             }
             Console.WriteLine("Main thread exits.");
 
@@ -203,7 +203,7 @@ namespace IR_Engine
 
             Thread lastRefresh = new Thread(freeMemory);
             lastRefresh.Start();
-            
+
             lastRefresh.Join();
             threads.Clear();
 
@@ -216,7 +216,7 @@ namespace IR_Engine
             Console.WriteLine("Refreshing Memory...Last time");
             //create last foldet
             postingFolderCounter++;
-           
+
 
             Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
             ReadFile.saveDic(myPostings, postingFilesPath + postingFolderCounter);
@@ -243,9 +243,9 @@ namespace IR_Engine
             //sorting
             myPostings.Clear();
 
-           // string dbpath = "PostingFiles";
-           // if (Indexer.ifStemming == true)
-             //   dbpath = "Stemming";
+            // string dbpath = "PostingFiles";
+            // if (Indexer.ifStemming == true)
+            //   dbpath = "Stemming";
 
             string[] fileEntries = Directory.GetFiles(postingFilesPath);
             foreach (string fileName in fileEntries)
@@ -265,9 +265,9 @@ namespace IR_Engine
             //http://stackoverflow.com/questions/7296956/how-to-list-all-sub-directories-in-a-directory
             var directories = Directory.GetDirectories(postingFilesPath);
 
-          //  string dbpath = "PostingFiles";
-         //   if (Indexer.ifStemming == true)
-           //     dbpath = "Stemming";
+            //  string dbpath = "PostingFiles";
+            //   if (Indexer.ifStemming == true)
+            //     dbpath = "Stemming";
 
 
 
@@ -275,7 +275,7 @@ namespace IR_Engine
             foreach (string dirToBeDELETED in directories)
             {
                 //delete all folders
-                
+
                 if (dirToBeDELETED != postingFilesPath + "PostingFiles"/*dbpath*/ /* && dirToBeDELETED != postingFilesPath + "Stemming" */)
                 {
                     ProcessDirectory(dirToBeDELETED, DeleteFile);
@@ -306,7 +306,7 @@ namespace IR_Engine
                 file6.WriteLine(docMetadata.Key + "$" + docMetadata.Value);
             }
 
-        
+
             file6.Close();
 
             DocumentMetadata.Clear();
@@ -319,17 +319,17 @@ namespace IR_Engine
             //0 create dictionary. use static
             myPostings.Clear();
 
-         //   string dbpath = "PostingFiles";
-          //  if (Indexer.ifStemming == true)
+            //   string dbpath = "PostingFiles";
+            //  if (Indexer.ifStemming == true)
             //    dbpath = "Stemming";
 
             //upload postingfiles to main memomry Library<String,String>
-            string[] fileEntries2 = Directory.GetFiles(postingFilesPath +  "PostingFiles"/*dbpath*/);
+            string[] fileEntries2 = Directory.GetFiles(postingFilesPath + "PostingFiles"/*dbpath*/);
             foreach (string fileName in fileEntries2)
                 ProcessFile(fileName, LoadPostingFiles);
         }
 
-        
+
         public void loadMetadata()
         {
             //load DocumentMetadata
@@ -348,7 +348,7 @@ namespace IR_Engine
             }
             //    string METADATA_SECURE = DOCNO + "#" + maxTerm + "#" + maxOccurencesInDocument + "#"
             //         + languageDocument + "#" + countAmountOfUniqueInDoc + "#" + wordPositionWithSW + "#" + wordPositionWithoutSW;
-        // +     UniqueWordsDictionaryCounterForQuery
+            // +     UniqueWordsDictionaryCounterForQuery
         }
 
         public void createDictionary() // count unique
@@ -378,28 +378,35 @@ namespace IR_Engine
                 if (freqInAllCorpus == 1)
                 {
                     amountOfUnique++;
-                    uniqueTerms.Add(term);
+                    uniqueTerms.Add(term); //need to fix
                 }
                 amountOfDocs = myPostings[term].Split('@').Length - 1;
 
-                string[] FullPostString = myPostings[term].Split(' ');
+                string[] FullPostString = myPostings[term].Split('{');
+                //string post1 = FullPostString[0];
+                // string[] PostString = FullPostString[1].Split('{');
 
-                string post1 = FullPostString[0];
+
+
+
+                // myPostings[term] = "f:" + freqInAllCorpus;
+                file2.Write(t.ToString() + "^#"/*tf*/ + freqInAllCorpus + "#" /*df*/ + amountOfDocs);
+
+
+
                 foreach (string chunk in FullPostString)
                 {
                     string newChunk = chunk.TrimEnd().TrimStart();
                     if (newChunk == "")
                         continue;
 
-                    string[] splt = chunk.Split('@', ' ');
+                    string[] splt = chunk.Split('@');
                     string docnum = splt[1];
                     int amountOfTimesTermInDoc = splt[0].ToString().Split(',').Length;
                     shortDocAndFreq.Add(new Tuple<string, int>(splt[1], amountOfTimesTermInDoc));
 
                 }
 
-                // myPostings[term] = "f:" + freqInAllCorpus;
-                file2.Write(t.ToString() + "^#"/*tf*/ + freqInAllCorpus + "#" /*df*/ + amountOfDocs);
 
                 ////redo
                 foreach (Tuple<string, int> tup in shortDocAndFreq)
@@ -411,7 +418,7 @@ namespace IR_Engine
             }
             file2.Close();
 
-          //  PostingFileTermList.Clear();
+            //  PostingFileTermList.Clear();
         }
 
         public void UniqueWordsQuery() //update metadata.txt
@@ -485,7 +492,7 @@ namespace IR_Engine
                 //    if (post.Key )
 
                 int number = post.Key;
-                    
+
 
                 file3.WriteLine(post.Key + "^" + post.Value + "#" + UniqueWordsDictionaryCounterForQuery[number]);
             }
@@ -541,8 +548,8 @@ namespace IR_Engine
 
             //myDictionary.Clear();
             myDictionary = ReadFile.fileToSortedList(postingFilesPath + @"\Dictionary.txt");
-            
-          
+
+
 
 
             Console.WriteLine("Dictionary loaded.");
@@ -590,10 +597,10 @@ namespace IR_Engine
                     myPostings.Add(entry.Key.ToString(), entry.Value);
                 else
                 {
-                   
+
                     myPostings[entry.Key] += entry.Value;
-                    Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":" );
-                    Console.WriteLine("Already in doc:" + myPostings[entry.Key] );
+                    Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":");
+                    Console.WriteLine("Already in doc:" + myPostings[entry.Key]);
                     Console.WriteLine("New to be added:" + entry.Value);
                 }
             Console.WriteLine("File loaded.");
@@ -648,7 +655,7 @@ namespace IR_Engine
         private static void DoWork(object path)
         {
             string str = path.ToString();
-            
+
             SortedDictionary<string, string> newDict = ReadFile.OpenFileForParsing(str);
 
             //add to main memory first
@@ -666,7 +673,7 @@ namespace IR_Engine
 
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
             _semaphoreIndexer.Release();
-           // newDict.Clear();
+            // newDict.Clear();
         }
 
         void SavePostingToStaticDictionary()
@@ -674,23 +681,23 @@ namespace IR_Engine
             while (!stopMemoryHandler)
             {
                 _mainMemory.WaitOne();
-                if (myPostings.Count >100000)
+                if (myPostings.Count > 100000)
                 {
-                    
+
 
 
 
                     //fix this
                     SortedDictionary<string, string> freeDic = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                    foreach (KeyValuePair<string,string> pair in myPostings)
+                    foreach (KeyValuePair<string, string> pair in myPostings)
                     {
                         freeDic.Add(pair.Key, pair.Value);
                     }
 
 
                     myPostings.Clear();
-                    
+
                     Console.WriteLine("Refreshing Memory...");
 
 
@@ -698,11 +705,11 @@ namespace IR_Engine
                     Directory.CreateDirectory(postingFilesPath + postingFolderCounter);
                     ReadFile.saveDic(freeDic, postingFilesPath + postingFolderCounter);
 
-                   // freeDic.Clear();
+                    // freeDic.Clear();
                 }
                 _mainMemory.ReleaseMutex();
 
-//                Progress = docNumber / 1400;
+                //                Progress = docNumber / 1400;
 
                 //https://social.msdn.microsoft.com/Forums/vstudio/en-US/660a1f75-b287-4565-bfdd-75105e0a5527/c-wait-for-x-seconds?forum=netfxbcl
                 System.Threading.Thread.Sleep(1500);
@@ -722,14 +729,14 @@ namespace IR_Engine
 
             //new edition
             ///_pool.WaitOne(); //limit threads
-           
+
 
 
 
 
             Thread thread = new Thread(() => DoWork(path));
 
-         //   notwaitsemaphore,
+            //   notwaitsemaphore,
 
             // Start the thread, passing the number.
 

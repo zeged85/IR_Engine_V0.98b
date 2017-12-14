@@ -35,7 +35,7 @@ namespace IR_Engine
 
         public static List<string> languagesList = new List<string>();
         //https://www.dotnetperls.com/enum
-        enum termType {Term, Month, Number, Name };
+        enum termType { Term, Month, Number, Name };
         //test for commit
 
         //  private static int thisDocNumber;
@@ -94,14 +94,14 @@ namespace IR_Engine
                     if (line == null)  //NO TEXT HEADER FOUND!!
                     {
                         Console.WriteLine(str);
-                       // Console.ReadKey();
+                        // Console.ReadKey();
                         return myMiniPostingListDict;
                     }
                 }
 
                 //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
 
-              
+
                 //text parsing - main work
                 int lineIdx = 0; // lines in document
                 // int limiter = 10;
@@ -112,7 +112,7 @@ namespace IR_Engine
                 string longTerm = string.Empty;
                 int longTermSize = 0;
                 bool addTermToLongTerm = false;
-               
+
 
                 //DATE
                 bool partialDate = false;
@@ -120,9 +120,9 @@ namespace IR_Engine
                 bool possibleYear = false;
                 bool possibleMonth = false;
                 bool stopDate = false;
-                int month=0;
-                int day=0;
-                int year=0;
+                int month = 0;
+                int day = 0;
+                int year = 0;
                 int partialDateCounter = 0;
 
                 // percent dgree dollar
@@ -140,9 +140,9 @@ namespace IR_Engine
                 while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
-                    
+
                     //Language
-                    
+
                     if (ReadFile.NaiveSearch(line, @"Language: <F P=105>") != -1)
                     {
                         char[] delimiterCharsLang = { '<', '>' };
@@ -169,7 +169,7 @@ namespace IR_Engine
                     string[] words = line.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
 
                     //   System.Console.WriteLine("{0} words in text:", words.Length);
-                 
+
 
                     lineIdx++;
                     if (lineIdx == 89)
@@ -195,18 +195,18 @@ namespace IR_Engine
 
                             }
 
-                         if (addNextTermToLongTerm)
+                            if (addNextTermToLongTerm)
                             {
                                 addTermToLongTerm = true;
                                 addNextTermToLongTerm = false;
                             }
-                     
 
 
 
 
 
-                          //  addTermToLongTerm = false;
+
+                            //  addTermToLongTerm = false;
 
 
 
@@ -293,13 +293,13 @@ namespace IR_Engine
                                     //          save and restart
                                     stopLongTerm = true;
                                 }
-                                else if(firstChar== '$')
+                                else if (firstChar == '$')
                                 {
-                               //     type = termType.Currency;
+                                    //     type = termType.Currency;
                                 }
                                 else if (firstChar == '%')
                                 {
-                              //      type = termType.Percent;
+                                    //      type = termType.Percent;
                                 }
 
 
@@ -440,7 +440,7 @@ namespace IR_Engine
                             /// '.'
                             /// 
 
-                            if (term == "R&amp;D")
+                            if (term == "&amp;")
                             {
                                 ///term = R&D ?
                                 ///&amp = &
@@ -463,7 +463,7 @@ namespace IR_Engine
                                     {
                                         break;
                                     }
-                                    
+
                                     //"199O-92" - fix
                                     //"1988-9O"
 
@@ -476,14 +476,14 @@ namespace IR_Engine
                                         if (term[j] == '-')
                                         {
 
-                                            
+
                                         }
                                         else if (term[j] == '/')
                                         {
                                             //FRACTIONS. maybe add ',' 1,300
                                             //"76/15"
                                             //"78/13"
-                                            term=term.ToLower();
+                                            term = term.ToLower();
                                             if (term[term.Length - 1] == 'z')
                                             {
 
@@ -683,8 +683,9 @@ namespace IR_Engine
 
 
 
-                                    }
-                                else {
+                                }
+                                else
+                                {
                                     ///TERM IS NUMBER
                                     ///
                                     type = termType.Number;
@@ -698,7 +699,7 @@ namespace IR_Engine
                                         casualNumberBool = true;
                                     }
 
-                                //    stringTerm = i.ToString();
+                                    //    stringTerm = i.ToString();
                                     if (isValidInteger && i > 0 && i < 32)  //possible partial day
                                     {
                                         if (possibleDay)//"The 22-23 January edition of the Skopje newspaper VECER in"
@@ -742,7 +743,7 @@ namespace IR_Engine
                                     }
                                 }
 
-       
+
 
                                 termToLower = stringTerm;
                             }
@@ -817,7 +818,7 @@ namespace IR_Engine
 
                                 //no conflict 
                                 addTermToLongTerm = true;
-                              //  longTermSize++;
+                                //  longTermSize++;
 
 
                                 if (partialDate) //CONFLICt DATE LONGTERM
@@ -899,7 +900,7 @@ namespace IR_Engine
                                 }
                                 longTermSize++;
                             }
-                    
+
 
 
 
@@ -1021,15 +1022,15 @@ namespace IR_Engine
 
                                     longDate += month;
 
-                                    
+
                                     if (possibleYear)
                                     {
-                                        longDate +=  "/" + year;
+                                        longDate += "/" + year;
                                     }
 
-                                    
 
-                                   
+
+
                                     //add date
 
                                     //ADD DATE TO MEMORY
@@ -1160,10 +1161,10 @@ namespace IR_Engine
                 }
 
                 //  myDocumentData.                
-                string METADATA_SECURE = DOCNO + "#" + maxTerm + "#" + maxOccurencesInDocument +"#" 
+                string METADATA_SECURE = DOCNO + "#" + maxTerm + "#" + maxOccurencesInDocument + "#"
                     + languageDocument + "#" + countAmountOfUniqueInDoc + "#" + wordPositionWithSW + "#" + wordPositionWithoutSW;
 
-     
+
                 //MUTEX
                 //http://www.c-sharpcorner.com/UploadFile/1d42da/threading-with-mutex/
                 //  Indexer._DocumentMetadata.WaitOne();
@@ -1183,12 +1184,12 @@ namespace IR_Engine
                 myMiniPostingListDict.Add("<DOCDATA>" + thisDocNumber + '|', METADATA_SECURE);
 
 
-              //  Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
+                //  Console.WriteLine("Doc#: " + thisDocNumber + " Parsed!");
                 return myMiniPostingListDict;
             }
         }
 
-      
+
 
 
     }

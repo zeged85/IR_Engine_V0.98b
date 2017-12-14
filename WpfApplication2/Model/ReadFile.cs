@@ -21,21 +21,21 @@ namespace IR_Engine
     /// </summary>
     public class ReadFile
     {
-      //  public static int wordPosition = 0;
+        //  public static int wordPosition = 0;
         //UTF!!!
         public string filesPathToDelete;
-       // public static volatile int totalDocs = 0;
-       // private static List<Thread> ReadFileThreads;
-        
-       // private static Semaphore _ReadFileSemaphore;
+        // public static volatile int totalDocs = 0;
+        // private static List<Thread> ReadFileThreads;
+
+        // private static Semaphore _ReadFileSemaphore;
         static int counter;
-        
+
 
         int gil = 0;
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
-            Semaphore _ReadFileSemaphore = new Semaphore(4, 4) ; //one for every file
+            Semaphore _ReadFileSemaphore = new Semaphore(4, 4); //one for every file
             counter = 10;
             Mutex _myFilePostings = new Mutex();
             List<Thread> ReadFileThreads = new List<Thread>();
@@ -65,27 +65,27 @@ namespace IR_Engine
                     {
                         if (linesInDoc != 0) //end of document before
                         {
-                     
+
                             //      System.Console.WriteLine(newDocument);
-                            
+
                             docNumberInFile++;
-                           
+
                             //countAmountOfUniqueInDoc = 0;
 
-                           // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
-                           // Console.WriteLine("File Document #: " + docNumber);
-                          
-                           // System.Console.WriteLine("Lines in document:" + linesInDoc);
+                            // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
+                            // Console.WriteLine("File Document #: " + docNumber);
+
+                            // System.Console.WriteLine("Lines in document:" + linesInDoc);
 
 
                             //update docnumbr
                             Indexer._DocNumber.WaitOne();
 
-                           int freshNum = Interlocked.Increment(ref Indexer.docNumber);
-                       
+                            int freshNum = Interlocked.Increment(ref Indexer.docNumber);
+
                             Indexer._DocNumber.ReleaseMutex();
 
-                          //  Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
+                            //  Console.WriteLine("Processed file :" + path + "| Found DOC#" + freshNum);
 
 
 
@@ -97,7 +97,7 @@ namespace IR_Engine
 
 
 
-                           // DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList);
+                            // DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList);
                             Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList));
                             // Start the thread, passing the number.
 
@@ -114,9 +114,9 @@ namespace IR_Engine
 
                             //merge dic
                             //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
-            
+
                             bufferDocument.Clear();
-                 
+
                         }
                         linesInDoc = 1;
                     }
@@ -138,7 +138,7 @@ namespace IR_Engine
             Console.WriteLine("Documents in file:" + docNumberInFile + " Documents.");
             Console.WriteLine("-----------------------");
 
-        
+
             //   System.Console.WriteLine("Press any key to exit.");
             //   System.Console.ReadKey();
 
@@ -155,16 +155,16 @@ namespace IR_Engine
                 //semaphore
                 _ReadFileSemaphore.WaitOne();
                 thred.Start();
-            
+
             }
 
-           
-            
+
+
             foreach (Thread tread in ReadFileThreads)
             {
                 tread.Join();
             }
-            
+
 
             _myFilePostings.WaitOne();
             Console.WriteLine("Saving File postings on ReadFile-temp-RAM");
@@ -176,12 +176,12 @@ namespace IR_Engine
                     if (myFilePostings.ContainsKey(entry.Key))
                     {
                         myFilePostings[entry.Key] += entry.Value;
-                     //   Console.WriteLine("Term Conflict:" + entry.Key.ToString());
+                        //   Console.WriteLine("Term Conflict:" + entry.Key.ToString());
                     }
                     else
                     {
                         myFilePostings.Add(entry.Key.ToString(), entry.Value);
-                      
+
                     }
 
             }
@@ -197,24 +197,24 @@ namespace IR_Engine
         }
 
 
-        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex _DictionaryListMutex, object path,  int num, ref List<SortedDictionary<string, string>> DicList)
+        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex _DictionaryListMutex, object path, int num, ref List<SortedDictionary<string, string>> DicList)
         {
             string str = path.ToString();
-         //   counter--;
+            //   counter--;
 
-    ///late edition
-         //   _ReadFileSemaphore.WaitOne(); //limit threads
+            ///late edition
+            //   _ReadFileSemaphore.WaitOne(); //limit threads
 
 
 
-         
+
             SortedDictionary<string, string> newDict = Parse.parseString(str, num);
             //add to main memory first
             //  return newDict;
             _DictionaryListMutex.WaitOne();
             DicList.Add(newDict);
             //    ReadFile.saveDic(newDict, postingFilesPath + Interlocked.Increment(ref postingFolderCounter));
-         //   counter++;
+            //   counter++;
             _DictionaryListMutex.ReleaseMutex();
             _ReadFileSemaphore.Release();
         }
@@ -228,9 +228,9 @@ namespace IR_Engine
         /// <param name="directoryPath">output file (full path)</param>
         public static void saveDic(SortedDictionary<string, string> dic, string directoryPath)
         {
-          //  var list = dic.Keys.ToList();
-           // list.Sort();
-           
+            //  var list = dic.Keys.ToList();
+            // list.Sort();
+
             char last = ' ';
             string filePath;
             Directory.CreateDirectory(directoryPath);
@@ -252,15 +252,15 @@ namespace IR_Engine
                 ///
 
                 char c = term[0];
-                if (c=='<')
+                if (c == '<')
                 {
-                    int docnumber = Int32.Parse( term.Split(new char[] { '>', '|' })[1]) ;
-             
+                    int docnumber = Int32.Parse(term.Split(new char[] { '>', '|' })[1]);
+
                     Indexer._DocumentMetadata.WaitOne();
                     //  Console.WriteLine()
                     // char[] delimiterCharsLang = { '<', '>' };
-                    Indexer.DocumentMetadata.Add(docnumber , key.Value);
-                   Indexer._DocumentMetadata.ReleaseMutex();
+                    Indexer.DocumentMetadata.Add(docnumber, key.Value);
+                    Indexer._DocumentMetadata.ReleaseMutex();
                     continue;
 
                 }
@@ -308,11 +308,25 @@ namespace IR_Engine
                     if (s == "")
                         continue;
 
-                    string[] words = s.Split('^');
+                    int splitIndex = s.IndexOf('^');
+
+                    string key = string.Empty;
                     string value = string.Empty;
-                    string key = words[0];
-                    if (words.Length == 2)
-                        value = words[1];
+
+                    // string[] words = s.Split('^');
+                    //string value = string.Empty;
+                    // string key = words[0];
+                    //   if (words.Length == 2)
+                    //       value = words[1];
+                    if (splitIndex != -1)
+                    {
+                        key = s.Substring(0, splitIndex);
+                        value = s.Substring(splitIndex + 1);
+                    }
+                    else
+                    {
+                        key = s;
+                    }
                     if (!newDic.ContainsKey(key))
                         newDic.Add(key, value);
                     else
@@ -354,13 +368,14 @@ namespace IR_Engine
                     string value = string.Empty;
                     string key = words[0];
                     //maybe waseful
-                    if (words.Length == 2) { 
+                    if (words.Length == 2)
+                    {
                         value = words[1];
-                }
-                   // Console.WriteLine("Term Num:" + newDic.Count);
+                    }
+                    // Console.WriteLine("Term Num:" + newDic.Count);
 
-                        newDic.Add(key, value);
-              
+                    newDic.Add(key, value);
+
                 }
             }
             return newDic;
