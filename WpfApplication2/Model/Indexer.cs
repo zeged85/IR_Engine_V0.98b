@@ -131,7 +131,7 @@ namespace IR_Engine
 
 
         }
-        public static void clearAllData()
+        public void clearAllData()
         {
 
             myPostings.Clear();
@@ -142,6 +142,8 @@ namespace IR_Engine
             //stopWords.Clear();
             DocumentMetadata.Clear();
             threads.Clear();
+            docNumber = 0;
+            amountOfUnique = 0;
         }
 
 
@@ -157,7 +159,7 @@ namespace IR_Engine
             {
                 // This path is a directory
                 //http://stackoverflow.com/questions/16193126/counting-the-number-of-files-in-a-folder-in-c-sharp
-                FileCountInFolder = 1600; //Directory.GetFiles(documentsPath).Length;
+                FileCountInFolder = 1700; //Directory.GetFiles(documentsPath).Length;
                 stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
                 ProcessDirectory(documentsPath, FileToParse);
             }

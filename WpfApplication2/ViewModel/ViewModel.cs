@@ -168,7 +168,7 @@ namespace IR_Engine
 
         public void startEngine()
         {
-            Indexer.clearAllData();
+            model_indexer.clearAllData();
 
             VM_DocResult = "loading files...";
 

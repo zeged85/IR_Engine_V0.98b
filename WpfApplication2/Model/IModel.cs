@@ -32,5 +32,6 @@ namespace IR_Engine
         void loadDictionary();
         void setOutputFolder(string path);
         string getOutputFolder();
+        void clearAllData();
     }
 }

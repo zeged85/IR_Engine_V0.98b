@@ -212,6 +212,7 @@ namespace WpfApplication2
                     System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
                     QueryInputTextBox.IsReadOnly = true;
                     isDictionaryLoaded = false;
+
                 }
             }
             if (!string.IsNullOrEmpty(Searcher.pathForResult) && File.Exists(Searcher.pathForResult + "\\result.txt"))

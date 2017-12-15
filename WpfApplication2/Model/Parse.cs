@@ -171,11 +171,6 @@ namespace IR_Engine
                     //   System.Console.WriteLine("{0} words in text:", words.Length);
 
 
-                    lineIdx++;
-                    if (lineIdx == 89)
-                    {
-
-                    }
 
                     foreach (string s in words) /// MAIN PARSE LOOP
                     {
@@ -202,7 +197,7 @@ namespace IR_Engine
                             }
 
 
-
+                           
 
 
 
@@ -243,6 +238,14 @@ namespace IR_Engine
                                 continue;
                             }
                             if (s == "...")
+                            {
+                                continue;
+                            }
+                            if (s == @"<P>")
+                            {
+                                continue;
+                            }
+                            if (s == @"</P>")
                             {
                                 continue;
                             }
@@ -314,6 +317,11 @@ namespace IR_Engine
                                     ///"viewers \"whom the government will help and how.\""
                                     ///
                                     addTermToLongTerm = true;
+                                    stopLongTerm = false;
+                                }
+                                else if (firstChar == 60)
+                                {//headers
+                                    //break;
                                 }
                                 else
                                 {
@@ -346,6 +354,8 @@ namespace IR_Engine
                                     if (term.Length < 2)
                                     {//"T. GURBADAM -- Previous:  MPRP CC member and director of MPRP CC"
                                         //"U.S."
+                                        //p.m.
+                                        //a.m.
 
                                     }
                                     else
@@ -380,6 +390,7 @@ namespace IR_Engine
                                 ///
                                 else if (lastChar == '-')
                                 {//add to long term?
+                                    //"MAAK (Movement for All-"
 
                                 }
 
@@ -513,7 +524,7 @@ namespace IR_Engine
                                         //"talks\"--which"
                                         //"DOP--must"
                                         if (term[j] == term[j + 1])// "--"
-                                        {
+                                        {//"elements--the"
                                             stopDate = true;
                                             stopLongTerm = true;
                                             j++;
@@ -555,6 +566,7 @@ namespace IR_Engine
 
                                             addNextTermToLongTerm = true;
                                             stopWhile = true;
+                                            stopLongTerm = false;
                                             continue;
 
 
@@ -601,14 +613,13 @@ namespace IR_Engine
                             //       continue;
 
 
-
                             string termToLower = term.ToLower();
 
                             //months before SW because SW contains "may"
                             if (type == termType.Term && Indexer.Months.ContainsKey(termToLower))
                             {
                                 if (possibleMonth == true) // MONTH MONTH CONFLICT
-                                {
+                                {//should disable possible date
 
                                 }
                                 partialDate = true;
@@ -623,6 +634,7 @@ namespace IR_Engine
                             if (type == termType.Term && Indexer.stopWords.ContainsKey(termToLower))
                             {
                                 wordPositionWithSW++;
+                                stopLongTerm = true;
                                 continue;
                             }
                             wordPositionWithoutSW++;
@@ -805,7 +817,12 @@ namespace IR_Engine
 
 
 
-
+                            /*
+                            if (Char.IsLower(term[0]))
+                            {
+                                stopLongTerm = true;
+                                addTermToLongTerm = false;
+                            }*/
 
 
 
@@ -849,7 +866,7 @@ namespace IR_Engine
                                     else
                                     if (upperSymbol == ',')
                                     {
-
+                                        stopLongTerm = true;
                                     }
                                     else if (upperSymbol == ')')
                                     {
@@ -865,6 +882,10 @@ namespace IR_Engine
 
 
 
+                            }
+                            else
+                            {
+                                stopLongTerm = true;
                             }
 
 
@@ -890,6 +911,10 @@ namespace IR_Engine
                             //LONG TERMS
                             if (addTermToLongTerm == true)
                             {
+                                if (longTermSize > 2)
+                                {//"*Party for Democratic Prosperity-People's Democratic Party"
+                                    stopLongTerm = true;
+                                }
                                 if (longTermSize > 0)
                                 {
                                     longTerm += "+" + stemTerm; //"Bosnia-Herzegovina."
