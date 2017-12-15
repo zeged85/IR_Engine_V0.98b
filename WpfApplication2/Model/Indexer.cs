@@ -58,8 +58,8 @@ namespace IR_Engine
         public static Mutex _DocNumber;
         public static volatile int docNumber /*= 0*/;
 
-        public static volatile int postingFolderCounter = 0;
-        private static bool stopMemoryHandler = false;
+        public static volatile int postingFolderCounter;
+        private static bool stopMemoryHandler;
 
         //public static string postingFilesPath = @"c:\IR_Engine\";
         public static List<string> PostingFileTermList = new List<string>();
@@ -144,6 +144,8 @@ namespace IR_Engine
             threads.Clear();
             docNumber = 0;
             amountOfUnique = 0;
+            postingFolderCounter=0;
+            stopMemoryHandler=false;
         }
 
 
@@ -159,7 +161,7 @@ namespace IR_Engine
             {
                 // This path is a directory
                 //http://stackoverflow.com/questions/16193126/counting-the-number-of-files-in-a-folder-in-c-sharp
-                FileCountInFolder = 1700; //Directory.GetFiles(documentsPath).Length;
+                FileCountInFolder = 3400; //Directory.GetFiles(documentsPath).Length;
                 stopWords = ReadFile.fileToDictionary(Indexer.documentsPath + "\\stop_words.txt" /*@"C:\stopWords\stop_words.txt"*/);// load stopwords
                 ProcessDirectory(documentsPath, FileToParse);
             }
@@ -267,10 +269,7 @@ namespace IR_Engine
             //http://stackoverflow.com/questions/7296956/how-to-list-all-sub-directories-in-a-directory
             var directories = Directory.GetDirectories(postingFilesPath);
 
-            //  string dbpath = "PostingFiles";
-            //   if (Indexer.ifStemming == true)
-            //     dbpath = "Stemming";
-
+          
 
 
             Console.WriteLine("deleteing all folders...");
@@ -296,10 +295,7 @@ namespace IR_Engine
 
         public void dumpDocumentMetadata()
         {
-            // compute DocumentFileToID file
-            //most common term
-
-            //dumping  DocumentMetadata
+        
 
             StreamWriter file6 = new StreamWriter(postingFilesPath + @"\Metadata.txt", true);
 
@@ -321,11 +317,7 @@ namespace IR_Engine
             //0 create dictionary. use static
             myPostings.Clear();
 
-            //   string dbpath = "PostingFiles";
-            //  if (Indexer.ifStemming == true)
-            //    dbpath = "Stemming";
-
-            //upload postingfiles to main memomry Library<String,String>
+   
             string[] fileEntries2 = Directory.GetFiles(postingFilesPath + "PostingFiles"/*dbpath*/);
             foreach (string fileName in fileEntries2)
                 ProcessFile(fileName, LoadPostingFiles);
@@ -683,7 +675,7 @@ namespace IR_Engine
             while (!stopMemoryHandler)
             {
                 _mainMemory.WaitOne();
-                if (myPostings.Count > 100000)
+                if (myPostings.Count > 30000)
                 {
 
 

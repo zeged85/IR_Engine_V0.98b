@@ -168,6 +168,9 @@ namespace IR_Engine
 
         public void startEngine()
         {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             model_indexer.clearAllData();
 
             VM_DocResult = "loading files...";

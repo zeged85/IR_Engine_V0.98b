@@ -70,14 +70,6 @@ namespace IR_Engine
 
                             docNumberInFile++;
 
-                            //countAmountOfUniqueInDoc = 0;
-
-                            // Console.WriteLine("Total Document #: " + Indexer.docNumber + 1);
-                            // Console.WriteLine("File Document #: " + docNumber);
-
-                            // System.Console.WriteLine("Lines in document:" + linesInDoc);
-
-
                             //update docnumbr
                             Indexer._DocNumber.WaitOne();
 
