@@ -42,7 +42,7 @@ namespace IR_Engine
         //RESPECT
         public static volatile SortedDictionary<string, string> myPostings;
 
-        public static SortedList<string, string> myDictionary;
+        public static SortedList<string, string> myDictionary = new SortedList<string, string>();
 
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
@@ -146,6 +146,7 @@ namespace IR_Engine
             amountOfUnique = 0;
             postingFolderCounter=0;
             stopMemoryHandler=false;
+            myDictionary.Clear();
         }
 
 
