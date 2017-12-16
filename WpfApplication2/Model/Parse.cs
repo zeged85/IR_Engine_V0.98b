@@ -7,38 +7,14 @@ using System.Threading.Tasks;
 
 namespace IR_Engine
 {
-    /// <summary>
-    /// This class will parse every document into terms.
-    /// The parser needs to be fit with the documents in our "maagar"
-    /// It is enough to regard only the text within the tags: <TEXT> (and later other tags).
-    /// The parser could be done in any way possible.
-    /// 
-    /// When separating terms from the documents we must obey these rules:
-    /// 
-    /// A. Numbers
-    /// B. Ranges/Expressions with hyphens
-    /// C. Precentages
-    /// D. Prices
-    /// E. Dates
-    /// F. 2 Rules we need to come up with
-    /// G. No need to regard punctuation marks (unless they are part of a term?).
-    ///    Can be used to separate words.
-    /// H. Stop-Words
-    /// I. Enable stemming
-    /// 
-    /// 
-    /// ref:
-    /// http://stackoverflow.com/questions/1500194/c-looping-through-lines-of-multiline-string
-    /// </summary>
+ 
     class Parse
     {
 
         public static List<string> languagesList = new List<string>();
-        //https://www.dotnetperls.com/enum
-        enum termType { Term, Month, Number, Name };
-        //test for commit
-
-        //  private static int thisDocNumber;
+   
+        enum TermType { Term, Month, Number, Name, Percentage };
+ 
         public static SortedDictionary<string, string> parseString(string str, int docNumber)
         {
 
@@ -46,11 +22,6 @@ namespace IR_Engine
             int countAmountOfUniqueInDoc = 0;
             int wordPositionWithSW = 0;
             int wordPositionWithoutSW = 0;
-
-
-
-
-            // Console.WriteLine("Parsing");
             string DOCNO = "";
             string languageDocument = "";
 
@@ -58,28 +29,13 @@ namespace IR_Engine
             {
                 string line; // full line string  
                 line = reader.ReadLine();
-
                 SortedDictionary<string, string> myMiniPostingListDict = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                //moving this to static may improve preformence?
 
-
-                if (line == null)
-                {
-
-                }
-
-                Console.WriteLine(line);
-
-                if (line == @"<DOCNO>FT924-11895</DOCNO>")
-                {
-
-                }
 
                 while (ReadFile.NaiveSearch(line, "<DOCNO>") != 0)
                 {
                     line = reader.ReadLine();
                 }
-                //DocNO
 
                 if (ReadFile.NaiveSearch(line, @"<DOCNO>") != -1)
                 {
@@ -99,11 +55,9 @@ namespace IR_Engine
                     }
                 }
 
-                //http://stackoverflow.com/questions/8459928/how-to-count-occurences-of-unique-values-in-dictionary
-
 
                 //text parsing - main work
-                int lineIdx = 0; // lines in document
+
                 // int limiter = 10;
 
                 //LONG TERM
@@ -125,6 +79,9 @@ namespace IR_Engine
                 int year = 0;
                 int partialDateCounter = 0;
 
+                string lastNumber = "";
+                bool isPercentage;
+                bool lastWasNumber;
                 // percent dgree dollar
                 string casualNumber = string.Empty;
                 bool casualNumberBool = false;
@@ -133,14 +90,15 @@ namespace IR_Engine
                 //SYNTEX
                 bool stopLongTerm = false; //end of line
                 bool addNextTermToLongTerm = false;
-                termType type = new termType();
+                TermType type = new TermType();
 
                 // int limiter = 10;
                 string previousLine;
-                while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0/* && limiter!=0*/)
+                int limiter = 70;
+                while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0 && limiter!=0)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.
-
+                    limiter--;
                     //Language
 
                     if (ReadFile.NaiveSearch(line, @"Language: <F P=105>") != -1)
@@ -200,15 +158,9 @@ namespace IR_Engine
                            
 
 
-
-                            //  addTermToLongTerm = false;
-
-
-
-
-                            type = termType.Term;
-
-
+                            type = TermType.Term;
+                            isPercentage = false;
+                            lastWasNumber = false;
 
 
 
@@ -225,7 +177,7 @@ namespace IR_Engine
 
                             if (s == "--")
                             {
-                                //     continue;
+                                     continue;
                             }
 
                             if (s == "+")
@@ -262,16 +214,23 @@ namespace IR_Engine
 
                             char firstChar;
                             //discard symbol in the beginning
-                            while (term.Length > 1 && !char.IsLetterOrDigit(firstChar = term[0]) && type == termType.Term)
+                            while (term.Length > 1 && !char.IsLetterOrDigit(firstChar = term[0]) && type == TermType.Term)
                             {
 
                                 //  term = term.Split(firstChar)[1];
                                 if (firstChar == '.')
-                                {
+                                {//"music they are generally more gifted than whites . . . .\""
+                                    //"Batt, a 6-7 junior, finished third in the nation last year with a .663 shooting"
+                                    if (term.Length > 1 && char.IsDigit(term[1]))
+                                        {
+                                        type = TermType.Number;
+                                        //decimal
+                                        //"57, put a .38-caliber handgun into his mouth and pulled the trigger in the back"
+                                    }
 
                                 }
                                 else if (firstChar == '%')
-                                {
+                                {//"blood-alcohol level of .11 % and Lopes of .10 %."
 
                                 }
                                 else if (firstChar == '-') //check negative number
@@ -282,7 +241,7 @@ namespace IR_Engine
                                      //   if (negative)
                                         {
                                             // skip stem
-                                            type = termType.Number;
+                                            type = TermType.Number;
                                             continue;
                                         }
                                     }
@@ -331,8 +290,7 @@ namespace IR_Engine
                             }
 
 
-                            // int length = term.Length;
-                            // char lastChar = term[length - 1];
+     
                             //discard symbols in the ending
                             //CLEAN ENDING
                             char lastChar;
@@ -343,7 +301,7 @@ namespace IR_Engine
 
                                 term = term.Split(lastChar)[0];
 
-                                if (type != termType.Term)
+                                if (type != TermType.Term)
                                 {
 
                                 }
@@ -391,6 +349,7 @@ namespace IR_Engine
                                 else if (lastChar == '-')
                                 {//add to long term?
                                     //"MAAK (Movement for All-"
+                                    //"brothers Manuel and Jack Battaglia, serving 20- and 29-year terms,"
 
                                 }
 
@@ -410,7 +369,13 @@ namespace IR_Engine
                                 {
 
                                 }
-
+                                else if (lastChar == '%')
+                                {
+                                    isPercentage = true;
+                                    type = TermType.Number;
+                                   
+                                    
+                                }
                                 else
                                 {
                                     /// ':'
@@ -434,7 +399,7 @@ namespace IR_Engine
 
                             int index = 0;
                             //TERM-TERM
-                            if (type == termType.Number)//negative number
+                            if (type == TermType.Number)//negative number
                                                         // -5****j
                             {
                                 index++;
@@ -616,7 +581,7 @@ namespace IR_Engine
                             string termToLower = term.ToLower();
 
                             //months before SW because SW contains "may"
-                            if (type == termType.Term && Indexer.Months.ContainsKey(termToLower))
+                            if (type == TermType.Term && Indexer.Months.ContainsKey(termToLower))
                             {
                                 if (possibleMonth == true) // MONTH MONTH CONFLICT
                                 {//should disable possible date
@@ -626,12 +591,12 @@ namespace IR_Engine
                                 possibleMonth = true;
                                 month = Indexer.Months[termToLower];
                                 addTermToLongTerm = false;
-                                type = termType.Month;
+                                type = TermType.Month;
                             }
 
                             //STOP WORDS
                             //may is in SW. 
-                            if (type == termType.Term && Indexer.stopWords.ContainsKey(termToLower))
+                            if (type == TermType.Term && Indexer.stopWords.ContainsKey(termToLower))
                             {
                                 wordPositionWithSW++;
                                 stopLongTerm = true;
@@ -654,19 +619,28 @@ namespace IR_Engine
                             bool isValidNumber;
                             bool isValidInteger;
 
-                            if (type == termType.Number)
+                            if (type == TermType.Number)
                             {
 
                             }
 
                             ///check if term is number
-                            if (char.IsNumber(termToLower[0]) || type == termType.Number)
+                            if (char.IsNumber(termToLower[0]) || type == TermType.Number)
                             {   //  TERM IS NUMBER
-                                type = termType.Number;
+                                type = TermType.Number;
                                 int i = 0;
                                 decimal number;
                                 // "108";
                                 isValidNumber = Decimal.TryParse(stringTerm, out number); //i now = 108  
+
+                                if (isValidNumber)
+                                {
+                                    number = decimal.Round(number, 2);
+                                    stringTerm = number.ToString();
+                                    lastNumber = stringTerm;
+                                    lastWasNumber = true;
+                                }
+                                
                                 isValidInteger = int.TryParse(stringTerm, out i);
 
                                 //true integer -> true decimal
@@ -683,27 +657,16 @@ namespace IR_Engine
                                     ///"50-year-ol"
                                     ///180-million-lira
                                  //   Console.WriteLine("Unable to parse '{0}'.", stringTerm);
-                                    string fixedNum;
-                                    /*
-                                    if (stringTerm.Contains("o"))
-                                    {
-                                       fixedNum = stringTerm.Replace('o', '0');
-                                        termQueue.Enqueue(fixedNum);
-                                        continue;
-                                    }
-                                    */
-
-
+                                  
 
                                 }
                                 else
                                 {
                                     ///TERM IS NUMBER
                                     ///
-                                    type = termType.Number;
+                                    type = TermType.Number;
 
-
-
+                                    
                                     if (!stopLongTerm) //only if not full stop
                                                        // 1993.
                                     {
@@ -738,13 +701,7 @@ namespace IR_Engine
                                         //FULL DATE
                                         stopDate = true;
                                     } //possible year
-                                    else if (number >= 1000000)
-                                    {
-                                        stringTerm = (number / 1000000).ToString() + 'M';
-
-                                        //  bigNumber = Func(i) + 'M'; // or + " M" ie/ "1.234 M" "1M" "7000M" 
-                                        //35 3/4
-                                    }
+                                 
                                     else if (number < 0)
                                     {
 
@@ -829,7 +786,7 @@ namespace IR_Engine
 
                             //UPPERCASE 1ST CHAR, s2nd char lowercase
 
-                            if (char.IsUpper(term[0]) && (term.Length > 1 && !char.IsUpper(term[1]) && type == termType.Term)) // is capital letter Term
+                            if (char.IsUpper(term[0]) && (term.Length > 1 && !char.IsUpper(term[1]) && type == TermType.Term)) // is capital letter Term
                             {
                                 //ADD TO LONG TERM
 
@@ -848,7 +805,7 @@ namespace IR_Engine
                                 }
 
 
-                                type = termType.Name;
+                                type = TermType.Name;
                                 if (Symboled) //has symbol at the end
                                 {
 
@@ -929,7 +886,7 @@ namespace IR_Engine
 
 
 
-                            if (type == termType.Term)
+                            if (type == TermType.Term)
                             {
 
                             }
@@ -977,14 +934,20 @@ namespace IR_Engine
                             }
 
                             //SAVE DATE TO MEMORY
-                            if (possibleMonth && type == termType.Term)
+                            if (possibleMonth && type == TermType.Term)
                             {
                                 stopDate = true;
                             }
 
+                            if (isPercentage)
+                            {
+                                stemTerm = stemTerm + "+percent";
+                            }
 
-
-
+                            if (lastWasNumber && ReadFile.NaiveSearch(stemTerm, @"percent") != -1)
+                            {
+                                stemTerm = lastNumber + "+percent";
+                            }
 
                             //ADD TERM TO MEMORY
                             if (myMiniPostingListDict.ContainsKey(stemTerm))
@@ -1083,7 +1046,7 @@ namespace IR_Engine
                             //percent
                             if (casualNumberBool)
                             {
-                                if (type == termType.Name)
+                                if (type == TermType.Name)
                                 {
                                     complexTerm = "";
                                     bool addIt = false;
@@ -1125,7 +1088,7 @@ namespace IR_Engine
                                 }
 
                                 else
-                                if (type != termType.Number)
+                                if (type != TermType.Number)
                                 {
                                     //restart casual number?
                                     casualNumberBool = false;

@@ -43,7 +43,7 @@ namespace IR_Engine
         public static volatile SortedDictionary<string, string> myPostings;
 
         public static SortedList<string, string> myDictionary = new SortedList<string, string>();
-
+        public static SortedList<string, string> myCache = new SortedList<string, string>();
         // public static Dictionary<int, string> DocumentIDToFile = new Dictionary<int, string>();
 
         public static volatile SortedDictionary<int, string> DocumentMetadata = new SortedDictionary<int, string>();
@@ -147,6 +147,7 @@ namespace IR_Engine
             postingFolderCounter=0;
             stopMemoryHandler=false;
             myDictionary.Clear();
+            myCache.Clear();
         }
 
 
@@ -155,7 +156,7 @@ namespace IR_Engine
         {
             _DocumentMetadata = new Mutex();
             _DocNumber = new Mutex();
-            _semaphoreIndexer = new Semaphore(8, 8);
+            _semaphoreIndexer = new Semaphore(4, 4);
             _mainMemory = new Mutex();
 
             if (Directory.Exists(documentsPath))
@@ -749,6 +750,47 @@ namespace IR_Engine
 
             Console.WriteLine(myMethodName.Method.ToString() + ":Processing file '{0}'.", path);
             myMethodName(path);
+        }
+
+
+        public void createCache()
+        {
+            myCache
+            int size = freqInAllCorpusList.Count;
+            if (size < 10000)
+            {
+                //error
+            }
+            var top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10000);
+            //var bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10);
+
+            top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10)
+                  .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            //bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            if (false)
+            {
+
+
+
+                foreach (KeyValuePair<string, string> entry in myDictionary)
+
+                    ////added if statement GIL!!!!
+                    if (!myCache.ContainsKey(entry.Key))
+                        myCache.Add(entry.Key.ToString(), entry.Value);
+                    else
+                    {
+
+                        myCache[entry.Key] += entry.Value;
+                        Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":");
+                        Console.WriteLine("Already in doc:" + myPostings[entry.Key]);
+                        Console.WriteLine("New to be added:" + entry.Value);
+                    }
+                Console.WriteLine("File loaded.");
+
+            }
+            
         }
 
         public void move(double speed, int angle)

@@ -226,9 +226,12 @@ namespace IR_Engine
 
             model_indexer.Progress = 97;
 
-           // model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
+            model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
 
             model_indexer.Progress = 99;
+
+
+            model_indexer.createCache();
 
             model_indexer.mmm();
 
@@ -316,6 +319,11 @@ namespace IR_Engine
             //is this needed?
             //  Indexer.clearAllData();
 
+        }
+
+        public void clearAllData()
+        {
+            model_indexer.clearAllData();
         }
     }
 }

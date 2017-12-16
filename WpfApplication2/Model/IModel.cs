@@ -21,7 +21,7 @@ namespace IR_Engine
         void deleteGarbage();
         void loadMetadata();
         void UniqueWordsQuery();
-      //  void PrintfreqInAllCorpusList(); 
+        void PrintfreqInAllCorpusList(); 
         void mmm();
 
 
@@ -33,5 +33,6 @@ namespace IR_Engine
         void setOutputFolder(string path);
         string getOutputFolder();
         void clearAllData();
+        void createCache();
     }
 }
