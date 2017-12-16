@@ -224,6 +224,7 @@ namespace IR_Engine
                                     if (term.Length > 1 && char.IsDigit(term[1]))
                                         {
                                         type = TermType.Number;
+                                        continue;
                                         //decimal
                                         //"57, put a .38-caliber handgun into his mouth and pulled the trigger in the back"
                                     }

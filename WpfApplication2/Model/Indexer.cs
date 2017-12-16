@@ -755,16 +755,18 @@ namespace IR_Engine
 
         public void createCache()
         {
-            myCache
+         //   myCache
             int size = freqInAllCorpusList.Count;
             if (size < 10000)
             {
                 //error
             }
+
+
             var top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10000);
             //var bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10);
 
-            top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10)
+            top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10000)
                   .ToDictionary(pair => pair.Key, pair => pair.Value);
 
             //bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10).ToDictionary(pair => pair.Key, pair => pair.Value);
