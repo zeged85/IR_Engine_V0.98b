@@ -305,11 +305,6 @@ namespace IR_Engine
                     string key = string.Empty;
                     string value = string.Empty;
 
-                    // string[] words = s.Split('^');
-                    //string value = string.Empty;
-                    // string key = words[0];
-                    //   if (words.Length == 2)
-                    //       value = words[1];
                     if (splitIndex != -1)
                     {
                         key = s.Substring(0, splitIndex);
@@ -400,6 +395,12 @@ namespace IR_Engine
             }
             return -1;
         }
+
+
+
+    
+
+
 
         //http://www.somacon.com/p576.php
         //http://stackoverflow.com/questions/281640/how-do-i-get-a-human-readable-file-size-in-bytes-abbreviation-using-net

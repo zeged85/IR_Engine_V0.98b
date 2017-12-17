@@ -231,7 +231,7 @@ namespace IR_Engine
             model_indexer.Progress = 99;
 
 
-            model_indexer.createCache();
+            
 
             model_indexer.mmm();
 
@@ -241,8 +241,15 @@ namespace IR_Engine
 
             Indexer.myPostings.Clear();
 
+            loadDictionary();
+
+            model_indexer.addPointers();
 
             loadDictionary(); //from dict.txt
+
+
+            model_indexer.createCache();
+
 
 
             model_indexer.Progress = 100;

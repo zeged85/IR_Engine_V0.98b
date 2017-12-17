@@ -753,14 +753,54 @@ namespace IR_Engine
         }
 
 
+        public void addPointers()
+        {
+
+            
+            string[] fileEntries2 = Directory.GetFiles(postingFilesPath + "PostingFiles");
+            foreach (string fileName in fileEntries2) {
+
+
+                using (StreamReader sr = File.OpenText(fileName))
+                {
+                    string s = String.Empty;
+                    int i = 0;
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        i++;
+
+
+                        int splitIndex = s.IndexOf('^');
+
+                        string key = string.Empty;
+                        string value = string.Empty;
+
+
+                        key = s.Substring(0, splitIndex);
+                        value = s.Substring(splitIndex + 1);
+
+                        Indexer.myDictionary[key] += "@" + i;
+
+
+
+                    }
+                }
+
+                File.Delete(postingFilesPath + @"\Dictionary.txt");
+                StreamWriter file2 = new StreamWriter(postingFilesPath + @"\Dictionary.txt", true);
+
+                foreach (KeyValuePair<string,string> tup in myDictionary)
+                {
+                    file2.WriteLine(tup.Key + "^" + tup.Value);
+                }
+                file2.Close();
+            }
+        }
+
         public void createCache()
         {
          //   myCache
-            int size = freqInAllCorpusList.Count;
-            if (size < 10000)
-            {
-                //error
-            }
+          
 
 
             var top10 = freqInAllCorpusList.OrderByDescending(pair => pair.Value).Take(10000);
@@ -771,27 +811,53 @@ namespace IR_Engine
 
             //bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            if (false)
-            {
+            
+                StreamWriter file = new StreamWriter(postingFilesPath + @"\Cache.txt", true);
 
 
+                foreach (KeyValuePair<string, int> entry in top10) { 
 
-                foreach (KeyValuePair<string, string> entry in myDictionary)
+                    //get most relevent documents:
+                    string termData = myDictionary[entry.Key];
+                    int ptr;
 
-                    ////added if statement GIL!!!!
-                    if (!myCache.ContainsKey(entry.Key))
-                        myCache.Add(entry.Key.ToString(), entry.Value);
-                    else
+                    int.TryParse( termData.Split('@')[1],out ptr);
+
+
+                    string[] data = termData.Split('^', '#', '@');
+                    SortedDictionary<string,int> termDocs = new SortedDictionary<string, int>();
+
+                    for (int i=3; i< data.Length - 2; i+=2)
                     {
+                       string docID =  data[i];
+                        int tf;
+                        int.TryParse(data[i + 1], out tf);
 
-                        myCache[entry.Key] += entry.Value;
-                        Console.WriteLine("CONFLICT:" + entry.Key.ToString() + ":");
-                        Console.WriteLine("Already in doc:" + myPostings[entry.Key]);
-                        Console.WriteLine("New to be added:" + entry.Value);
+                        termDocs.Add(docID, tf);
+;                    }
+
+
+
+                    var bestDocs = termDocs.OrderByDescending(pair => pair.Value).Take(10);
+
+                    bestDocs = termDocs.OrderByDescending(pair => pair.Value).Take(10)
+                          .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                    string cacheData = data[1] + "#" + data[2];
+                    foreach (KeyValuePair<string,int> doc in bestDocs)
+                    {
+                        cacheData += "#" + doc.Key + "#" + doc.Value.ToString();
                     }
-                Console.WriteLine("File loaded.");
+                    cacheData += "@" + ptr;
 
-            }
+
+                    myCache.Add(entry.Key.ToString(), cacheData);
+                    file.WriteLine(entry.Key.ToString() + "^" + cacheData);
+             
+                    }
+                Console.WriteLine("cache loaded.");
+                file.Close();
+            
             
         }
 

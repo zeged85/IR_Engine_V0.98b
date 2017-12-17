@@ -34,5 +34,6 @@ namespace IR_Engine
         string getOutputFolder();
         void clearAllData();
         void createCache();
+        void addPointers();
     }
 }
