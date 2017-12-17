@@ -269,8 +269,27 @@ namespace WpfApplication2
 
         private void languageChoose_Pressed(object sender, RoutedEventArgs e)
         {
-            Language m_Language = new Language();
-            m_Language.Show();
+            isStemming(this, null);
+
+            if (File.Exists(vm.getOutputFolder() + "\\Cache.txt"))
+            {
+                DictionaryWindow m_Cache = new DictionaryWindow();
+                string str;
+                string[] split;
+                StreamReader s = new StreamReader(vm.getOutputFolder() + "\\Cache.txt");
+                while ((str = s.ReadLine()) != null)
+                {
+                    split = str.Split(new string[] { "^" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    m_Cache.listInverted.Items.Add(/*str*/split[0] + " : " + split[1]);
+                }
+                s.Close();
+                m_Cache.Show();
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("The requested Dictionary is not exist in the current folder.");
+            }
         }
 
         private void loadDictionaryPressed(object sender, RoutedEventArgs e)

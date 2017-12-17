@@ -511,6 +511,28 @@ namespace IR_Engine
 
             bottom10 = freqInAllCorpusList.OrderBy(pair => pair.Value).Take(10)
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+
+            StreamWriter file3 = new StreamWriter(postingFilesPath + @"\top10.txt", true);
+
+            foreach (var post in top10)
+            {
+                file3.WriteLine(post.Key + "^" + post.Value);
+            }
+
+            file3.Close();
+
+            StreamWriter file4 = new StreamWriter(postingFilesPath + @"\bot10.txt", true);
+
+            foreach (var post in bottom10)
+            {
+                file4.WriteLine(post.Key + "^" + post.Value);
+            }
+
+            file4.Close();
+
+
+
         }
 
         public void mmm()
@@ -542,7 +564,8 @@ namespace IR_Engine
         {
             Console.WriteLine("Loading File '{0}'.", postingFilesPath + @"\Dictionary.txt");
 
-            //myDictionary.Clear();
+            if (myDictionary != null)
+                myDictionary.Clear();
             myDictionary = ReadFile.fileToSortedList(postingFilesPath + @"\Dictionary.txt");
 
 

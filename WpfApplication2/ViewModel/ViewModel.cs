@@ -187,33 +187,33 @@ namespace IR_Engine
             VM_DocResult = "merging...";
             model_indexer.MergeAllToSingleUnSorted();
 
-            model_indexer.Progress = 65;
+            model_indexer.Progress = 55;
             VM_DocResult = "sorting...";
             model_indexer.sort();
 
-            model_indexer.Progress = 70;
+            model_indexer.Progress = 60;
 
             model_indexer.deleteGarbage();
 
-            model_indexer.Progress = 75;
+            model_indexer.Progress = 60;
 
           //  model_indexer.dumpDocumentMetadata(); //create meta.txt
 
-            model_indexer.Progress = 80;
+            model_indexer.Progress = 65;
             VM_DocResult = "loading Posting Files...";
             model_indexer.loadPostingFiles();
 
-            model_indexer.Progress = 85;
+            model_indexer.Progress = 70;
 
          //   model_indexer.loadMetadata();
 
-            model_indexer.Progress = 90;
+            model_indexer.Progress = 75;
             VM_DocResult = "createing Dictionary...";
             model_indexer.createDictionary(); // and save to file dict.txt
 
             //
 
-            model_indexer.Progress = 95;
+            model_indexer.Progress = 80;
 
             //
 
@@ -224,11 +224,11 @@ namespace IR_Engine
 
             model_indexer.UniqueWordsQuery(); //CREATE METADATA
 
-            model_indexer.Progress = 97;
+            model_indexer.Progress = 85;
 
-            model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
+            //model_indexer.PrintfreqInAllCorpusList(); //TOP 10 BOTTOM 10 
 
-            model_indexer.Progress = 99;
+            model_indexer.Progress = 90;
 
 
             
@@ -243,10 +243,16 @@ namespace IR_Engine
 
             loadDictionary();
 
+            model_indexer.Progress = 95;
+            VM_DocResult = "updating pointers...";
+
             model_indexer.addPointers();
 
             loadDictionary(); //from dict.txt
 
+            model_indexer.Progress = 99;
+
+            VM_DocResult = "building cache...";
 
             model_indexer.createCache();
 
