@@ -324,7 +324,7 @@ namespace WpfApplication2
         }
 
         private void txtAutoSuggestName_TextChanged(object sender, TextChangedEventArgs e)
-        {
+        {/*
             listBoxSuggestion.Items.Clear();
             if (QueryInputTextBox.Text != "")
             {
@@ -343,6 +343,7 @@ namespace WpfApplication2
             {
                 listBoxSuggestion.Visibility = Visibility.Hidden;
             }
+            */
         }
 
        
@@ -384,8 +385,10 @@ namespace WpfApplication2
 
                     
                     string[] allTerms = query.Split('+');
-                    List<string> syn = new List<string>();
 
+                    
+                    List<string> syn = new List<string>();
+                    /*
                     foreach (string term in allTerms)
                     {
                         string[] SYNOms = vm.getSYNONYMS(term);
@@ -397,21 +400,21 @@ namespace WpfApplication2
                             }
                         }
                     }
-
+                    */
                     
                     string[] SYNONYMS  = syn.ToArray();
 
-
+    
 
                     if (Indexer.ifStemming == true)
                     {
                         Stemmer stem = new Stemmer();
-
+                        /*
                         for (int i = 0; i < SYNONYMS.Length - 1; i++)
                         {
                             SYNONYMS[i] = stem.stemTerm(SYNONYMS[i]);
                         }
-
+                        */
                             if (query.Contains('+'))
                             {
                                 string[] str = query.Split('+');
