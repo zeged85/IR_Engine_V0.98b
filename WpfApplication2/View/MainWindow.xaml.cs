@@ -190,7 +190,8 @@ namespace WpfApplication2
             */
 
             string line = string.Empty;
-            string url = @"https://en.wikipedia.org/wiki/Television";
+            string wikiTerm = "film";
+            string url = @"https://en.wikipedia.org/wiki/" + wikiTerm;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -210,11 +211,34 @@ namespace WpfApplication2
                     line = reader.ReadLine();
                 }
 
-                    //line = reader.ReadLine();
 
-                    while (line.Contains("toctitle") == false)
+                while (line != null)
                 {
-                    Console.WriteLine(line);
+                    if (line.Contains("<p>") == true)
+                    {
+                        break;
+                    }
+                    line = reader.ReadLine();
+                }
+
+                //line = reader.ReadLine();
+
+                while (line.Contains("toctitle") == false)
+                {
+                    if (line.Contains("<b>"))
+                    {
+                        while (line.Contains("<b>"))
+                        {
+                            //Console.WriteLine(line);
+                            int a, b;
+                            a = line.IndexOf("<b>");
+                            b = line.IndexOf(@"</b>");
+                            Console.WriteLine(line.Substring(a,b - a + 4));
+                            line = line.Substring(b+4);
+                        }
+                        
+                    }
+                    
                     line = reader.ReadLine();
 
 
