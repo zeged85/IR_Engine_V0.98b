@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Threading;
 using System.ComponentModel;
-
+using System.Net;
 
 namespace WpfApplication2
 {
@@ -178,6 +178,66 @@ namespace WpfApplication2
                 vm.setOutputFolder(  m_postingFilesPath + "\\" + "UnStemming" + "\\");
 
                 Indexer.ifStemming = false;
+            }
+        }
+
+        private void isExtendQuery(object sender, RoutedEventArgs e)
+        {
+            /*
+            tcpClient client = new tcpClient();
+            client.connect(@"https://en.wikipedia.org/wiki/Television", 80);
+            Console.WriteLine(client.read());
+            */
+
+            string line = string.Empty;
+            string url = @"https://en.wikipedia.org/wiki/Television";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                line = reader.ReadLine();
+
+                while (line!=null)
+                {
+                    if (line.Contains("firstHeading") == true)
+                    {
+                        break;
+                    }
+                    line = reader.ReadLine();
+                }
+
+                    //line = reader.ReadLine();
+
+                    while (line.Contains("toctitle") == false)
+                {
+                    Console.WriteLine(line);
+                    line = reader.ReadLine();
+
+
+                }
+
+            }
+
+
+
+
+            
+
+            if (Stemming.IsChecked == true)
+            {
+                //Indexer.ifStemming = true;
+                //vm.setOutputFolder(m_postingFilesPath + "\\" + "Stemming" + "\\");
+
+            }
+            else
+            {
+                //vm.setOutputFolder(m_postingFilesPath + "\\" + "UnStemming" + "\\");
+
+                //Indexer.ifStemming = false;
             }
         }
 

@@ -280,6 +280,21 @@
 			FontWeight="Bold" 
 			Height="26" 
 			RenderTransformOrigin="0.36,-0.139"/>
+        <CheckBox x:Name="isExtendQuery_CheckBox" 
+            Content="Extend Query" 
+            Margin="612,230,104.4,336.1" 
+            RenderTransformOrigin="2.112,-6.75"  
+            Checked="isExtendQuery" 
+            FontWeight="Bold">
+            <CheckBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-0.127"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </CheckBox.RenderTransform>
+        </CheckBox>
 
 
     </Grid>
