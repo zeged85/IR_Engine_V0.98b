@@ -597,6 +597,11 @@ namespace WpfApplication2
             resultFolder_Text.Text = Dialog.SelectedPath;
         }
 
+        private void isDocumentSearch(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void QueryInputTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
 

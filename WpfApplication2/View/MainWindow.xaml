@@ -295,6 +295,21 @@
                 </TransformGroup>
             </CheckBox.RenderTransform>
         </CheckBox>
+        <CheckBox x:Name="isDocumentSearch_CheckBox_Copy" 
+            Content="Document search" 
+            Margin="612,184,104.4,383.1" 
+            RenderTransformOrigin="2.112,-6.75"  
+            Checked="isDocumentSearch" 
+            FontWeight="Bold">
+            <CheckBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-0.127"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </CheckBox.RenderTransform>
+        </CheckBox>
 
 
     </Grid>
