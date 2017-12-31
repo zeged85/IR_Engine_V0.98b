@@ -42,6 +42,8 @@ namespace IR_Engine
             List<SortedDictionary<string, string>> DicList = new List<SortedDictionary<string, string>>();
             SortedDictionary<string, string> myFilePostings = new SortedDictionary<string, string>();
             // Reference 1:
+
+            string fileName = path;
             //http://stackoverflow.com/questions/2161895/reading-large-text-files-with-streams-in-c-sharp
 
             int docNumberInFile = 0;
@@ -90,7 +92,7 @@ namespace IR_Engine
 
 
                             // DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList);
-                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList));
+                            Thread thread = new Thread(() => DoWork(ref _ReadFileSemaphore, ref _myFilePostings, str, freshNum, ref DicList, fileName));
                             // Start the thread, passing the number.
 
 
@@ -189,7 +191,7 @@ namespace IR_Engine
         }
 
 
-        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex _DictionaryListMutex, object path, int num, ref List<SortedDictionary<string, string>> DicList)
+        private static void DoWork(ref Semaphore _ReadFileSemaphore, ref Mutex _DictionaryListMutex, object path, int num, ref List<SortedDictionary<string, string>> DicList, string fileName)
         {
             string str = path.ToString();
             //   counter--;
@@ -200,7 +202,7 @@ namespace IR_Engine
 
 
 
-            SortedDictionary<string, string> newDict = Parse.parseString(str, num);
+            SortedDictionary<string, string> newDict = Parse.parseString(str, num, fileName);
             //add to main memory first
             //  return newDict;
             _DictionaryListMutex.WaitOne();

@@ -267,12 +267,53 @@ namespace IR_Engine
                 ////
                 //  }
 
+
+
+
+
                 string query = queryInput.Substring(space + 1);
+
+                SortedDictionary<string, double> docRankRes = new SortedDictionary<string, double>();
+                SortedDictionary<string, double> docRankResTmp = new SortedDictionary<string, double>();
+                if (query.Contains('+'))
+                {
+                    string[] str = query.Split('+');
+
+                    foreach (string singleTerm in str)
+                    {
+                        docRankResTmp = processFullTermQuery(singleTerm);
+                        foreach (KeyValuePair<string, double> pair in docRankResTmp)
+                        {
+                            if (docRankRes.ContainsKey(pair.Key))
+                            {
+                                docRankRes[pair.Key] += pair.Value;
+                            }
+                            else
+                            {
+                                docRankRes.Add(pair.Key, pair.Value);
+                            }
+                        }
+                    }
+
+
+                }
                 //first query in file
-                SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+                docRankResTmp = processFullTermQuery(query);
+                foreach (KeyValuePair<string, double> pair in docRankResTmp)
+                {
+                    if (docRankRes.ContainsKey(pair.Key))
+                    {
+                        docRankRes[pair.Key] += pair.Value;
+                    }
+                    else
+                    {
+                        docRankRes.Add(pair.Key, pair.Value);
+                    }
+                }
 
 
-               // SortedDictionary<string, double> SYNONYMSdocRankRes = new SortedDictionary<string, double>();
+
+                // SortedDictionary<string, double> SYNONYMSdocRankRes = new SortedDictionary<string, double>();
 
                 foreach (string syn in SYNONYMS)
                 {
@@ -493,6 +534,29 @@ namespace IR_Engine
 
         /// MVVM
 
+        public string getDocument(int docID)
+        {
+            Document DocData = getDocData(docID);
+
+
+
+            string DOCNO = DocData.DOCNO;
+            string mostFreqTermInDoc = DocData.mostFreqTermInDoc;
+            int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
+            string language = DocData.language;
+            int uniqueInDocAmount = DocData.uniqueInDocAmount;
+            int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
+            int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
+            int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
+            string fileName = DocData.fileName;
+
+
+
+
+            return "";
+        }
+
+
         //https://www.dotnetperls.com/tuple
         public static Document getDocData(int doc)
         {
@@ -511,6 +575,7 @@ namespace IR_Engine
                 int totalInDocIncludingSW = Int32.Parse(val[5]);
                 int totalInDocwithoutSW = Int32.Parse(val[6]);
                 int AmountUniqueInCorpus = Int32.Parse(val[7]);
+                string fileName = val[8];
 
 
                 ///12: FBIS3-521 , ifp : 5, English , uniqueInDoc : 74, totalInDocIncludingSW : 201, totalInDocwithoutSW : 114}@12 #Unique in corpus:3
@@ -528,7 +593,7 @@ namespace IR_Engine
 
 
                 //Tuple<int, string, bool> tuple =
-                return new Document(DOCNO, mostFreqTermInDoc, maxOccurencesInDocument, language, uniqueInDocAmount, totalInDocIncludingSW, totalInDocwithoutSW, AmountUniqueInCorpus);
+                return new Document(DOCNO, mostFreqTermInDoc, maxOccurencesInDocument, language, uniqueInDocAmount, totalInDocIncludingSW, totalInDocwithoutSW, AmountUniqueInCorpus, fileName);
             }
             else
             {
@@ -976,6 +1041,12 @@ namespace IR_Engine
 
 
                     string DOCNO = DocData.DOCNO;
+
+                    if (DOCNO.Trim()== "FBIS3-10551")
+                    {
+
+                    }
+
                     string mostFreqTermInDoc = DocData.mostFreqTermInDoc;
                     int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
                     string language = DocData.language;
@@ -983,7 +1054,7 @@ namespace IR_Engine
                     int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
                     int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
                     int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
-
+                    string fileName = DocData.fileName;
 
 
                     if (languageChosen.Count != 0)

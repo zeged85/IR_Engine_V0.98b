@@ -15,7 +15,7 @@ namespace IR_Engine
    
         enum TermType { Term, Month, Number, Name, Percentage };
  
-        public static SortedDictionary<string, string> parseString(string str, int docNumber)
+        public static SortedDictionary<string, string> parseString(string str, int docNumber, string fileName)
         {
 
             int thisDocNumber = docNumber;
@@ -1151,7 +1151,7 @@ namespace IR_Engine
 
                 //  myDocumentData.                
                 string METADATA_SECURE = DOCNO + "#" + maxTerm + "#" + maxOccurencesInDocument + "#"
-                    + languageDocument + "#" + countAmountOfUniqueInDoc + "#" + wordPositionWithSW + "#" + wordPositionWithoutSW;
+                    + languageDocument + "#" + countAmountOfUniqueInDoc + "#" + wordPositionWithSW + "#" + wordPositionWithoutSW + '#' + fileName;
 
 
                 //MUTEX

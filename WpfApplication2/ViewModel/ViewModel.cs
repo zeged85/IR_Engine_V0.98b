@@ -307,6 +307,11 @@ namespace IR_Engine
             return model_indexer.getOutputFolder();
         }
 
+        public string getDocument(int docID)
+        {
+            return search.getDocument(docID);
+        }
+
         public void setOutputFolder(string path)
         {
 

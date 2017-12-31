@@ -16,8 +16,9 @@ namespace IR_Engine
         public int totalInDocIncludingSW;
         public int totalInDocwithoutSW;
         public int AmountUniqueInCorpus;
+        public string fileName;
 
-        public Document(string DOCNO, string mostFreqTermInDoc, int maxOccurencesInDocument, string language, int uniqueInDocAmount, int totalInDocIncludingSW, int totalInDocwithoutSW, int AmountUniqueInCorpus)
+        public Document(string DOCNO, string mostFreqTermInDoc, int maxOccurencesInDocument, string language, int uniqueInDocAmount, int totalInDocIncludingSW, int totalInDocwithoutSW, int AmountUniqueInCorpus, string fileName)
         {
             this.DOCNO=DOCNO;
             this. mostFreqTermInDoc=mostFreqTermInDoc;
@@ -27,6 +28,7 @@ namespace IR_Engine
             this. totalInDocIncludingSW=totalInDocIncludingSW;
             this. totalInDocwithoutSW=totalInDocwithoutSW;
             this.AmountUniqueInCorpus= AmountUniqueInCorpus;
+            this.fileName = fileName;
         }
     }
 }
