@@ -271,7 +271,7 @@
 			VerticalAlignment="Center" 
 			Margin="220,245,450,326.5" 
 			RenderTransformOrigin="0.458,0.611" 
-			Height="24"/>
+			Height="24" TextChanged="resultFolder_Text_TextChanged"/>
 
         <TextBlock Text="Choose Result Path:" 
 			VerticalAlignment="Top" 

@@ -273,9 +273,9 @@ namespace IR_Engine
             search.openQueryFile(path);
         }
 
-        public void runSingleQuery(string query, string[] SYNONYMS)
+        public void runSingleQuery(string query, string[] SYNONYMS, int query_id)
         {
-            search.runSingleQuery(query, SYNONYMS);
+            search.runSingleQuery(query, SYNONYMS, query_id);
         }
 
         public SortedDictionary<string,double> VMsearchQuery(string query)

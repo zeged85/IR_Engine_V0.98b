@@ -503,8 +503,12 @@ namespace WpfApplication2
 
             }
 
+            if (File.Exists(Searcher.pathForResult + "\\result.txt"))
+                {
+                    File.Delete(Searcher.pathForResult + "\\result.txt");
+                }
 
-            vm.runSingleQuery(query, SYNONYMS);
+            vm.runSingleQuery(query, SYNONYMS, 0);
             System.Windows.Forms.MessageBox.Show("Query Activated");
 
             QueryInputTextBox.IsReadOnly = true;
@@ -592,6 +596,10 @@ namespace WpfApplication2
                 
                 if (!string.IsNullOrEmpty(queriesFile.FileName))
                 {
+                    if (File.Exists(Searcher.pathForResult + "\\result.txt"))
+                    {
+                        File.Delete(Searcher.pathForResult + "\\result.txt");
+                    }
                     vm.openQueryFile(queriesFile.FileName);
                     System.Windows.Forms.MessageBox.Show("Process ended.\nResult File is in your chosen folder.");
                     Searcher.languageChosen.Clear();
@@ -627,6 +635,11 @@ namespace WpfApplication2
             {
                 isDocumentSearch_b = true;
             }
+        }
+
+        private void resultFolder_Text_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
 
         private void QueryInputTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

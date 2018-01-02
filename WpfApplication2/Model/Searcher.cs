@@ -252,15 +252,15 @@ namespace IR_Engine
         /// gil gil
         /// </summary>
         /// <param name="queryInput"></param>
-        public void runSingleQuery(string queryInput, string[] SYNONYMS)
+        public void runSingleQuery(string queryInput, string[] SYNONYMS, int query_id)
         {
             //niros
             //remove blank lines
             if (!string.IsNullOrEmpty(queryInput))
             {
                 int space = queryInput.IndexOf(' ');
-                Random rand = new Random();
-                int query_id = rand.Next(0, 1000);
+                //Random rand = new Random();
+                //int query_id = rand.Next(0, 1000);
                 //  bool isValidInteger = int.TryParse(queryInput.Substring(0, space), out query_id);
                 //  if (!isValidInteger)
                 //  {
@@ -345,11 +345,12 @@ namespace IR_Engine
 
                 //sort by val double
                 //append results to file
-
+                /*
                 if (File.Exists(pathForResult + "\\result.txt"))
                 {
                     File.Delete(pathForResult + "\\result.txt");
                 }
+                */
                 StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
                 /// 351   0  FR940104-0-00001  1   42.38   mt
                 int limiter = 0;
@@ -490,9 +491,9 @@ namespace IR_Engine
                         }
 
 
+                        bool append = true;
 
-
-                        runSingleQuery(query, SYNONYMS);
+                        runSingleQuery(query, SYNONYMS, query_id);
 
 
                         /*
