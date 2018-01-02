@@ -380,154 +380,156 @@ namespace IR_Engine
                 string s = String.Empty;
                 while ((s = sr.ReadLine()) != null)
                 {
-                    //remove blank lines
-                    if (s == "")
-                        continue;
-                    int space = s.IndexOf(' ');
-                    int query_id;
-                    bool isValidInteger = int.TryParse(s.Substring(0, space), out query_id);
-                    if (!isValidInteger)
+                    if (s.Contains(@"<num>"))
                     {
-                        ////
-                    }
-
-                    string query = s.Substring(space + 1);
-                    //first query in file
 
 
-
-
-                    query = query.Trim();
-
-                    if (query.Last().ToString() == ".")
-                    {
-                        query = query.Substring(0, query.Length - 2);
-                    }
-                    if (query.Contains(','))
-                    {
-                        query = query.Remove(query.IndexOf(','));
-                    }
-
-                    if (query.Contains(' '))
-                    {
-                        query = query.Replace(' ', '+');
-                    }
-
-
-
-
-
-
-
-                    string[] allTerms = query.Split('+');
-                    List<string> syn = new List<string>();
-
-                    foreach (string term in allTerms)
-                    {
-                        string[] SYNOms = getSYNONYMS(term);
-
-                        if (SYNOms != null)
+                        int query_id;
+                        bool isValidInteger = int.TryParse(s.Split(':')[1], out query_id);
+                        if (!isValidInteger)
                         {
-                            foreach (string str in SYNOms)
+                            ////
+                        }
+
+                        s = sr.ReadLine();
+                        string query = s.Split('>')[1];
+
+
+
+
+                        query = query.Trim();
+
+                        if (query.Last().ToString() == ".")
+                        {
+                            query = query.Substring(0, query.Length - 2);
+                        }
+                        if (query.Contains(','))
+                        {
+                            query = query.Remove(query.IndexOf(','));
+                        }
+
+                        if (query.Contains(' '))
+                        {
+                            query = query.Replace(' ', '+');
+                        }
+
+
+
+
+
+
+
+                        string[] allTerms = query.Split('+');
+                        List<string> syn = new List<string>();
+
+                        foreach (string term in allTerms)
+                        {
+                            string[] SYNOms = getSYNONYMS(term);
+
+                            if (SYNOms != null)
                             {
-                                if (!syn.Contains(str))
+                                foreach (string str in SYNOms)
                                 {
-                                    syn.Add(str);
+                                    if (!syn.Contains(str))
+                                    {
+                                        syn.Add(str);
+                                    }
+                                }
+
+                            }
+
+
+                        }
+                        string[] SYNONYMS = syn.ToArray();
+
+
+                        /*
+                        foreach (string syn2 in SYNONYMS)
+                        {
+                            SortedDictionary<string, double> SYNONYMSdocRankRes = processFullTermQuery(syn2);
+                            foreach (KeyValuePair<string, double> pair in SYNONYMSdocRankRes)
+                            {
+                                if (SYNONYMSdocRankRes.ContainsKey(pair.Key))
+                                {
+                                    docRankRes[pair.Key] += pair.Value;
+                                }
+                                else
+                                {
+                                    docRankRes.Add(pair.Key, pair.Value);
                                 }
                             }
-                       
                         }
-                     
-
-                    }
-                    string[] SYNONYMS = syn.ToArray();
+                        */
 
 
-                    /*
-                    foreach (string syn2 in SYNONYMS)
-                    {
-                        SortedDictionary<string, double> SYNONYMSdocRankRes = processFullTermQuery(syn2);
-                        foreach (KeyValuePair<string, double> pair in SYNONYMSdocRankRes)
+
+
+                        if (Indexer.ifStemming == true)
                         {
-                            if (SYNONYMSdocRankRes.ContainsKey(pair.Key))
+                            Stemmer stem = new Stemmer();
+
+
+                            if (query.Contains('+'))
                             {
-                                docRankRes[pair.Key] += pair.Value;
+                                string[] str = query.Split('+');
+
+                                query = stem.stemTerm(str[0]);
+
+                                foreach (string tri in str)
+                                {
+                                    if (tri == str[0])
+                                        continue;
+                                    query += "+" + stem.stemTerm(tri);
+                                }
                             }
                             else
                             {
-                                docRankRes.Add(pair.Key, pair.Value);
+                                query = stem.stemTerm(query);
                             }
+
                         }
-                    }
-                    */
 
 
 
 
-                    if (Indexer.ifStemming == true)
-                    {
-                        Stemmer stem = new Stemmer();
+                        runSingleQuery(query, SYNONYMS);
 
 
-                        if (query.Contains('+'))
+                        /*
+                        SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
+
+                        var orderByVal = docRankRes.OrderBy(v => v.Value);
+
+                        //reverse descending
+                        //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
+
+                        //    orderByVal.Reverse();
+                        var desc = orderByVal.Reverse();
+
+                        //better just change comperer
+                        //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
+
+                        //sort by val double
+                        //append results to file
+
+                        StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt", true);
+                        /// 351   0  FR940104-0-00001  1   42.38   mt
+                        int limiter = 0;
+                        foreach (KeyValuePair<string, double> docResult in desc)
                         {
-                            string[] str = query.Split('+');
-
-                            query = stem.stemTerm(str[0]);
-
-                            foreach (string tri in str)
+                            limiter++;
+                            ///query ID - ITER = 0   - 
+                            file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
+                            if (limiter == 50)
                             {
-                                if (tri == str[0])
-                                    continue;
-                                query += "+" + stem.stemTerm(tri);
+                                break;
                             }
                         }
-                        else
-                        {
-                            query = stem.stemTerm(query);
-                        }
+                        file6.Close();
 
+                        */
                     }
-
-
-
-
-                    runSingleQuery(query, SYNONYMS);
-
-                    
-                    /*
-                    SortedDictionary<string, double> docRankRes = processFullTermQuery(query);
-
-                    var orderByVal = docRankRes.OrderBy(v => v.Value);
-
-                    //reverse descending
-                    //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
-
-                    //    orderByVal.Reverse();
-                    var desc = orderByVal.Reverse();
-
-                    //better just change comperer
-                    //http://stackoverflow.com/questions/7815930/sortedlist-desc-order
-
-                    //sort by val double
-                    //append results to file
-
-                    StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt", true);
-                    /// 351   0  FR940104-0-00001  1   42.38   mt
-                    int limiter = 0;
-                    foreach (KeyValuePair<string, double> docResult in desc)
-                    {
-                        limiter++;
-                        ///query ID - ITER = 0   - 
-                        file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
-                        if (limiter == 50)
-                        {
-                            break;
-                        }
-                    }
-                    file6.Close();
-            
-                    */}
+                }
             }
             
         }
@@ -550,10 +552,10 @@ namespace IR_Engine
             int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
             string fileName = DocData.fileName;
 
+            string doc = ReadFile.OpenDocument(fileName, DOCNO);
 
 
-
-            return "";
+            return doc;
         }
 
 
@@ -574,8 +576,8 @@ namespace IR_Engine
                 int uniqueInDocAmount = Int32.Parse(val[4]);
                 int totalInDocIncludingSW = Int32.Parse(val[5]);
                 int totalInDocwithoutSW = Int32.Parse(val[6]);
-                int AmountUniqueInCorpus = Int32.Parse(val[7]);
-                string fileName = val[8];
+                int AmountUniqueInCorpus = Int32.Parse(val[8]);
+                string fileName = val[7];
 
 
                 ///12: FBIS3-521 , ifp : 5, English , uniqueInDoc : 74, totalInDocIncludingSW : 201, totalInDocwithoutSW : 114}@12 #Unique in corpus:3

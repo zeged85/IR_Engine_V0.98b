@@ -33,6 +33,36 @@ namespace IR_Engine
 
         int gil = 0;
 
+        public static string OpenDocument(string path, string DOCNO)
+        {
+            string doc = "";
+            using (StreamReader sr = File.OpenText(path))
+            {
+                string s = String.Empty;
+                while ((s = sr.ReadLine()) != null)
+                {
+                  if (s.Contains(DOCNO))
+                    {
+                        doc += s + Environment.NewLine;
+                        while ((s = sr.ReadLine()) != null && !s.Contains(@"/DOC>"))
+                        {
+                            if (!s.Contains("<"))
+                            {
+                                doc += s + Environment.NewLine;
+
+                            }
+                            
+                        }
+
+
+                    }
+
+                }
+            }
+            
+            return doc;
+        }
+
         public static SortedDictionary<string, string> OpenFileForParsing(string path)
         {
             Semaphore _ReadFileSemaphore = new Semaphore(8, 8); //one for every file
