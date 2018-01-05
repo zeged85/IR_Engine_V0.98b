@@ -49,7 +49,7 @@ namespace IR_Engine
                         {
                             
                         }
-                        while ((s = sr.ReadLine()) != null && !s.Contains(@"</HEADLINE>"))
+                        while ((s = sr.ReadLine()) != null && !s.Contains(@"<TEXT>"))
                         {
                             if (!s.Contains("<"))
                             {
@@ -58,14 +58,14 @@ namespace IR_Engine
                         }
 
                         headline += Environment.NewLine;
-                        newLine += s + Environment.NewLine;
+                        //newLine += s + Environment.NewLine;
                         while ((s = sr.ReadLine()) != null && !s.Contains(@"/DOC>"))
                         {
                             
 
                             if (!s.Contains("<"))
                             {
-                                if (s.Contains(". "))
+                                if (s.Contains("."))
                                 {
                                     string[] split = s.Split('.');
                                     newLine += split[0] + '.' + Environment.NewLine;
@@ -94,21 +94,49 @@ namespace IR_Engine
 
             int counter = 5;
 
+            string[] titleList = headline.Split(' ');
+            List<string> titleDic = new List<string>();
+            foreach (string title in titleList)
+            {
+              //  if (!Indexer.stopWords.ContainsKey(title))
+                {
+                    titleDic.Add(title.Trim().ToLower());
+                }
+                
+            }
+
+            
+            
             Dictionary<string, int> linesScore = new Dictionary<string, int>();
 
             foreach (string line in lines)
             {
                 counter--;
-                result += line + Environment.NewLine;
+                
+                linesScore.Add(line, 0);
+                string[] words = line.Split(' ');
+                foreach (string word in words)
+                {
 
+                    if (/*!Indexer.stopWords.ContainsKey(word.Trim().ToLower()) && */titleDic.Contains(word.Trim().ToLower()))
+                    {
+                        linesScore[line] += 1;
+                    }
+                }
 
-
-                //linesScore.Add(0.0, line);
+                //linesScore.Add(line, 0);
 
                 if (counter == 0)
                 {
                     break;
                 }
+            }
+
+            var top5 = linesScore.OrderByDescending(pair => pair.Value).Take(5);
+
+            foreach (KeyValuePair<string,int> pair in top5)
+            {
+                result += pair.Value + ")" + pair.Key + Environment.NewLine; 
             }
 
             return result;
