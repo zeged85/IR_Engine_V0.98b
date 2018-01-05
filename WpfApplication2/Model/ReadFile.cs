@@ -35,7 +35,9 @@ namespace IR_Engine
 
         public static string OpenDocument(string path, string DOCNO)
         {
-            string doc = "";
+            string newLine = "";
+            string headline = "";
+            List<string> lines = new List<string>();
             using (StreamReader sr = File.OpenText(path))
             {
                 string s = String.Empty;
@@ -43,13 +45,42 @@ namespace IR_Engine
                 {
                   if (s.Contains(DOCNO))
                     {
-                        doc += s + Environment.NewLine;
-                        while ((s = sr.ReadLine()) != null && !s.Contains(@"/DOC>"))
+                        while ((s = sr.ReadLine()) != null && !s.Contains(@"<HEADLINE>"))
+                        {
+                            
+                        }
+                        while ((s = sr.ReadLine()) != null && !s.Contains(@"</HEADLINE>"))
                         {
                             if (!s.Contains("<"))
                             {
-                                doc += s + Environment.NewLine;
+                                headline += s;
+                            }
+                        }
 
+                        headline += Environment.NewLine;
+                        newLine += s + Environment.NewLine;
+                        while ((s = sr.ReadLine()) != null && !s.Contains(@"/DOC>"))
+                        {
+                            
+
+                            if (!s.Contains("<"))
+                            {
+                                if (s.Contains(". "))
+                                {
+                                    string[] split = s.Split('.');
+                                    newLine += split[0] + '.' + Environment.NewLine;
+                                    lines.Add(newLine);
+                                    newLine = split[1];
+                                }
+                                else
+                                {
+                                    newLine += s;
+                                }
+                                
+                            }
+                            else
+                            {
+                                newLine = string.Empty;
                             }
                             
                         }
@@ -59,8 +90,28 @@ namespace IR_Engine
 
                 }
             }
-            
-            return doc;
+            string result = headline + Environment.NewLine;
+
+            int counter = 5;
+
+            Dictionary<string, int> linesScore = new Dictionary<string, int>();
+
+            foreach (string line in lines)
+            {
+                counter--;
+                result += line + Environment.NewLine;
+
+
+
+                //linesScore.Add(0.0, line);
+
+                if (counter == 0)
+                {
+                    break;
+                }
+            }
+
+            return result;
         }
 
         public static SortedDictionary<string, string> OpenFileForParsing(string path)

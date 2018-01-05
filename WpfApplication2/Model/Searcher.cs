@@ -539,24 +539,35 @@ namespace IR_Engine
 
         public string getDocument(int docID)
         {
+
             Document DocData = getDocData(docID);
 
 
 
-            string DOCNO = DocData.DOCNO;
-            string mostFreqTermInDoc = DocData.mostFreqTermInDoc;
-            int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
-            string language = DocData.language;
-            int uniqueInDocAmount = DocData.uniqueInDocAmount;
-            int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
-            int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
-            int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
-            string fileName = DocData.fileName;
+            if (DocData!= null)
+            {
+                string DOCNO = DocData.DOCNO;
+                string mostFreqTermInDoc = DocData.mostFreqTermInDoc;
+                int maxOccurencesInDocument = DocData.maxOccurencesInDocument;
+                string language = DocData.language;
+                int uniqueInDocAmount = DocData.uniqueInDocAmount;
+                int totalInDocIncludingSW = DocData.totalInDocIncludingSW;
+                int totalInDocwithoutSW = DocData.totalInDocwithoutSW;
+                int AmountUniqueInCorpus = DocData.AmountUniqueInCorpus;
+                string fileName = DocData.fileName;
 
-            string doc = ReadFile.OpenDocument(fileName, DOCNO);
+                string doc = ReadFile.OpenDocument(fileName, DOCNO);
 
 
-            return doc;
+
+
+
+
+
+                return doc;
+            }
+
+            return "";
         }
 
 

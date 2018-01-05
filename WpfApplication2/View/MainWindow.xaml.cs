@@ -541,7 +541,7 @@ namespace WpfApplication2
                         var myKey = Indexer.DocumentMetadata.FirstOrDefault(x => x.Value.Contains(docStr)).Key;
                         int docID = myKey;
                         string tst = vm.getDocument(docID);
-                        System.Windows.Forms.MessageBox.Show("Document:" + tst);
+                        System.Windows.Forms.MessageBox.Show(tst);
                     }
                     else
                     {
