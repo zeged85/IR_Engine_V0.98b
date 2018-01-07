@@ -319,6 +319,11 @@ namespace IR_Engine
             search.setOutputFolder(path);
         }
 
+        public string[] getWiki(string term)
+        {
+            return search.getWiki(term);
+        }
+
         public void loadDictionary()
         {
 

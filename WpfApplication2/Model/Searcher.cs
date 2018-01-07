@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,8 @@ namespace IR_Engine
 
 
         public static string singleQueryInput;
+
+        public static bool extendQuery = false;
 
         public void NotifyPropertyChanged(string PropName)
         {
@@ -54,7 +57,83 @@ namespace IR_Engine
             //LoadSYNONYMS_AND_ANTONYMS();
         }
 
+        public string[] getWiki(string term)
+        {
+            string line = string.Empty;
+            string wikiTerm = "dota";
+            string url = @"https://en.wikipedia.org/wiki/" + wikiTerm;
 
+            List<string> syns = new List<string>();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+            //https://stackoverflow.com/questions/27108264/c-sharp-how-to-properly-make-a-http-web-get-request
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                line = reader.ReadLine();
+
+                while (line != null)
+                {
+                    if (line.Contains("firstHeading") == true)
+                    {
+                        break;
+                    }
+                    line = reader.ReadLine();
+                }
+
+
+                while (line != null)
+                {
+                    if (line.Contains("<p>") == true)
+                    {
+                        break;
+                    }
+                    line = reader.ReadLine();
+                }
+
+                //line = reader.ReadLine();
+
+                while (line.Contains("toctitle") == false)
+                {
+                    if (line.Contains("<b>"))
+                    {
+                        while (line.Contains("<b>"))
+                        {
+                            //Console.WriteLine(line);
+                            int a, b;
+                            a = line.IndexOf("<b>");
+                            b = line.IndexOf(@"</b>");
+                            string syn = line.Substring(a, b - a + 4);
+                            Console.WriteLine(syn);
+                            
+                            if (!syns.Contains(syn))
+                            {
+                                syns.Add(syn);
+                            }
+
+
+
+
+                            line = line.Substring(b + 4);
+                        }
+
+                    }
+
+                    line = reader.ReadLine();
+
+
+                }
+
+            }
+
+            string[] ans = syns.ToArray();
+
+
+
+            return ans;
+        }
 
         public string[] getSYNONYMS(string term)
         {

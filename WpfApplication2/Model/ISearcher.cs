@@ -29,5 +29,7 @@ namespace IR_Engine
         void setOutputFolder(string path);
         string getOutputFolder();
         string getDocument(int docID);
+
+        string[] getWiki(string term);
     }
 }

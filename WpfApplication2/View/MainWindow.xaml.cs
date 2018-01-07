@@ -189,73 +189,15 @@ namespace WpfApplication2
             client.connect(@"https://en.wikipedia.org/wiki/Television", 80);
             Console.WriteLine(client.read());
             */
-
-            string line = string.Empty;
-            string wikiTerm = "film";
-            string url = @"https://en.wikipedia.org/wiki/" + wikiTerm;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-            //https://stackoverflow.com/questions/27108264/c-sharp-how-to-properly-make-a-http-web-get-request
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                line = reader.ReadLine();
-
-                while (line!=null)
-                {
-                    if (line.Contains("firstHeading") == true)
-                    {
-                        break;
-                    }
-                    line = reader.ReadLine();
-                }
-
-
-                while (line != null)
-                {
-                    if (line.Contains("<p>") == true)
-                    {
-                        break;
-                    }
-                    line = reader.ReadLine();
-                }
-
-                //line = reader.ReadLine();
-
-                while (line.Contains("toctitle") == false)
-                {
-                    if (line.Contains("<b>"))
-                    {
-                        while (line.Contains("<b>"))
-                        {
-                            //Console.WriteLine(line);
-                            int a, b;
-                            a = line.IndexOf("<b>");
-                            b = line.IndexOf(@"</b>");
-                            Console.WriteLine(line.Substring(a,b - a + 4));
-                            line = line.Substring(b+4);
-                        }
-                        
-                    }
-                    
-                    line = reader.ReadLine();
-
-
-                }
-
-            }
-
-
-
-
+            string[] res = vm.getWiki("dota");
+            
             
 
-            if (Stemming.IsChecked == true)
+            if (isExtendQuery_CheckBox.IsChecked == true)
             {
                 //Indexer.ifStemming = true;
                 //vm.setOutputFolder(m_postingFilesPath + "\\" + "Stemming" + "\\");
+                Searcher.extendQuery = true;
 
             }
             else
@@ -263,6 +205,7 @@ namespace WpfApplication2
                 //vm.setOutputFolder(m_postingFilesPath + "\\" + "UnStemming" + "\\");
 
                 //Indexer.ifStemming = false;
+                Searcher.extendQuery = false;
             }
         }
 
