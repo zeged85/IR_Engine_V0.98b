@@ -94,7 +94,7 @@ namespace IR_Engine
 
                 // int limiter = 10;
                 string previousLine;
-                int limiter = 70;
+                int limiter = 150;
                 while (ReadFile.NaiveSearch(line = reader.ReadLine(), "</TEXT>") != 0 && limiter!=0)
                 {
                     //https://msdn.microsoft.com/en-us/library/ms228388.

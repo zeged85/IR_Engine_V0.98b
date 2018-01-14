@@ -189,7 +189,7 @@ namespace WpfApplication2
             client.connect(@"https://en.wikipedia.org/wiki/Television", 80);
             Console.WriteLine(client.read());
             */
-            string[] res = vm.getWiki("dota");
+           // string[] res = vm.getWiki("dota");
             
             
 
@@ -226,21 +226,29 @@ namespace WpfApplication2
                 }
                 else
                 {
-                    System.IO.DirectoryInfo di = new DirectoryInfo(m_postingFilesPath);
-
-                    foreach (FileInfo file in di.GetFiles())
+                    try
                     {
-                        file.Delete();
-                    }
-                    foreach (DirectoryInfo dir in di.GetDirectories())
-                    {
-                        dir.Delete(true);
-                    }
+                        System.IO.DirectoryInfo di = new DirectoryInfo(m_postingFilesPath);
 
-                    System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
-                    QueryInputTextBox.IsReadOnly = true;
-                    isDictionaryLoaded = false;
-                    vm.clearAllData();
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            file.Delete();
+                        }
+                        foreach (DirectoryInfo dir in di.GetDirectories())
+                        {
+                            dir.Delete(true);
+                        }
+
+                        System.Windows.Forms.MessageBox.Show("All Files Have Been Deleted!");
+                        QueryInputTextBox.IsReadOnly = true;
+                        isDictionaryLoaded = false;
+                        vm.clearAllData();
+                    }
+                    catch(Exception e2)
+                    {
+                        System.Windows.Forms.MessageBox.Show("ERROR: File in use"+Environment.NewLine + e2);
+                    }
+ 
                 }
             }
             if (!string.IsNullOrEmpty(Searcher.pathForResult) && File.Exists(Searcher.pathForResult + "\\result.txt"))
@@ -377,7 +385,7 @@ namespace WpfApplication2
        
         private void runQuery(string query)
         {
-
+            DateTime m_start = DateTime.Now;
             query = query.Trim();
 
             if (query.Last().ToString() == ".")
@@ -398,20 +406,25 @@ namespace WpfApplication2
             string[] allTerms = query.Split('+');
 
 
+
+           
+
             List<string> syn = new List<string>();
-            /*
-            foreach (string term in allTerms)
+
+            if (Searcher.extendQuery == true)
             {
-                string[] SYNOms = vm.getSYNONYMS(term);
-                foreach (string str in SYNOms)
+                foreach (string term in allTerms)
                 {
-                    if (!syn.Contains(str))
+                    string[] SYNOms = vm.getWiki(term);
+                    foreach (string str in SYNOms)
                     {
-                        syn.Add(str);
+                        if (!syn.Contains(str))
+                        {
+                            syn.Add(str);
+                        }
                     }
                 }
             }
-            */
 
             string[] SYNONYMS = syn.ToArray();
 
@@ -420,12 +433,12 @@ namespace WpfApplication2
             if (Indexer.ifStemming == true)
             {
                 Stemmer stem = new Stemmer();
-                /*
+                
                 for (int i = 0; i < SYNONYMS.Length - 1; i++)
                 {
                     SYNONYMS[i] = stem.stemTerm(SYNONYMS[i]);
                 }
-                */
+                
                 if (query.Contains('+'))
                 {
                     string[] str = query.Split('+');
@@ -452,7 +465,10 @@ namespace WpfApplication2
                 }
 
             vm.runSingleQuery(query, SYNONYMS, 0);
-            System.Windows.Forms.MessageBox.Show("Query Activated");
+            DateTime m_end = DateTime.Now;
+            string m_time = (m_end - m_start).ToString();
+            System.Windows.Forms.MessageBox.Show("Process ended.\nResult File is in your chosen folder.\nRunning Time : " + m_time + "\n");
+           // System.Windows.Forms.MessageBox.Show("Query Activated");
 
             QueryInputTextBox.IsReadOnly = true;
             System.Threading.Thread.Sleep(1000);
@@ -543,8 +559,14 @@ namespace WpfApplication2
                     {
                         File.Delete(Searcher.pathForResult + "\\result.txt");
                     }
+                    DateTime m_start = DateTime.Now;
                     vm.openQueryFile(queriesFile.FileName);
-                    System.Windows.Forms.MessageBox.Show("Process ended.\nResult File is in your chosen folder.");
+                    DateTime m_end = DateTime.Now;
+                    string m_time = (m_end - m_start).ToString();
+                    System.Windows.Forms.MessageBox.Show("Process ended.\nResult File is in your chosen folder.\nRunning Time : " + m_time + "\n");
+
+                   
+
                     Searcher.languageChosen.Clear();
                 }
                 else

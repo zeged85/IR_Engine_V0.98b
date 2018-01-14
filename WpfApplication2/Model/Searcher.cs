@@ -60,74 +60,81 @@ namespace IR_Engine
         public string[] getWiki(string term)
         {
             string line = string.Empty;
-            string wikiTerm = "dota";
+            string wikiTerm = term;
             string url = @"https://en.wikipedia.org/wiki/" + wikiTerm;
 
             List<string> syns = new List<string>();
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
-            //https://stackoverflow.com/questions/27108264/c-sharp-how-to-properly-make-a-http-web-get-request
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+
+            try
             {
-                line = reader.ReadLine();
-
-                while (line != null)
+                //https://stackoverflow.com/questions/27108264/c-sharp-how-to-properly-make-a-http-web-get-request
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
                 {
-                    if (line.Contains("firstHeading") == true)
-                    {
-                        break;
-                    }
                     line = reader.ReadLine();
-                }
 
-
-                while (line != null)
-                {
-                    if (line.Contains("<p>") == true)
+                    while (line != null)
                     {
-                        break;
-                    }
-                    line = reader.ReadLine();
-                }
-
-                //line = reader.ReadLine();
-
-                while (line.Contains("toctitle") == false)
-                {
-                    if (line.Contains("<b>"))
-                    {
-                        while (line.Contains("<b>"))
+                        if (line.Contains("firstHeading") == true)
                         {
-                            //Console.WriteLine(line);
-                            int a, b;
-                            a = line.IndexOf("<b>");
-                            b = line.IndexOf(@"</b>");
-                            string syn = line.Substring(a, b - a + 4);
-                            Console.WriteLine(syn);
-                            
-                            if (!syns.Contains(syn))
+                            break;
+                        }
+                        line = reader.ReadLine();
+                    }
+
+
+                    while (line != null)
+                    {
+                        if (line.Contains("<p>") == true)
+                        {
+                            break;
+                        }
+                        line = reader.ReadLine();
+                    }
+
+                    //line = reader.ReadLine();
+
+                    while (line != null && line.Contains("toctitle") == false && line.Contains("mw-headline") == false)
+                    {
+                        if (line.Contains("<b>"))
+                        {
+                            while (line.Contains("<b>"))
                             {
-                                syns.Add(syn);
+                                //Console.WriteLine(line);
+                                int a, b;
+                                a = line.IndexOf("<b>");
+                                b = line.IndexOf(@"</b>");
+                                string syn = line.Substring(a + 3, b - a - 3);
+                                Console.WriteLine(syn);
+
+                                if (!syns.Contains(syn))
+                                {
+                                    syns.Add(syn);
+                                }
+
+
+
+
+                                line = line.Substring(b + 4);
                             }
 
-
-
-
-                            line = line.Substring(b + 4);
                         }
+
+                        line = reader.ReadLine();
+
 
                     }
 
-                    line = reader.ReadLine();
-
-
                 }
+            }
+            catch (Exception e)
+            {
 
             }
-
             string[] ans = syns.ToArray();
 
 
@@ -432,13 +439,19 @@ namespace IR_Engine
                 */
                 StreamWriter file6 = new StreamWriter(pathForResult + "\\result.txt"/*@"c:\treceval\results.txt"*/, true);
                 /// 351   0  FR940104-0-00001  1   42.38   mt
-                int limiter = 0;
+                int limiter = 50;
+
+                if (Searcher.extendQuery == true)
+                {
+                    limiter = 70;
+                }
+
                 foreach (KeyValuePair<string, double> docResult in desc)
                 {
-                    limiter++;
+                    limiter--;
                     ///query ID - ITER = 0   - 
                     file6.WriteLine(query_id + " " + "0" + " " + docResult.Key + " " + "0" + " " + "1.1" + " " + "mt");
-                    if (limiter == 50)
+                    if (limiter == 0)
                     {
                         break;
                     }
@@ -477,7 +490,7 @@ namespace IR_Engine
 
 
 
-                        query = query.Trim();
+                        query = query.Trim().ToLower();
 
                         if (query.Last().ToString() == ".")
                         {
@@ -500,25 +513,29 @@ namespace IR_Engine
 
 
                         string[] allTerms = query.Split('+');
+
+
                         List<string> syn = new List<string>();
-
-                        foreach (string term in allTerms)
+                        if (Searcher.extendQuery == true)
                         {
-                            string[] SYNOms = getSYNONYMS(term);
-
-                            if (SYNOms != null)
+                            foreach (string term in allTerms)
                             {
-                                foreach (string str in SYNOms)
+                                string[] SYNOms = getWiki(term);
+
+                                if (SYNOms != null)
                                 {
-                                    if (!syn.Contains(str))
+                                    foreach (string str in SYNOms)
                                     {
-                                        syn.Add(str);
+                                        if (!syn.Contains(str))
+                                        {
+                                            syn.Add(str);
+                                        }
                                     }
+
                                 }
 
+
                             }
-
-
                         }
                         string[] SYNONYMS = syn.ToArray();
 
@@ -1150,16 +1167,9 @@ namespace IR_Engine
                     string fileName = DocData.fileName;
 
 
-                    if (languageChosen.Count != 0)
-                    {
-                        if (languageChosen.Contains(DocData.language))
-                        {
+                  
                             double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
-                            if (term.Contains('+'))
-                            {
-
-                            }
-
+                           
                             if (DocRankingList.ContainsKey(DOCNO))
                             {
                                 DocRankingList[DOCNO] += +score;
@@ -1171,33 +1181,24 @@ namespace IR_Engine
                             ///save to docResultList
                             ///if contains sum score
                         }
+     
                     }
-                    else
-                    {
-                        double score = rank.BM25(totalInDocIncludingSW, 0, ni, 0, tf, qfi);
-                        if (term.Contains('+'))
-                        {
 
-                        }
-
-                        if (DocRankingList.ContainsKey(DOCNO))
-                        {
-                            DocRankingList[DOCNO] += +score;
-                        }
-                        else
-                        {
-                            DocRankingList.Add(DOCNO, score);
-                        }
-                    }
+            /*
+            foreach (KeyValuePair<string,double> score in DocRankingList)
+            {
+                score *=
+            }
+            
                 }
 
 
-
+            */
 
                 //  rank.BM25()
                 //bm25 rank every term
 
-            }
+            //}
 
 
 

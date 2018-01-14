@@ -96,11 +96,24 @@ namespace IR_Engine
 
                     double docRankResult = BM25(totalInDocIncludingSW, ri, ni, R, fi, qfi);
 
+                   // docRankResult = CosineSimilarity(totalInDocIncludingSW, tf, df, qfi);
+
                 }
 
             }
 
             }
+
+        private double CosineSimilarity(int totalInDocIncludingSW, int tf, int df, int qfi)
+        {
+            double result = 0.0;
+
+
+            result = 0; 
+
+
+            return result;
+        }
 
         // this needs to be calculate for every! term i in the query. (sigma)
         public double BM25(int docLength, int ri, int ni, int R, int fi, int qfi)
